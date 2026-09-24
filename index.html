@@ -59,18 +59,43 @@
   .pad button:active{transform:translateY(2px)}
   .pad .u{grid-column:2} .pad .l{grid-column:1;grid-row:2} .pad .d{grid-column:2;grid-row:2} .pad .r{grid-column:3;grid-row:2}
   .help{font-size:12px;color:var(--zacht);text-align:center;margin:0}
-  @media (hover:hover) and (pointer:fine){.pad{display:none}}
+  .pad{display:none!important} /* besturing op telefoon gaat via vegen */
   @media (prefers-reduced-motion:reduce){.toast{transition:none}}
   body{margin:0;min-height:100%}
   [hidden]{display:none!important}
-  .overlay.start{background:radial-gradient(circle at 50% 30%,rgba(47,143,70,.55),rgba(22,50,59,.92) 70%)}
+  /* Start-, pauze- en game-over-scherm: over het hele scherm, zodat alles past op een telefoon */
+  .overlay{position:fixed;inset:0;z-index:50;justify-content:safe center;overflow-y:auto;
+    padding:max(24px,env(safe-area-inset-top)) 20px max(24px,env(safe-area-inset-bottom));
+    background:rgba(22,50,59,.95)}
+  .overlay>*{flex-shrink:0}
+  /* Tijdens het spelen: pagina staat stil, zodat vegen alleen de slang stuurt */
+  html.speelt,html.speelt body{overflow:hidden;touch-action:none;overscroll-behavior:none}
+  .overlay .tip{font-size:14px;color:var(--zacht);font-weight:700}
+  .wrap>*{flex-shrink:0}
+  .stat span{white-space:nowrap}
+  .overlay.start{background:radial-gradient(circle at 50% 35%,#2b6a4a 0,#16323b 70%)}
+  .alleen-touch{display:none}
+  @media (hover:none),(pointer:coarse){.alleen-desk{display:none}.alleen-touch{display:inline}}
+  button{touch-action:manipulation}
+  @media (max-width:600px){
+    body{padding-block:10px}
+    .wrap{gap:10px}
+    header{flex-wrap:nowrap;align-items:center}
+    h1{font-size:clamp(18px,5.6vw,30px);white-space:nowrap}
+    .sub{display:none}
+    .stats{gap:10px}
+    .stat b{font-size:20px}
+    .stat span{font-size:9px}
+    .speed{font-size:12px}
+    .overlay p{font-size:15px}
+  }
   .overlay .kop{font-family:"Titan One",sans-serif;font-size:clamp(36px,10vw,56px);line-height:.95;color:var(--geel);text-shadow:0 4px 0 #0f262d}
   .overlay .kop small{display:block;font-size:.55em;color:#5cc275}
   .overlay .kop small i{font-style:normal;color:var(--tekst)}
   .slangetje{display:flex;gap:4px;margin:4px 0}
   .slangetje span{width:22px;height:22px;border-radius:7px;background:var(--geel);animation:wiebel 1s ease-in-out infinite}
   .slangetje span:nth-child(even){background:var(--groen)}
-  .slangetje span:first-child{background:var(--groen);box-shadow:inset 5px -5px 0 -3px #fff}
+  .slangetje span:first-child{background:var(--groen)}
   @keyframes wiebel{50%{transform:translateY(-8px)}}
   .bigscore{font-family:"Titan One",sans-serif;font-size:64px;line-height:1;color:var(--tekst)}
   .bigscore span{display:block;font-family:"Nunito",sans-serif;font-weight:900;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--zacht)}
@@ -126,6 +151,7 @@
         <div class="rij"><button class="btn" type="submit" id="opslaanBtn">Opslaan</button></div>
         <p class="melding" id="melding"></p>
       </form>
+      <p class="tip" id="stuurTip"><span class="alleen-touch">Sture doe je door te vege: omhoog, omlaag, links of rechts.</span><span class="alleen-desk">Sture doe je met de pèltjes of WASD.</span></p>
       <button class="btn" id="startBtn">Beginne, joh!</button>
     </div>
   </div>
@@ -136,7 +162,7 @@
     <button class="d" data-dir="down" aria-label="Omlaag">▼</button>
     <button class="r" data-dir="right" aria-label="Rechts">▶</button>
   </div>
-  <p class="help">Pèltjes of WASD om te sture · spatie of P voor pauze · op je telefoon: veeg over het veld</p>
+  <p class="help"><span class="alleen-desk">Pèltjes of WASD om te sture · spatie of P voor pauze</span><span class="alleen-touch">Veeg in de richting waar je heen wil, overal op het scherm</span></p>
 
   <div class="legend">
     <div><b>Harinkie</b><span>+1 punt</span></div>
@@ -270,11 +296,11 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
   }
 
   function sterf(hoe) {
-    state = 'dood'; doodT = performance.now();
+    state = 'dood'; doodT = performance.now(); document.documentElement.classList.remove('speelt');
     if (score > best) { best = score; try { localStorage.setItem('snek-best', best); } catch(e) {} $('best').textContent = best; }
     $('ovTitel').textContent = pick(DOOD[hoe]);
     ov.classList.remove('start'); $('startKop').hidden = true; $('slangetje').hidden = true;
-    $('bigScore').hidden = false; $('bigScore').innerHTML = `${score}<span>punte</span>`;
+    $('stuurTip').hidden = true; $('bigScore').hidden = false; $('bigScore').innerHTML = `${score}<span>punte</span>`;
     $('ovTekst').textContent = score === 0 ? 'Nul punte? Dat ken beter, ouwe!' : (score >= best ? 'Nieuw record, nou nou!' : `Jouw beste scoâh is ${best}.`);
     $('startBtn').textContent = 'Nog een keâh!';
     if (LB && score > 0) { ingezonden = false; form.hidden = false; inp.value = mijnNaam; meld.textContent = ''; $('opslaanBtn').disabled = false;
@@ -331,6 +357,7 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
 
   function begin() {
     form.hidden = true;
+    scrollTo(0, 0); document.documentElement.classList.add('speelt');
     reset(); state = 'spel'; ov.hidden = true; lastStep = performance.now();
   }
   function pauze() {
@@ -440,8 +467,9 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
   ov.addEventListener('click', () => { if (state==='pauze') pauze(); else if (state==='start' || magOpnieuw()) begin(); });
   document.querySelectorAll('.pad button').forEach(b => b.addEventListener('pointerdown', e => { e.preventDefault(); if (state!=='pauze') stuur(b.dataset.dir); }));
   let t0=null; const board=$('board');
-  board.addEventListener('touchstart', e => { t0 = e.touches[0]; }, {passive:true});
-  board.addEventListener('touchmove', e => {
+  // Vegen werkt overal op het scherm, niet alleen op het speelveld
+  document.addEventListener('touchstart', e => { t0 = e.touches[0]; }, {passive:true});
+  document.addEventListener('touchmove', e => {
     if (!t0 || state!=='spel') return; e.preventDefault();
     const t=e.touches[0], dx=t.clientX-t0.clientX, dy=t.clientY-t0.clientY;
     if (Math.max(Math.abs(dx),Math.abs(dy)) < 24) return;
