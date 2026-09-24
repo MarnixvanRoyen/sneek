@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sneek op z'n Haags</title>
+<meta name="description" content="Snake op z'n Haags: vreet harinkies, kroketten en patatje oorlog en haal de hoogste scoâh.">
+<meta property="og:title" content="Sneek op z'n Haags">
+<meta property="og:description" content="Kèn jij 't beter? Vreet harinkies, ontwèk de meeuwe en kom in de Haagse Toppâhs.">
+<meta property="og:image" content="https://marnixvanroyen.github.io/sneek/og.png">
+<meta property="og:url" content="https://marnixvanroyen.github.io/sneek/">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#16323b">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Nunito:wght@500;700;900&display=swap">
+<style>
+  :root{
+    color-scheme: dark;
+    --zee:#16323b; --zee2:#1f4450; --schuim:#dfeff0;
+    --zand:#ecd9a8; --zand2:#e2cc92;
+    --geel:#f5c518; --groen:#2f8f46; --groen-d:#1f6a32;
+    --rood:#d9432f; --tekst:#f3efe2; --zacht:#a9c3c6;
+  }
+  html,body{height:100%}
+  body{background:var(--zee);color:var(--tekst);font-family:"Nunito",system-ui,sans-serif;
+    display:flex;justify-content:center;padding-inline:16px;padding-block:16px;box-sizing:border-box;
+    background-image:radial-gradient(circle at 20% 0%,#24505d 0,transparent 55%),radial-gradient(circle at 90% 100%,#0f262d 0,transparent 60%);}
+  .wrap{width:100%;max-width:520px;display:flex;flex-direction:column;gap:12px}
+  header{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  h1{font-family:"Titan One","Arial Black",sans-serif;font-weight:400;font-size:clamp(28px,7vw,40px);line-height:1;margin:0;letter-spacing:.5px}
+  h1 .g{color:var(--geel)} h1 .gr{color:#5cc275}
+  .sub{margin:4px 0 0;color:var(--zacht);font-size:14px}
+  .stats{display:flex;gap:14px;font-variant-numeric:tabular-nums}
+  .stat{display:flex;flex-direction:column;align-items:flex-end}
+  .stat b{font-family:"Titan One",sans-serif;font-weight:400;font-size:24px;line-height:1}
+  .stat span{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--zacht)}
+  .speed{font-size:13px;color:var(--zacht);display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+  .speed b{color:var(--geel)}
+  .board{position:relative;width:100%;aspect-ratio:1/1;max-width:100%;border-radius:10px;overflow:hidden;
+    box-shadow:0 0 0 4px var(--geel),0 0 0 8px var(--groen),0 18px 40px rgba(0,0,0,.4);touch-action:none}
+  canvas{display:block;width:100%;height:100%}
+  .overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;gap:10px;padding:20px;background:rgba(22,50,59,.78);backdrop-filter:blur(2px);cursor:pointer}
+  .overlay h2{font-family:"Titan One",sans-serif;font-weight:400;font-size:clamp(24px,6vw,34px);margin:0;color:var(--geel);text-wrap:balance}
+  .overlay p{margin:0;max-width:34ch;line-height:1.45}
+  .btn{margin-top:6px;font:inherit;font-weight:900;font-size:16px;background:var(--geel);color:#1b2a1f;border:0;
+    border-bottom:4px solid #b88f00;border-radius:10px;padding:10px 20px;cursor:pointer}
+  .btn:focus-visible,.pad button:focus-visible{outline:3px solid var(--schuim);outline-offset:2px}
+  .toast{position:absolute;left:50%;top:12px;transform:translateX(-50%);background:var(--groen);color:#fff;
+    font-weight:900;padding:6px 14px;border-radius:999px;white-space:nowrap;font-size:15px;
+    box-shadow:0 4px 0 var(--groen-d);transition:opacity .25s,transform .25s;pointer-events:none}
+  .toast.weg{opacity:0;transform:translate(-50%,-8px)}
+  .toast.meeuw{background:var(--rood);box-shadow:0 4px 0 #9a2b1c}
+  .legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;font-size:13px}
+  .legend div{background:var(--zee2);border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;gap:2px}
+  .legend b{font-size:14px} .legend span{color:var(--zacht)}
+  .pad{display:grid;grid-template-columns:repeat(3,64px);grid-template-rows:repeat(2,52px);gap:6px;justify-content:center}
+  .pad button{font-size:22px;background:var(--zee2);color:var(--tekst);border:0;border-bottom:3px solid #0d2228;border-radius:10px;cursor:pointer}
+  .pad button:active{transform:translateY(2px)}
+  .pad .u{grid-column:2} .pad .l{grid-column:1;grid-row:2} .pad .d{grid-column:2;grid-row:2} .pad .r{grid-column:3;grid-row:2}
+  .help{font-size:12px;color:var(--zacht);text-align:center;margin:0}
+  @media (hover:hover) and (pointer:fine){.pad{display:none}}
+  @media (prefers-reduced-motion:reduce){.toast{transition:none}}
+  body{margin:0;min-height:100%}
+  [hidden]{display:none!important}
+  .overlay.start{background:radial-gradient(circle at 50% 30%,rgba(47,143,70,.55),rgba(22,50,59,.92) 70%)}
+  .overlay .kop{font-family:"Titan One",sans-serif;font-size:clamp(36px,10vw,56px);line-height:.95;color:var(--geel);text-shadow:0 4px 0 #0f262d}
+  .overlay .kop small{display:block;font-size:.55em;color:#5cc275}
+  .overlay .kop small i{font-style:normal;color:var(--tekst)}
+  .slangetje{display:flex;gap:4px;margin:4px 0}
+  .slangetje span{width:22px;height:22px;border-radius:7px;background:var(--geel);animation:wiebel 1s ease-in-out infinite}
+  .slangetje span:nth-child(even){background:var(--groen)}
+  .slangetje span:first-child{background:var(--groen);box-shadow:inset 5px -5px 0 -3px #fff}
+  @keyframes wiebel{50%{transform:translateY(-8px)}}
+  .bigscore{font-family:"Titan One",sans-serif;font-size:64px;line-height:1;color:var(--tekst)}
+  .bigscore span{display:block;font-family:"Nunito",sans-serif;font-weight:900;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--zacht)}
+  @media (prefers-reduced-motion:reduce){.slangetje span{animation:none}}
+  .scoreform{display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;max-width:300px;cursor:default}
+  .scoreform label{font-weight:700;font-size:14px;color:var(--zacht)}
+  .veld{display:flex;width:100%;background:#fff;border-radius:10px;overflow:hidden;border:3px solid var(--geel)}
+  .veld span{padding:10px 4px 10px 12px;color:#556;font-weight:900}
+  .veld input{flex:1;background:#fff;min-width:0;border:0;font:inherit;font-weight:700;font-size:16px;padding:10px 12px 10px 0;outline:none;color:#16323b}
+  .rij{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+  .btn.stil{background:transparent;color:var(--tekst);border:2px solid var(--zacht);border-bottom-width:2px}
+  .melding{font-size:13px;min-height:1.2em;color:var(--schuim)}
+  .lijst{background:var(--zee2);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+  .lijst h2{font-family:"Titan One",sans-serif;font-weight:400;margin:0;font-size:22px;color:var(--geel)}
+  .lijst ol{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:4px;font-variant-numeric:tabular-nums}
+  .lijst li{display:grid;grid-template-columns:2em 1fr auto;gap:8px;align-items:center;padding:6px 8px;border-radius:8px}
+  .lijst li:nth-child(odd){background:rgba(0,0,0,.15)}
+  .lijst li .nr{color:var(--zacht);font-weight:900}
+  .lijst li a{color:var(--tekst);text-decoration:none;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .lijst li a:hover{text-decoration:underline}
+  .lijst li b{font-family:"Titan One",sans-serif;font-weight:400;color:var(--geel)}
+  .lijst li.jij{outline:2px solid var(--geel)}
+  .lijst .help{text-align:left}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1><span class="g">Sneek</span> op z'n <span class="gr">Haags</span></h1>
+      <p class="sub">Van Scheveninge tot de Schilderswèk</p>
+    </div>
+    <div class="stats">
+      <div class="stat"><b id="score">0</b><span>Punte</span></div>
+      <div class="stat"><b id="best">0</b><span>Beste scoâh</span></div>
+    </div>
+  </header>
+
+  <div class="speed"><span>Tempo: <b id="tempo">Wandele over de Boulevard</b></span><span id="lengte">Lengte: 3</span></div>
+
+  <div class="board" id="board">
+    <canvas id="c" width="600" height="600" aria-label="Speelveld"></canvas>
+    <div class="toast weg" id="toast"></div>
+    <div class="overlay start" id="overlay">
+      <div class="kop" id="startKop">Sneek<small><i>op z'n</i> Haags</small></div>
+      <div class="slangetje" id="slangetje" aria-hidden="true"><span></span><span style="animation-delay:.1s"></span><span style="animation-delay:.2s"></span><span style="animation-delay:.3s"></span><span style="animation-delay:.4s"></span><span style="animation-delay:.5s"></span><span style="animation-delay:.6s"></span></div>
+      <h2 id="ovTitel">Hoi, ouwe!</h2>
+      <div class="bigscore" id="bigScore" hidden></div>
+      <p id="ovTekst">Vreet zoveel mogelijk harinkies, kroketten en patatjes. Kèk uit voor de rand, anders lig je in de zee. Bèt niet in je eige staart en hou die meeuwe in de gate, want die jatte je eten!</p>
+      <form class="scoreform" id="scoreForm" hidden>
+        <label for="insta">Zet je naam op de lèst van Haagse Toppâhs</label>
+        <div class="veld"><span>@</span><input id="insta" name="insta" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="31" placeholder="jouw_insta"></div>
+        <div class="rij"><button class="btn" type="submit" id="opslaanBtn">Opslaan</button></div>
+        <p class="melding" id="melding"></p>
+      </form>
+      <button class="btn" id="startBtn">Beginne, joh!</button>
+    </div>
+  </div>
+
+  <div class="pad" aria-label="Besturing">
+    <button class="u" data-dir="up" aria-label="Omhoog">▲</button>
+    <button class="l" data-dir="left" aria-label="Links">◀</button>
+    <button class="d" data-dir="down" aria-label="Omlaag">▼</button>
+    <button class="r" data-dir="right" aria-label="Rechts">▶</button>
+  </div>
+  <p class="help">Pèltjes of WASD om te sture · spatie of P voor pauze · op je telefoon: veeg over het veld</p>
+
+  <div class="legend">
+    <div><b>Harinkie</b><span>+1 punt</span></div>
+    <div><b>Kroket</b><span>+2 punte</span></div>
+    <div><b>Patatje oorlog</b><span>+3 punte</span></div>
+    <div><b>Haagse bluf</b><span>+5, snel wezen!</span></div>
+  </div>
+
+  <section class="lijst" id="lijstSec" hidden>
+    <h2>Haagse Toppâhs</h2>
+    <ol id="lijst"></ol>
+    <p class="help" id="lijstStatus">Lèst wordt geladen…</p>
+  </section>
+</div>
+
+<script>
+// ====== Instellingen voor de highscorelèst (Supabase) ======
+// Vul hier de Project URL en de publishable (of anon) key van je Supabase-project in.
+const SUPABASE_URL = 'https://bbmsggyqbhbcrziyblhr.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
+// ===========================================================
+(() => {
+  const N = 20, C = document.getElementById('c'), ctx = C.getContext('2d');
+  const S = C.width / N;
+  const $ = id => document.getElementById(id);
+  const ov = $('overlay'), toastEl = $('toast');
+
+  const ETEN = {
+    haring: {pts:1, zeg:['Lekkâh harinkie!','Harinkie met uitjes, ouwe!','Van de kar op de Boulevard!']},
+    kroket: {pts:2, zeg:['Kroketje, lekkâh!','Uit de muur, joh!','Heet hoor, pas op!']},
+    patat:  {pts:3, zeg:['Patatje oorlog!','Met ALLES erop!','Nou, dat is smulle!']},
+    bluf:   {pts:5, zeg:['Haagse bluf! Chic hoor!','Hé, meneâh de deftige!','Bluf van het Voorhout!']}
+  };
+  const TEMPO = [
+    {min:0,  ms:150, naam:'Wandele over de Boulevard'},
+    {min:8,  ms:125, naam:'Op de fiets naar Scheveninge'},
+    {min:18, ms:105, naam:'Met tram 1 naar de Kurhaus'},
+    {min:32, ms:88,  naam:'Rèsse over de Utrechtsebaan'},
+    {min:50, ms:72,  naam:'Hoogspanning, jochie!'}
+  ];
+  const DOOD = {
+    muur:['Nou lig je in de zee, sukkel!','Van de Pier gepleuhrt!','Plons! Daar ga je, de Noordzee in.'],
+    staart:['Je bèt in je eige staart, joh!','Au! Dat was je eige kont!','Knoop in je lèf, ouwe.']
+  };
+  const pick = a => a[Math.floor(Math.random()*a.length)];
+
+  let doodT = 0, snake, dir, queue, food, bonus, gull, score, best = 0, timer = null, state = 'start', lastStep = 0, stepMs = 150, tick = 0;
+  try { best = +localStorage.getItem('snek-best') || 0; } catch(e) {}
+  $('best').textContent = best;
+
+  function vrij() {
+    while (true) {
+      const p = {x: Math.floor(Math.random()*N), y: Math.floor(Math.random()*N)};
+      if (!snake.some(s => s.x===p.x && s.y===p.y) && !(food && food.x===p.x && food.y===p.y) && !(bonus && bonus.x===p.x && bonus.y===p.y)) return p;
+    }
+  }
+  function nieuwEten() {
+    const r = Math.random();
+    const soort = r < .6 ? 'haring' : r < .88 ? 'kroket' : 'patat';
+    food = {...vrij(), soort};
+  }
+  function reset() {
+    snake = [{x:9,y:10},{x:8,y:10},{x:7,y:10}];
+    dir = {x:1,y:0}; queue = []; score = 0; bonus = null; gull = null; food = null; tick = 0;
+    nieuwEten(); updateHud();
+  }
+  function updateHud() {
+    $('score').textContent = score;
+    $('lengte').textContent = 'Lengte: ' + snake.length;
+    let t = TEMPO[0]; for (const x of TEMPO) if (score >= x.min) t = x;
+    stepMs = t.ms; $('tempo').textContent = t.naam;
+  }
+  let toastT;
+  function toast(txt, meeuw) {
+    toastEl.textContent = txt; toastEl.classList.toggle('meeuw', !!meeuw);
+    toastEl.classList.remove('weg'); clearTimeout(toastT);
+    toastT = setTimeout(() => toastEl.classList.add('weg'), 1300);
+  }
+
+  const DIRS = {up:{x:0,y:-1},down:{x:0,y:1},left:{x:-1,y:0},right:{x:1,y:0}};
+  function stuur(d) {
+    if (state === 'start') { begin(); }
+    else if (state === 'dood') { if (!magOpnieuw()) return; begin(); }
+    const last = queue.length ? queue[queue.length-1] : dir;
+    const n = DIRS[d];
+    if (n.x === -last.x && n.y === -last.y) return;
+    if (n.x === last.x && n.y === last.y) return;
+    if (queue.length < 3) queue.push(n);
+  }
+
+  function step() {
+    tick++;
+    if (queue.length) dir = queue.shift();
+    const h = {x: snake[0].x + dir.x, y: snake[0].y + dir.y};
+    if (h.x<0||h.y<0||h.x>=N||h.y>=N) return sterf('muur');
+    const eet = food && h.x===food.x && h.y===food.y;
+    const body = eet ? snake : snake.slice(0,-1);
+    if (body.some(s => s.x===h.x && s.y===h.y)) return sterf('staart');
+    snake.unshift(h);
+    if (eet) {
+      score += ETEN[food.soort].pts; toast(pick(ETEN[food.soort].zeg));
+      if (gull && gull.doel === 'food') gull.doel = null;
+      nieuwEten();
+    } else if (bonus && h.x===bonus.x && h.y===bonus.y) {
+      score += ETEN.bluf.pts; toast(pick(ETEN.bluf.zeg)); bonus = null;
+      snake.push({...snake[snake.length-1]}, {...snake[snake.length-1]});
+      snake.pop();
+    } else snake.pop();
+
+    // Haagse bluf verschijnt af en toe
+    if (!bonus && Math.random() < .012 && score > 2) bonus = {...vrij(), leeft: 45};
+    if (bonus && --bonus.leeft <= 0) bonus = null;
+
+    // Meeuw!
+    if (!gull && Math.random() < .008 && score > 4) {
+      const vanLinks = Math.random() < .5;
+      gull = {x: vanLinks ? -2 : N+1, y: Math.random()*N, doel:'food'};
+      toast('Kèk uit, een meeuw!', true);
+    }
+    if (gull) {
+      const tx = gull.doel==='food' ? food.x : (gull.x < N/2 ? -4 : N+3);
+      const ty = gull.doel==='food' ? food.y : -4;
+      const dx = tx-gull.x, dy = ty-gull.y, d = Math.hypot(dx,dy);
+      const v = .55;
+      if (d < v) {
+        if (gull.doel === 'food') { toast('Die meeuw jat je eten, tjonge!', true); gull.doel = null; gull.buit = food.soort; nieuwEten(); }
+        else gull = null;
+      } else { gull.x += dx/d*v; gull.y += dy/d*v; gull.links = dx < 0; }
+    }
+    updateHud();
+  }
+
+  function sterf(hoe) {
+    state = 'dood'; doodT = performance.now();
+    if (score > best) { best = score; try { localStorage.setItem('snek-best', best); } catch(e) {} $('best').textContent = best; }
+    $('ovTitel').textContent = pick(DOOD[hoe]);
+    ov.classList.remove('start'); $('startKop').hidden = true; $('slangetje').hidden = true;
+    $('bigScore').hidden = false; $('bigScore').innerHTML = `${score}<span>punte</span>`;
+    $('ovTekst').textContent = score === 0 ? 'Nul punte? Dat ken beter, ouwe!' : (score >= best ? 'Nieuw record, nou nou!' : `Jouw beste scoâh is ${best}.`);
+    $('startBtn').textContent = 'Nog een keâh!';
+    if (LB && score > 0) { ingezonden = false; form.hidden = false; inp.value = mijnNaam; meld.textContent = ''; $('opslaanBtn').disabled = false;
+      if (matchMedia('(pointer:fine)').matches) setTimeout(() => inp.focus(), 150); }
+    ov.hidden = false;
+  }
+  // ---------- Highscorelèst ----------
+  const LB = !!(SUPABASE_URL && SUPABASE_KEY);
+  const form = $('scoreForm'), inp = $('insta'), meld = $('melding');
+  let ingezonden = false, mijnNaam = '';
+  try { mijnNaam = localStorage.getItem('snek-insta') || ''; } catch(e) {}
+  const schoon = v => v.trim().replace(/^@+/, '').toLowerCase();
+  const geldig = v => /^[a-z0-9._]{1,30}$/.test(v);
+
+  async function laadLijst() {
+    if (!LB) return;
+    $('lijstSec').hidden = false;
+    try {
+      const r = await fetch(`${SUPABASE_URL}/rest/v1/scores?select=insta,score&order=score.desc,created_at.asc&limit=200`, {headers:{apikey:SUPABASE_KEY}});
+      if (!r.ok) throw new Error(r.status);
+      const rijen = await r.json(), gezien = new Set(), top = [];
+      for (const x of rijen) { if (gezien.has(x.insta)) continue; gezien.add(x.insta); top.push(x); if (top.length === 10) break; }
+      const ol = $('lijst'); ol.textContent = '';
+      top.forEach((x, i) => {
+        const li = document.createElement('li'); if (x.insta === mijnNaam) li.className = 'jij';
+        const nr = document.createElement('span'); nr.className = 'nr'; nr.textContent = i + 1;
+        const a = document.createElement('a'); a.href = 'https://www.instagram.com/' + encodeURIComponent(x.insta) + '/'; a.target = '_blank'; a.rel = 'noopener'; a.textContent = '@' + x.insta;
+        const b = document.createElement('b'); b.textContent = x.score;
+        li.append(nr, a, b); ol.append(li);
+      });
+      $('lijstStatus').textContent = top.length ? 'Tik op een naam om het Insta-profiel te bekèke.' : 'Nog niemand op de lèst. Wordt jij de eerste?';
+    } catch (e) { $('lijstStatus').textContent = 'De lèst kon niet geladen worden. Probeer het later nog een keâh.'; }
+  }
+
+  form.addEventListener('click', e => e.stopPropagation());
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const naam = schoon(inp.value);
+    if (!geldig(naam)) { meld.textContent = 'Vul je Insta-naam in: letters, cijfers, punt of _ (max 30).'; return; }
+    if (ingezonden) return;
+    $('opslaanBtn').disabled = true; meld.textContent = 'Effe opslaan…';
+    try {
+      const r = await fetch(`${SUPABASE_URL}/rest/v1/scores`, {method:'POST', headers:{apikey:SUPABASE_KEY,'Content-Type':'application/json',Prefer:'return=minimal'}, body:JSON.stringify({insta:naam, score})});
+      if (!r.ok) throw new Error(r.status);
+      ingezonden = true; mijnNaam = naam; try { localStorage.setItem('snek-insta', naam); } catch(e) {}
+      meld.textContent = `Staat erop, @${naam}! Nou nou.`;
+      laadLijst();
+    } catch (err) { meld.textContent = 'Opslaan lukte niet. Probeer het nog een keâh.'; $('opslaanBtn').disabled = false; }
+  });
+
+  // Na game over: niet per ongeluk opnieuw starten met pijltjes/tikken.
+  // Met het scoreformulier open start je alleen via de knop 'Nog een keâh!'.
+  function magOpnieuw() { return form.hidden && performance.now() - doodT > 900; }
+
+  function begin() {
+    form.hidden = true;
+    reset(); state = 'spel'; ov.hidden = true; lastStep = performance.now();
+  }
+  function pauze() {
+    if (state === 'spel') { state = 'pauze'; $('ovTitel').textContent = 'Effe pauze'; $('ovTekst').textContent = 'Bakkie koffie halen? Druk op spatie om verder te gaan.'; $('bigScore').hidden = true; $('startKop').hidden = true; $('slangetje').hidden = true; ov.classList.remove('start'); form.hidden = true; $('startBtn').textContent = 'Verdâh!'; ov.hidden = false; }
+    else if (state === 'pauze') { state = 'spel'; ov.hidden = true; lastStep = performance.now(); }
+  }
+
+  // ---------- Tekenen ----------
+  function rrect(x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r);}
+  function tekenVeld() {
+    for (let y=0;y<N;y++) for (let x=0;x<N;x++) {
+      ctx.fillStyle = (x+y)%2 ? '#ecd9a8' : '#e5d09a';
+      ctx.fillRect(x*S,y*S,S,S);
+    }
+    // zandkorreltjes
+    ctx.fillStyle='rgba(150,120,60,.18)';
+    for (let i=0;i<70;i++){const a=(i*9301+49297)%233280/233280, b=(i*4933+1117)%233280/233280;ctx.fillRect(a*C.width,b*C.height,2,2);}
+  }
+  function tekenHaring(cx,cy) {
+    ctx.save(); ctx.translate(cx,cy); ctx.rotate(-.35);
+    ctx.fillStyle='#8fa3ad'; ctx.beginPath(); ctx.ellipse(0,0,S*.38,S*.17,0,0,7); ctx.fill();
+    ctx.fillStyle='#c9d6db'; ctx.beginPath(); ctx.ellipse(0,S*.04,S*.32,S*.08,0,0,7); ctx.fill();
+    ctx.fillStyle='#6f848f'; ctx.beginPath(); ctx.moveTo(S*.33,0); ctx.lineTo(S*.5,-S*.15); ctx.lineTo(S*.5,S*.15); ctx.fill();
+    ctx.fillStyle='#1b1b1b'; ctx.beginPath(); ctx.arc(-S*.24,-S*.03,S*.035,0,7); ctx.fill();
+    ctx.restore();
+    ctx.fillStyle='#fff'; for (const [a,b] of [[-.15,.28],[.05,.3],[.2,.26]]) {ctx.beginPath();ctx.arc(cx+a*S,cy+b*S,S*.05,0,7);ctx.fill();}
+  }
+  function tekenKroket(cx,cy) {
+    ctx.save(); ctx.translate(cx,cy); ctx.rotate(.3);
+    ctx.fillStyle='#a8621f'; rrect(-S*.4,-S*.17,S*.8,S*.34,S*.17); ctx.fill();
+    ctx.fillStyle='rgba(255,210,140,.5)'; for(let i=0;i<7;i++){ctx.fillRect(-S*.3+i*S*.09,-S*.08+((i%2)*S*.08),S*.04,S*.04);}
+    ctx.restore();
+  }
+  function tekenPatat(cx,cy) {
+    ctx.fillStyle='#f2c230';
+    for (let i=0;i<5;i++){ctx.save();ctx.translate(cx-S*.16+i*S*.08,cy-S*.05);ctx.rotate((i-2)*.12);ctx.fillRect(-S*.035,-S*.32,S*.07,S*.32);ctx.restore();}
+    ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(cx-S*.06,cy-S*.28,S*.1,0,7); ctx.fill();
+    ctx.fillStyle='#8a5a2b'; ctx.beginPath(); ctx.arc(cx+S*.08,cy-S*.26,S*.08,0,7); ctx.fill();
+    ctx.fillStyle='#d9432f'; ctx.beginPath(); ctx.moveTo(cx-S*.28,cy-S*.08); ctx.lineTo(cx+S*.28,cy-S*.08); ctx.lineTo(cx+S*.16,cy+S*.4); ctx.lineTo(cx-S*.16,cy+S*.4); ctx.closePath(); ctx.fill();
+    ctx.fillStyle='#fff'; ctx.fillRect(cx-S*.2,cy+S*.05,S*.4,S*.06);
+  }
+  function tekenBluf(cx,cy,t) {
+    const p = 1 + Math.sin(t/120)*.08;
+    ctx.save(); ctx.translate(cx,cy); ctx.scale(p,p);
+    ctx.fillStyle='#fff'; ctx.beginPath(); ctx.moveTo(-S*.32,S*.1); ctx.lineTo(S*.32,S*.1); ctx.lineTo(S*.24,S*.42); ctx.lineTo(-S*.24,S*.42); ctx.fill();
+    ctx.fillStyle='#f29bb0';
+    for (const [a,b,r] of [[-.16,.02,.18],[.14,.02,.18],[0,-.16,.2]]) {ctx.beginPath();ctx.arc(a*S,b*S,r*S,0,7);ctx.fill();}
+    ctx.fillStyle='#c0243d'; ctx.beginPath(); ctx.arc(S*.04,-S*.3,S*.07,0,7); ctx.fill();
+    ctx.restore();
+  }
+  function tekenMeeuw(g,t) {
+    const cx=(g.x+.5)*S, cy=(g.y+.5)*S, f=Math.sin(t/90)*S*.25;
+    ctx.save(); ctx.translate(cx,cy); if (g.links) ctx.scale(-1,1);
+    ctx.fillStyle='rgba(0,0,0,.15)'; ctx.beginPath(); ctx.ellipse(S*.3,S*.9,S*.5,S*.15,0,0,7); ctx.fill();
+    ctx.strokeStyle='#5d6a70'; ctx.lineWidth=S*.12; ctx.lineCap='round';
+    ctx.beginPath(); ctx.moveTo(-S*.1,0); ctx.quadraticCurveTo(-S*.5,-S*.3-f,-S*.9,-f*1.4); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(S*.1,0); ctx.quadraticCurveTo(S*.4,-S*.3-f,S*.8,-f*1.2); ctx.stroke();
+    ctx.fillStyle='#fff'; ctx.beginPath(); ctx.ellipse(0,0,S*.4,S*.2,0,0,7); ctx.fill();
+    ctx.beginPath(); ctx.arc(S*.38,-S*.1,S*.15,0,7); ctx.fill();
+    ctx.fillStyle='#f5c518'; ctx.beginPath(); ctx.moveTo(S*.5,-S*.12); ctx.lineTo(S*.72,-S*.06); ctx.lineTo(S*.5,-S*.02); ctx.fill();
+    ctx.fillStyle='#d9432f'; ctx.fillRect(S*.6,-S*.07,S*.05,S*.04);
+    ctx.fillStyle='#111'; ctx.beginPath(); ctx.arc(S*.42,-S*.14,S*.03,0,7); ctx.fill();
+    if (g.buit) { ctx.scale(.6,.6); ({haring:tekenHaring,kroket:tekenKroket,patat:tekenPatat})[g.buit](S*1.3,S*.2); }
+    ctx.restore();
+  }
+  function tekenSlang(t) {
+    for (let i=snake.length-1;i>=0;i--) {
+      const s=snake[i];
+      ctx.fillStyle = i%2 ? '#2f8f46' : '#f5c518';
+      rrect(s.x*S+1.5,s.y*S+1.5,S-3,S-3,S*.3); ctx.fill();
+    }
+    // kop
+    const h=snake[0], cx=(h.x+.5)*S, cy=(h.y+.5)*S;
+    ctx.fillStyle='#2f8f46'; rrect(h.x*S+1,h.y*S+1,S-2,S-2,S*.35); ctx.fill();
+    const px=-dir.y, py=dir.x;
+    for (const k of [-1,1]) {
+      const ex=cx+dir.x*S*.12+px*k*S*.2, ey=cy+dir.y*S*.12+py*k*S*.2;
+      ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(ex,ey,S*.13,0,7); ctx.fill();
+      ctx.fillStyle='#111'; ctx.beginPath(); ctx.arc(ex+dir.x*S*.04,ey+dir.y*S*.04,S*.06,0,7); ctx.fill();
+    }
+    if (Math.floor(t/400)%3===0) { ctx.strokeStyle='#d9432f'; ctx.lineWidth=2.5; ctx.beginPath(); const tx=cx+dir.x*S*.5, ty=cy+dir.y*S*.5; ctx.moveTo(tx,ty); ctx.lineTo(tx+dir.x*S*.2,ty+dir.y*S*.2); ctx.stroke(); }
+    // Haags petje (geel-groen)
+    ctx.fillStyle='#f5c518'; ctx.beginPath(); ctx.arc(cx-dir.x*S*.12,cy-dir.y*S*.12,S*.2,0,7); ctx.fill();
+  }
+  function teken(t) {
+    tekenVeld();
+    if (food) { const cx=(food.x+.5)*S, cy=(food.y+.5)*S; ({haring:tekenHaring,kroket:tekenKroket,patat:tekenPatat})[food.soort](cx,cy); }
+    if (bonus && (bonus.leeft > 12 || Math.floor(t/150)%2)) tekenBluf((bonus.x+.5)*S,(bonus.y+.5)*S,t);
+    tekenSlang(t);
+    if (gull) tekenMeeuw(gull,t);
+  }
+
+  function loop(t) {
+    if (state === 'spel' && t - lastStep >= stepMs) { lastStep = t; step(); }
+    teken(t);
+    requestAnimationFrame(loop);
+  }
+
+  // ---------- Invoer ----------
+  const KEYS = {ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',w:'up',s:'down',a:'left',d:'right',W:'up',S:'down',A:'left',D:'right'};
+  addEventListener('keydown', e => {
+    if (e.target && e.target.tagName === 'INPUT') return;
+    if (KEYS[e.key]) { e.preventDefault(); if (state!=='pauze') stuur(KEYS[e.key]); }
+    else if (e.key===' ' || e.key==='p' || e.key==='P') { e.preventDefault(); if (state==='spel'||state==='pauze') pauze(); else if (state==='start' || magOpnieuw()) begin(); }
+  });
+  $('startBtn').addEventListener('click', e => { e.stopPropagation(); state==='pauze' ? pauze() : begin(); });
+  ov.addEventListener('click', () => { if (state==='pauze') pauze(); else if (state==='start' || magOpnieuw()) begin(); });
+  document.querySelectorAll('.pad button').forEach(b => b.addEventListener('pointerdown', e => { e.preventDefault(); if (state!=='pauze') stuur(b.dataset.dir); }));
+  let t0=null; const board=$('board');
+  board.addEventListener('touchstart', e => { t0 = e.touches[0]; }, {passive:true});
+  board.addEventListener('touchmove', e => {
+    if (!t0 || state!=='spel') return; e.preventDefault();
+    const t=e.touches[0], dx=t.clientX-t0.clientX, dy=t.clientY-t0.clientY;
+    if (Math.max(Math.abs(dx),Math.abs(dy)) < 24) return;
+    stuur(Math.abs(dx)>Math.abs(dy) ? (dx>0?'right':'left') : (dy>0?'down':'up'));
+    t0 = t;
+  }, {passive:false});
+
+  reset();
+  laadLijst();
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
