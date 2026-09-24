@@ -119,6 +119,10 @@
   .lijst li b{font-family:"Titan One",sans-serif;font-weight:400;color:var(--geel)}
   .lijst li.jij{outline:2px solid var(--geel)}
   .lijst .help{text-align:left}
+  .ovlijst{width:100%;max-width:380px;text-align:left;cursor:default}
+  .ovlijst li{padding:4px 8px}
+  .ovlijst .plek{font-weight:900;color:var(--tekst);max-width:none}
+  .lijst li.puntjes{display:block;text-align:center;color:var(--zacht);background:none;padding:0}
 </style>
 </head>
 <body>
@@ -152,6 +156,11 @@
         <p class="melding" id="melding"></p>
       </form>
       <p class="tip" id="stuurTip"><span class="alleen-touch">Sture doe je door te vege: omhoog, omlaag, links of rechts.</span><span class="alleen-desk">Sture doe je met de pèltjes of WASD.</span></p>
+      <section class="lijst ovlijst" id="ovLijst" hidden>
+        <h2>Haagse Toppâhs</h2>
+        <p class="plek" id="plek"></p>
+        <ol id="ovOl"></ol>
+      </section>
       <button class="btn" id="startBtn">Beginne, joh!</button>
     </div>
   </div>
@@ -296,6 +305,7 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
   }
 
   function sterf(hoe) {
+    $('ovLijst').hidden = true; $('ovTekst').hidden = false;
     state = 'dood'; doodT = performance.now(); document.documentElement.classList.remove('speelt');
     if (score > best) { best = score; try { localStorage.setItem('snek-best', best); } catch(e) {} $('best').textContent = best; }
     $('ovTitel').textContent = pick(DOOD[hoe]);
@@ -315,27 +325,60 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
   const schoon = v => v.trim().replace(/^@+/, '').toLowerCase();
   const geldig = v => /^[a-z0-9._]{1,30}$/.test(v);
 
+  // Haalt alle scores op en houdt per Insta-naam alleen de beste over (hoog naar laag)
+  async function haalLijst() {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/scores?select=insta,score&order=score.desc,created_at.asc&limit=1000`, {headers:{apikey:SUPABASE_KEY}});
+    if (!r.ok) throw new Error(r.status);
+    const rijen = await r.json(), gezien = new Set(), lijst = [];
+    for (const x of rijen) { if (gezien.has(x.insta)) continue; gezien.add(x.insta); lijst.push(x); }
+    return lijst;
+  }
+  function rij(ol, plek, x, jij) {
+    const li = document.createElement('li'); if (jij) li.className = 'jij';
+    const nr = document.createElement('span'); nr.className = 'nr'; nr.textContent = plek;
+    const a = document.createElement('a'); a.href = 'https://www.instagram.com/' + encodeURIComponent(x.insta) + '/'; a.target = '_blank'; a.rel = 'noopener'; a.textContent = '@' + x.insta;
+    const b = document.createElement('b'); b.textContent = x.score;
+    li.append(nr, a, b); ol.append(li);
+  }
+  // Top 10 tekenen; staat de speler lager, dan komt zijn eigen regel er los onder
+  function tekenLijst(ol, lijst, max = 10) {
+    ol.textContent = '';
+    lijst.slice(0, max).forEach((x, i) => rij(ol, i + 1, x, x.insta === mijnNaam));
+    const mijn = lijst.findIndex(x => x.insta === mijnNaam);
+    if (mijn >= max) {
+      const puntjes = document.createElement('li'); puntjes.className = 'puntjes'; puntjes.textContent = '…'; ol.append(puntjes);
+      rij(ol, mijn + 1, lijst[mijn], true);
+    }
+    return mijn;
+  }
+
   async function laadLijst() {
     if (!LB) return;
     $('lijstSec').hidden = false;
     try {
-      const r = await fetch(`${SUPABASE_URL}/rest/v1/scores?select=insta,score&order=score.desc,created_at.asc&limit=200`, {headers:{apikey:SUPABASE_KEY}});
-      if (!r.ok) throw new Error(r.status);
-      const rijen = await r.json(), gezien = new Set(), top = [];
-      for (const x of rijen) { if (gezien.has(x.insta)) continue; gezien.add(x.insta); top.push(x); if (top.length === 10) break; }
-      const ol = $('lijst'); ol.textContent = '';
-      top.forEach((x, i) => {
-        const li = document.createElement('li'); if (x.insta === mijnNaam) li.className = 'jij';
-        const nr = document.createElement('span'); nr.className = 'nr'; nr.textContent = i + 1;
-        const a = document.createElement('a'); a.href = 'https://www.instagram.com/' + encodeURIComponent(x.insta) + '/'; a.target = '_blank'; a.rel = 'noopener'; a.textContent = '@' + x.insta;
-        const b = document.createElement('b'); b.textContent = x.score;
-        li.append(nr, a, b); ol.append(li);
-      });
-      $('lijstStatus').textContent = top.length ? 'Tik op een naam om het Insta-profiel te bekèke.' : 'Nog niemand op de lèst. Wordt jij de eerste?';
+      const lijst = await haalLijst();
+      tekenLijst($('lijst'), lijst);
+      $('lijstStatus').textContent = lijst.length ? 'Tik op een naam om het Insta-profiel te bekèke.' : 'Nog niemand op de lèst. Wordt jij de eerste?';
     } catch (e) { $('lijstStatus').textContent = 'De lèst kon niet geladen worden. Probeer het later nog een keâh.'; }
   }
 
+  // Na het opslaan: lèst met jouw plek in het game-over-scherm
+  async function toonMijnPlek() {
+    const sec = $('ovLijst'), plek = $('plek');
+    sec.hidden = false; $('ovTekst').hidden = true; plek.textContent = 'Effe kèke waar je staat…'; $('ovOl').textContent = '';
+    try {
+      const lijst = await haalLijst();
+      const mijn = tekenLijst($('ovOl'), lijst, 5);  // top 5 + jouw plek, zodat alles op een telefoonscherm past
+      const n = mijn + 1, beste = mijn >= 0 ? lijst[mijn].score : score;
+      plek.textContent = n === 1 ? 'Nummâh 1! Jij ben de baas van Den Haag!'
+        : n > 0 && n <= 3 ? `Plek ${n}! Op het podium, ouwe!`
+        : n > 0 ? `Je staat op plek ${n} van de ${lijst.length}.` : 'Je staat erop!';
+      if (beste > score) plek.textContent += ` Je beste blèft ${beste}.`;
+    } catch (e) { plek.textContent = 'Opgeslagen! Alleen de lèst kon niet geladen worden.'; }
+  }
+
   form.addEventListener('click', e => e.stopPropagation());
+  $('ovLijst').addEventListener('click', e => e.stopPropagation());
   form.addEventListener('submit', async e => {
     e.preventDefault();
     const naam = schoon(inp.value);
@@ -346,22 +389,24 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
       const r = await fetch(`${SUPABASE_URL}/rest/v1/scores`, {method:'POST', headers:{apikey:SUPABASE_KEY,'Content-Type':'application/json',Prefer:'return=minimal'}, body:JSON.stringify({insta:naam, score})});
       if (!r.ok) throw new Error(r.status);
       ingezonden = true; mijnNaam = naam; try { localStorage.setItem('snek-insta', naam); } catch(e) {}
-      meld.textContent = `Staat erop, @${naam}! Nou nou.`;
+      meld.textContent = '';
+      form.hidden = true;
+      await toonMijnPlek();
       laadLijst();
     } catch (err) { meld.textContent = 'Opslaan lukte niet. Probeer het nog een keâh.'; $('opslaanBtn').disabled = false; }
   });
 
   // Na game over: niet per ongeluk opnieuw starten met pijltjes/tikken.
   // Met het scoreformulier open start je alleen via de knop 'Nog een keâh!'.
-  function magOpnieuw() { return form.hidden && performance.now() - doodT > 900; }
+  function magOpnieuw() { return form.hidden && $('ovLijst').hidden && performance.now() - doodT > 900; }
 
   function begin() {
-    form.hidden = true;
+    form.hidden = true; $('ovLijst').hidden = true; $('ovTekst').hidden = false;
     scrollTo(0, 0); document.documentElement.classList.add('speelt');
     reset(); state = 'spel'; ov.hidden = true; lastStep = performance.now();
   }
   function pauze() {
-    if (state === 'spel') { state = 'pauze'; $('ovTitel').textContent = 'Effe pauze'; $('ovTekst').textContent = 'Bakkie koffie halen? Druk op spatie om verder te gaan.'; $('bigScore').hidden = true; $('startKop').hidden = true; $('slangetje').hidden = true; ov.classList.remove('start'); form.hidden = true; $('startBtn').textContent = 'Verdâh!'; ov.hidden = false; }
+    if (state === 'spel') { state = 'pauze'; $('ovTitel').textContent = 'Effe pauze'; $('ovTekst').textContent = 'Bakkie koffie halen? Druk op spatie om verder te gaan.'; $('bigScore').hidden = true; $('startKop').hidden = true; $('slangetje').hidden = true; ov.classList.remove('start'); form.hidden = true; $('ovLijst').hidden = true; $('startBtn').textContent = 'Verdâh!'; ov.hidden = false; }
     else if (state === 'pauze') { state = 'spel'; ov.hidden = true; lastStep = performance.now(); }
   }
 
