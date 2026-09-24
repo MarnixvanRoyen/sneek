@@ -119,6 +119,10 @@
   .lijst li b{font-family:"Titan One",sans-serif;font-weight:400;color:var(--geel)}
   .lijst li.jij{outline:2px solid var(--geel)}
   .lijst .help{text-align:left}
+  .maker{margin:0;font-size:14px;color:var(--zacht);text-align:center}
+  .maker a{color:var(--geel);font-weight:900;text-decoration:none}
+  .maker a:hover,.maker a:focus-visible{text-decoration:underline}
+  footer.maker{padding-block:8px 16px}
   .ovlijst{width:100%;max-width:380px;text-align:left;cursor:default}
   .ovlijst li{padding:4px 8px}
   /* Hele lèst op het startscherm: scrollt binnen het vak, knoppen blijven in beeld */
@@ -165,6 +169,7 @@
       </section>
       <button class="btn stil" id="lijstBtn" type="button" hidden>Haagse Toppâhs bekèke</button>
       <button class="btn" id="startBtn">Beginne, joh!</button>
+      <p class="maker" id="makerStart">Gemaakt door <a href="https://www.instagram.com/the_hague_beachlife/" target="_blank" rel="noopener">@the_hague_beachlife</a></p>
     </div>
   </div>
 
@@ -188,6 +193,8 @@
     <ol id="lijst"></ol>
     <p class="help" id="lijstStatus">Lèst wordt geladen…</p>
   </section>
+
+  <footer class="maker">Dit spel is gemaakt door <a href="https://www.instagram.com/the_hague_beachlife/" target="_blank" rel="noopener">@the_hague_beachlife</a>. Volg me op Insta!</footer>
 </div>
 
 <script>
@@ -339,7 +346,7 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
   }
 
   function sterf(hoe) {
-    $('ovLijst').hidden = true; $('ovTekst').hidden = false; lijstBtn.hidden = true; $('ovTitel').hidden = false;
+    $('ovLijst').hidden = true; $('ovTekst').hidden = false; lijstBtn.hidden = true; $('makerStart').hidden = true; $('ovTitel').hidden = false;
     state = 'dood'; doodT = performance.now(); document.documentElement.classList.remove('speelt');
     if (score > best) { best = score; try { localStorage.setItem('snek-best', best); } catch(e) {} $('best').textContent = best; }
     let t; do { t = pick(DOOD[hoe]); } while (t === laatsteDood && DOOD[hoe].length > 1);
@@ -432,6 +439,7 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
   }
 
   form.addEventListener('click', e => e.stopPropagation());
+  $('makerStart').addEventListener('click', e => e.stopPropagation());
   $('ovLijst').addEventListener('click', e => e.stopPropagation());
   form.addEventListener('submit', async e => {
     e.preventDefault();
