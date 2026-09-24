@@ -205,26 +205,57 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
     patat:  {pts:3, zeg:['Patatje oorlog!','Met ALLES erop!','Nou, dat is smulle!']},
     bluf:   {pts:5, zeg:['Haagse bluf! Chic hoor!','Hé, meneâh de deftige!','Bluf van het Voorhout!']}
   };
+  // Tempo: ms per stapje (hoger = langzamer). Begint rustig, wordt steeds sneller.
   const TEMPO = [
-    {min:0,  ms:150, naam:'Wandele over de Boulevard'},
-    {min:8,  ms:125, naam:'Op de fiets naar Scheveninge'},
-    {min:18, ms:105, naam:'Met tram 1 naar de Kurhaus'},
-    {min:32, ms:88,  naam:'Rèsse over de Utrechtsebaan'},
-    {min:50, ms:72,  naam:'Hoogspanning, jochie!'}
+    {min:0,  ms:240, naam:'Slentere over de Boulevard'},
+    {min:5,  ms:210, naam:'Wandele over de Boulevard'},
+    {min:12, ms:180, naam:'Op de fiets naar Scheveninge'},
+    {min:22, ms:155, naam:'Met tram 1 naar de Kurhaus'},
+    {min:35, ms:130, naam:'Brommertje over de Laan van Meerdervoort'},
+    {min:50, ms:110, naam:'Rèsse over de Utrechtsebaan'},
+    {min:70, ms:92,  naam:'Hoogspanning, jochie!'},
+    {min:95, ms:78,  naam:'Nou wordt het gèk, ouwe!'}
   ];
   const DOOD = {
-    muur:['Nou lig je in de zee, sukkel!','Van de Pier gepleuhrt!','Plons! Daar ga je, de Noordzee in.'],
-    staart:['Je bèt in je eige staart, joh!','Au! Dat was je eige kont!','Knoop in je lèf, ouwe.']
+    muur:[
+      'Nou lig je in de zee, sukkel!',
+      'Van de Pier gepleuhrt!',
+      'Plons! Daar ga je, de Noordzee in.',
+      'Tegen de boulevard gekwakt, ouwe!',
+      'Kèk dan uit waar je rèjt, joh!',
+      'Heb je je rèbewès wel gehaald?',
+      'Je ben de duine in gevloge!',
+      'Zwemme met de kwalle, gezellig hè?',
+      'Effe afkoele in de zee, jochie.',
+      'Pats! Tegen de reling van het Kurhaus.',
+      'Nou ben je zelf een harinkie.',
+      'Dat was de rand, meneâh. Niet gezien?'
+    ],
+    staart:[
+      'Je bèt in je eige staart, joh!',
+      'Au! Dat was je eige kont!',
+      'Knoop in je lèf, ouwe.',
+      'Jezelf opgevrete? Hoe dan?!',
+      'Zo\'n honger had je nou ook weer niet.',
+      'Je lèkt wel een kluwe drop.',
+      'In de knoop als de Utrechtsebaan in de spits.',
+      'Eige staart vrete, das geen kroket hoor!',
+      'Rondjes draaie op de Grote Markt, hè?',
+      'Nou ben je je eige lunch, sukkel.'
+    ]
   };
   const pick = a => a[Math.floor(Math.random()*a.length)];
 
-  let doodT = 0, snake, dir, queue, food, bonus, gull, score, best = 0, timer = null, state = 'start', lastStep = 0, stepMs = 150, tick = 0;
+  let laatsteDood = '', doodT = 0, snake, dir, queue, food, bonus, gull, score, best = 0, timer = null, state = 'start', lastStep = 0, stepMs = 150, tick = 0;
   try { best = +localStorage.getItem('snek-best') || 0; } catch(e) {}
   $('best').textContent = best;
 
+  // Afstand tot de rand waarbinnen geen eten komt: begint op 4 vakjes, wordt kleiner naarmate je score stijgt
+  const randMarge = () => score < 5 ? 4 : score < 15 ? 3 : score < 30 ? 2 : score < 50 ? 1 : 0;
   function vrij() {
-    while (true) {
-      const p = {x: Math.floor(Math.random()*N), y: Math.floor(Math.random()*N)};
+    for (let poging = 0; ; poging++) {
+      const m = poging < 200 ? randMarge() : 0;
+      const p = {x: m + Math.floor(Math.random()*(N-2*m)), y: m + Math.floor(Math.random()*(N-2*m))};
       if (!snake.some(s => s.x===p.x && s.y===p.y) && !(food && food.x===p.x && food.y===p.y) && !(bonus && bonus.x===p.x && bonus.y===p.y)) return p;
     }
   }
@@ -308,7 +339,8 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
     $('ovLijst').hidden = true; $('ovTekst').hidden = false;
     state = 'dood'; doodT = performance.now(); document.documentElement.classList.remove('speelt');
     if (score > best) { best = score; try { localStorage.setItem('snek-best', best); } catch(e) {} $('best').textContent = best; }
-    $('ovTitel').textContent = pick(DOOD[hoe]);
+    let t; do { t = pick(DOOD[hoe]); } while (t === laatsteDood && DOOD[hoe].length > 1);
+    laatsteDood = t; $('ovTitel').textContent = t;
     ov.classList.remove('start'); $('startKop').hidden = true; $('slangetje').hidden = true;
     $('stuurTip').hidden = true; $('bigScore').hidden = false; $('bigScore').innerHTML = `${score}<span>punte</span>`;
     $('ovTekst').textContent = score === 0 ? 'Nul punte? Dat ken beter, ouwe!' : (score >= best ? 'Nieuw record, nou nou!' : `Jouw beste scoâh is ${best}.`);
