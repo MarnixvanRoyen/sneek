@@ -73,7 +73,29 @@
   .overlay .tip{font-size:14px;color:var(--zacht);font-weight:700}
   .wrap>*{flex-shrink:0}
   .stat span{white-space:nowrap}
-  .overlay.start{background:radial-gradient(circle at 50% 35%,#2b6a4a 0,#16323b 70%)}
+  /* Startscherm: skyline van Den Haag bij zonsondergang (foto: @the_hague_beachlife).
+     Titel bovenin over de lucht, zon + skyline vrij in beeld, tekst en knoppen onderin op het donker. */
+  .overlay.start{justify-content:flex-start;
+    background:
+      linear-gradient(180deg,rgba(15,38,45,.45) 0%,rgba(15,38,45,0) 22%,rgba(15,38,45,0) 44%,rgba(15,38,45,.7) 56%,rgba(15,38,45,.92) 66%,#0f262d 100%),
+      url("skyline.jpg") center -9vh / 100% auto no-repeat,
+      #0f262d}
+  .overlay.start .kop{margin-top:1vh}
+  .overlay.start #ovTitel{margin-top:auto}
+  .overlay.start .btn{box-shadow:0 4px 18px rgba(0,0,0,.35)}
+  @media (min-aspect-ratio:3/5){
+    .overlay.start{background:
+      linear-gradient(90deg,#0f262d 0%,rgba(15,38,45,0) calc(50% - 26vh),rgba(15,38,45,0) calc(50% + 26vh),#0f262d 100%),
+      linear-gradient(180deg,rgba(15,38,45,.45) 0%,rgba(15,38,45,0) 22%,rgba(15,38,45,0) 44%,rgba(15,38,45,.7) 56%,rgba(15,38,45,.92) 66%,#0f262d 100%),
+      url("skyline.jpg") center top / auto 100% no-repeat,
+      #0f262d}}
+  /* Extra contrast op de foto: donkere rand om de letters + schaduw */
+  .overlay.start .kop,.overlay.start h2{-webkit-text-stroke:7px #0f262d;paint-order:stroke fill;text-shadow:0 4px 16px rgba(0,0,0,.6)}
+  .overlay.start p{font-weight:700;color:#fff;text-shadow:0 1px 2px #000,0 0 10px rgba(0,0,0,.9),0 0 22px rgba(0,0,0,.6)}
+  .overlay.start .tip{color:#d7e6e8}
+  .overlay.start{gap:8px}
+  .overlay.start .maker{padding-inline:56px}  /* niet onder de geluidsknop */
+  .overlay.start .btn.stil{background:rgba(15,38,45,.6);border-color:#d7e6e8}
   .alleen-touch{display:none}
   @media (hover:none),(pointer:coarse){.alleen-desk{display:none}.alleen-touch{display:inline}}
   button{touch-action:manipulation}
@@ -150,7 +172,7 @@
   </header>
   <button class="geluidknop" id="geluidBtn" type="button" aria-label="Geluid aan of uit"></button>
 
-  <div class="speed"><span>Tempo: <b id="tempo">Wandele over de Boulevard</b></span><span id="lengte">Lengte: 3</span></div>
+  <div class="speed"><span>Tempo: <b id="tempo">Wandele ovâh de Boulevard</b></span><span id="lengte">Lengte: 3</span></div>
 
   <div class="board" id="board">
     <canvas id="c" width="600" height="600" aria-label="Speelveld"></canvas>
@@ -158,17 +180,17 @@
     <div class="overlay start" id="overlay">
       <div class="kop" id="startKop">Sneek<small><i>op z'n</i> Haags</small></div>
       <div class="slangetje" id="slangetje" aria-hidden="true"><span></span><span style="animation-delay:.1s"></span><span style="animation-delay:.2s"></span><span style="animation-delay:.3s"></span><span style="animation-delay:.4s"></span><span style="animation-delay:.5s"></span><span style="animation-delay:.6s"></span></div>
-      <h2 id="ovTitel">Hoi, ouwe!</h2>
+      <h2 id="ovTitel">Hoi, âhwe!</h2>
       <div class="bigscore" id="bigScore" hidden></div>
-      <p id="ovTekst">Vreet zoveel mogelijk harinkies, kroketten en patatjes. Kèk uit voor de rand, anders lig je in de zee. Bèt niet in je eige staart en hou die meeuwe in de gate, want die jatte je eten!</p>
+      <p id="ovTekst">Vreet zoveel mogelèk harinkies, kroketten en patat. Kèk uit voâh de rand, je ège staart en de meeuwe!</p>
       <form class="scoreform" id="scoreForm" hidden>
         <label for="insta">Zet je naam op de lèst van Haagse Toppâhs</label>
         <div class="veld"><span>@</span><input id="insta" name="insta" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="31" placeholder="jouw_insta"></div>
-        <div class="rij"><button class="btn" type="submit" id="opslaanBtn">Opslaan</button><button class="btn stil" type="button" id="overslaanBtn">Laat maar zitte</button></div>
-        <p class="overslaan">Geen Insta invullen? Dan komt je score niet op de lèst.</p>
+        <div class="rij"><button class="btn" type="submit" id="opslaanBtn">Opslaan</button><button class="btn stil" type="button" id="overslaanBtn">Laat maâh zitte</button></div>
+        <p class="overslaan">Geen Insta invullen? Dan komt je scoâh niet op de lèst.</p>
         <p class="melding" id="melding"></p>
       </form>
-      <p class="tip" id="stuurTip"><span class="alleen-touch">Sture doe je door te vege: omhoog, omlaag, links of rechts.</span><span class="alleen-desk">Sture doe je met de pèltjes of WASD.</span></p>
+      <p class="tip" id="stuurTip"><span class="alleen-touch">Sture doe je doâh te vege.</span><span class="alleen-desk">Sture doe je met de pèltjes of WASD.</span></p>
       <section class="lijst ovlijst" id="ovLijst" hidden>
         <h2>Haagse Toppâhs</h2>
         <p class="plek" id="plek"></p>
@@ -176,7 +198,7 @@
       </section>
       <button class="btn stil" id="lijstBtn" type="button" hidden>Haagse Toppâhs bekèke</button>
       <button class="btn" id="startBtn">Beginne, joh!</button>
-      <p class="maker" id="makerStart">Gemaakt door <a href="https://www.instagram.com/the_hague_beachlife/" target="_blank" rel="noopener">@the_hague_beachlife</a></p>
+      <p class="maker" id="makerStart">Gemaakt doâh <a href="https://www.instagram.com/the_hague_beachlife/" target="_blank" rel="noopener">@the_hague_beachlife</a></p>
     </div>
   </div>
 
@@ -186,7 +208,7 @@
     <button class="d" data-dir="down" aria-label="Omlaag">▼</button>
     <button class="r" data-dir="right" aria-label="Rechts">▶</button>
   </div>
-  <p class="help"><span class="alleen-desk">Pèltjes of WASD om te sture · spatie of P voor pauze · M voor geluid</span><span class="alleen-touch">Veeg in de richting waar je heen wil, overal op het scherm</span></p>
+  <p class="help"><span class="alleen-desk">Pèltjes of WASD om te sture · spatie of P voâh pâhze · M voâh geluid</span><span class="alleen-touch">Veeg in de richting waâh je heen wil, overal op het scherm</span></p>
 
   <div class="legend">
     <div><b>Harinkie</b><span>+1 punt</span></div>
@@ -201,7 +223,7 @@
     <p class="help" id="lijstStatus">Lèst wordt geladen…</p>
   </section>
 
-  <footer class="maker">Dit spel is gemaakt door <a href="https://www.instagram.com/the_hague_beachlife/" target="_blank" rel="noopener">@the_hague_beachlife</a>. Volg me op Insta!</footer>
+  <footer class="maker">Dit spel is gemaakt doâh <a href="https://www.instagram.com/the_hague_beachlife/" target="_blank" rel="noopener">@the_hague_beachlife</a>. Volg me op Insta!</footer>
 </div>
 
 <script>
@@ -305,66 +327,66 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
   const ov = $('overlay'), toastEl = $('toast');
 
   const ETEN = {
-    haring: {pts:1, zeg:['Lekkâh harinkie!','Harinkie met uitjes, ouwe!','Van de kar op de Boulevard!']},
-    kroket: {pts:2, zeg:['Kroketje, lekkâh!','Uit de muur, joh!','Heet hoor, pas op!']},
-    patat:  {pts:3, zeg:['Patatje oorlog!','Met ALLES erop!','Nou, dat is smulle!']},
-    bluf:   {pts:5, zeg:['Haagse bluf! Chic hoor!','Hé, meneâh de deftige!','Bluf van het Voorhout!']}
+    haring: {pts:1, zeg:['Lekkâh harinkie!','Harinkie met uitjes, âhwe!','Van de kar op de Boulevard!']},
+    kroket: {pts:2, zeg:['Kroketje, lekkâh!','Uit de muur, joh!','Heet hoâh, pas op!']},
+    patat:  {pts:3, zeg:['Patatje oorlog!','Met ALLES erop!','Nâh, dat is smulle!']},
+    bluf:   {pts:5, zeg:['Haagse bluf! Chic hoâh!','Hé, meneâh de deftige!','Bluf van het Voorhout!']}
   };
   // Tempo: ms per stapje (hoger = langzamer). Begint rustig, wordt steeds sneller.
   const TEMPO = [
-    {min:0,  ms:240, naam:'Slentere over de Boulevard'},
-    {min:5,  ms:210, naam:'Wandele over de Boulevard'},
-    {min:12, ms:180, naam:'Op de fiets naar Scheveninge'},
-    {min:22, ms:155, naam:'Met tram 1 naar de Kurhaus'},
-    {min:35, ms:130, naam:'Brommertje over de Laan van Meerdervoort'},
-    {min:50, ms:110, naam:'Rèsse over de Utrechtsebaan'},
+    {min:0,  ms:240, naam:'Slentere ovâh de Boulevard'},
+    {min:5,  ms:210, naam:'Wandele ovâh de Boulevard'},
+    {min:12, ms:180, naam:'Op de fiets naâh Scheveninge'},
+    {min:22, ms:155, naam:'Met tram 1 naâh de Kurhaus'},
+    {min:35, ms:130, naam:'Brommertje ovâh de Laan van Meerdervoort'},
+    {min:50, ms:110, naam:'Rèsse ovâh de Utrechtsebaan'},
     {min:70, ms:92,  naam:'Hoogspanning, jochie!'},
-    {min:95, ms:78,  naam:'Nou wordt het gèk, ouwe!'}
+    {min:95, ms:78,  naam:'Nâh wordt het gèk, âhwe!'}
   ];
   const DOOD = {
     muur:[
-      'Nou lig je in de zee, sukkel!',
+      'Nâh lig je in de zee, sukkel!',
       'Van de Pier gepleuhrt!',
-      'Plons! Daar ga je, de Noordzee in.',
-      'Tegen de boulevard gekwakt, ouwe!',
-      'Kèk dan uit waar je rèjt, joh!',
+      'Plons! Daâh ga je, de Noordzee in.',
+      'Tegen de boulevard gekwakt, âhwe!',
+      'Kèk dan uit waâh je rèjt, joh!',
       'Heb je je rèbewès wel gehaald?',
       'Je ben de duine in gevloge!',
       'Zwemme met de kwalle, gezellig hè?',
       'Effe afkoele in de zee, jochie.',
       'Pats! Tegen de reling van het Kurhaus.',
-      'Nou ben je zelf een harinkie.',
+      'Nâh ben je zelf een harinkie.',
       'Dat was de rand, meneâh. Niet gezien?',
-      "Rechtstreeks de Hofvèvâh in, ouwe!",
-      "Ben je nou op het Malieveld aan het demonstrere?",
+      "Rechtstreeks de Hofvèvâh in, âhwe!",
+      "Ben je nâh op het Malieveld aan het demonstrere?",
       "Tegen een kraampie op de Haagse Markt gerejen.",
       "De strandtent is dicht, jochie!",
       "Stoplicht op de Laan van Meerdervoort gemist, hè?",
-      "Tram 11 was sneller geweest, ouwe.",
-      "Zelfs een kwal zwemt rechter dan jij.",
+      "Tram 11 was snellâh geweest, âhwe.",
+      "Zelfs een kwal zwemt rechtâh dan jè.",
       "Te lang in de zon gelege, hè?",
       "Hé, dit is Delft al. Da's ver weg, hè?",
-      "Door het hek van Madurodam gekachelt!"
+      "Doâh het hek van Madurodam gekachelt!"
     ],
     staart:[
-      'Je bèt in je eige staart, joh!',
-      'Au! Dat was je eige kont!',
-      'Knoop in je lèf, ouwe.',
+      'Je bèt in je ège staart, joh!',
+      'Au! Dat was je ège kont!',
+      'Knoop in je lèf, âhwe.',
       'Jezelf opgevrete? Hoe dan?!',
-      'Zo\'n honger had je nou ook weer niet.',
+      'Zo\'n hongâh had je nâh ook weâh niet.',
       'Je lèkt wel een kluwe drop.',
       'In de knoop als de Utrechtsebaan in de spits.',
-      'Eige staart vrete, das geen kroket hoor!',
+      'Ège staart vrete, das geen kroket hoâh!',
       'Rondjes draaie op de Grote Markt, hè?',
-      'Nou ben je je eige lunch, sukkel.',
-      "Dat is geen lekkerbekkie, dat is je eige kont!",
+      'Nâh ben je je ège lunch, sukkel.',
+      "Dat is geen lekkerbekkie, dat is je ège kont!",
       "Jezelf knuffele mag, jezelf vrete niet.",
-      "Je ben zo lang als de rij bij de viskraam.",
-      "Rondjes op de rotonde bij Kijkduin, gezellig.",
+      "Je ben zo lang als de rè bè de viskraam.",
+      "Rondjes op de rotonde bè Kèkduin, gezellig.",
       "Je lèkt de file op de A12 wel.",
       "Dubbel geknoopt, net als je veters na het stappe.",
-      "Honger? Er ligt genoeg harinkie, hoor!",
-      "Nou zit je vast als een fiets in de Hofvèvâh."
+      "Hongâh? Er ligt genoeg harinkie, hoâh!",
+      "Nâh zit je vast als een fiets in de Hofvèvâh."
     ]
   };
   const pick = a => a[Math.floor(Math.random()*a.length)];
@@ -470,7 +492,7 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
     laatsteDood = t; $('ovTitel').textContent = t;
     ov.classList.remove('start'); $('startKop').hidden = true; $('slangetje').hidden = true;
     $('stuurTip').hidden = true; $('bigScore').hidden = false; $('bigScore').innerHTML = `${score}<span>punte</span>`;
-    $('ovTekst').textContent = score === 0 ? 'Nul punte? Dat ken beter, ouwe!' : (score >= best ? 'Nieuw record, nou nou!' : `Jouw beste scoâh is ${best}.`);
+    $('ovTekst').textContent = score === 0 ? 'Nul punte? Dat ken betâh, âhwe!' : (score >= best ? 'Nieuw rekkâhd, nâh nâh!' : `Jâh beste scoâh is ${best}.`);
     $('startBtn').textContent = 'Nog een keâh!';
     if (LB && score > 0) { ingezonden = false; form.hidden = false; inp.value = mijnNaam; meld.textContent = ''; $('opslaanBtn').disabled = false;
       if (matchMedia('(pointer:fine)').matches) setTimeout(() => inp.focus(), 150); }
@@ -517,8 +539,8 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
     try {
       const lijst = await haalLijst();
       tekenLijst($('lijst'), lijst);
-      $('lijstStatus').textContent = lijst.length ? 'Tik op een naam om het Insta-profiel te bekèke.' : 'Nog niemand op de lèst. Wordt jij de eerste?';
-    } catch (e) { $('lijstStatus').textContent = 'De lèst kon niet geladen worden. Probeer het later nog een keâh.'; }
+      $('lijstStatus').textContent = lijst.length ? 'Tik op een naam om het Insta-profiel te bekèke.' : 'Nog niemand op de lèst. Wordt jè de eâhste?';
+    } catch (e) { $('lijstStatus').textContent = 'De lèst kon niet geladen worden. Probeâh het latâh nog een keâh.'; }
   }
 
   // Startscherm: knopje om de lèst te bekèke (en weer terug)
@@ -534,22 +556,22 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
       const lijst = await haalLijst();
       const mijn = tekenLijst($('ovOl'), lijst, lijst.length);  // de hele lèst, scrollbaar
       const jij = $('ovOl').querySelector('.jij'); if (jij) jij.scrollIntoView({block:'center'});
-      plek.textContent = !lijst.length ? 'Nog niemand op de lèst. Wordt jij de eerste?'
-        : mijn >= 0 ? `Jij staat op plek ${mijn + 1}. Kèn je hoger?` : 'Speel een potje en zet je naam erop!';
-    } catch (e) { plek.textContent = 'De lèst kon niet geladen worden. Probeer het later nog een keâh.'; }
+      plek.textContent = !lijst.length ? 'Nog niemand op de lèst. Wordt jè de eâhste?'
+        : mijn >= 0 ? `Jè staat op plek ${mijn + 1}. Kèn je hogâh?` : 'Speel een potje en zet je naam erop!';
+    } catch (e) { plek.textContent = 'De lèst kon niet geladen worden. Probeâh het latâh nog een keâh.'; }
   }
   lijstBtn.addEventListener('click', e => { e.stopPropagation(); wisselToppers(); });
 
   // Na het opslaan: lèst met jouw plek in het game-over-scherm
   async function toonMijnPlek() {
     const sec = $('ovLijst'), plek = $('plek'); $('ovOl').classList.remove('alles');
-    sec.hidden = false; $('ovTekst').hidden = true; plek.textContent = 'Effe kèke waar je staat…'; $('ovOl').textContent = '';
+    sec.hidden = false; $('ovTekst').hidden = true; plek.textContent = 'Effe kèke waâh je staat…'; $('ovOl').textContent = '';
     try {
       const lijst = await haalLijst();
       const mijn = tekenLijst($('ovOl'), lijst, 5);  // top 5 + jouw plek, zodat alles op een telefoonscherm past
       const n = mijn + 1, beste = mijn >= 0 ? lijst[mijn].score : score;
-      plek.textContent = n === 1 ? 'Nummâh 1! Jij ben de baas van Den Haag!'
-        : n > 0 && n <= 3 ? `Plek ${n}! Op het podium, ouwe!`
+      plek.textContent = n === 1 ? 'Nummâh 1! Jè ben de baas van Den Haag!'
+        : n > 0 && n <= 3 ? `Plek ${n}! Op het podium, âhwe!`
         : n > 0 ? `Je staat op plek ${n} van de ${lijst.length}.` : 'Je staat erop!';
       if (beste > score) plek.textContent += ` Je beste blèft ${beste}.`;
     } catch (e) { plek.textContent = 'Opgeslagen! Alleen de lèst kon niet geladen worden.'; }
@@ -558,7 +580,7 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
   form.addEventListener('click', e => e.stopPropagation());
   // Overslaan: niks opslaan, gewoon door
   $('overslaanBtn').addEventListener('click', () => {
-    form.hidden = true; $('ovTekst').hidden = false; $('ovTekst').textContent = 'Prima, je score is niet opgeslage. Nog een potje?';
+    form.hidden = true; $('ovTekst').hidden = false; $('ovTekst').textContent = 'Prima, je scoâh is niet opgeslage. Nog een potje?';
     $('startBtn').focus();
   });
   // Geluidsknop
@@ -574,7 +596,7 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
   form.addEventListener('submit', async e => {
     e.preventDefault();
     const naam = schoon(inp.value);
-    if (!geldig(naam)) { meld.textContent = 'Vul je Insta-naam in: letters, cijfers, punt of _ (max 30).'; return; }
+    if (!geldig(naam)) { meld.textContent = 'Vul je Insta-naam in: letters, cèfers, punt of _ (max 30).'; return; }
     if (ingezonden) return;
     $('opslaanBtn').disabled = true; meld.textContent = 'Effe opslaan…';
     try {
@@ -585,7 +607,7 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
       form.hidden = true;
       await toonMijnPlek();
       laadLijst();
-    } catch (err) { meld.textContent = 'Opslaan lukte niet. Probeer het nog een keâh.'; $('opslaanBtn').disabled = false; }
+    } catch (err) { meld.textContent = 'Opslaan lukte niet. Probeâh het nog een keâh.'; $('opslaanBtn').disabled = false; }
   });
 
   // Na game over: niet per ongeluk opnieuw starten met pijltjes/tikken.
@@ -599,7 +621,7 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
     reset(); state = 'spel'; ov.hidden = true; lastStep = performance.now();
   }
   function pauze() {
-    if (state === 'spel') { state = 'pauze'; $('ovTitel').textContent = 'Effe pauze'; $('ovTekst').textContent = 'Bakkie koffie halen? Druk op spatie om verder te gaan.'; $('bigScore').hidden = true; $('startKop').hidden = true; $('slangetje').hidden = true; ov.classList.remove('start'); form.hidden = true; $('ovLijst').hidden = true; $('startBtn').textContent = 'Verdâh!'; ov.hidden = false; }
+    if (state === 'spel') { state = 'pauze'; $('ovTitel').textContent = 'Effe pâhze'; $('ovTekst').textContent = 'Bakkie koffie halen? Druk op spatie om verdâh te gaan.'; $('bigScore').hidden = true; $('startKop').hidden = true; $('slangetje').hidden = true; ov.classList.remove('start'); form.hidden = true; $('ovLijst').hidden = true; $('startBtn').textContent = 'Verdâh!'; ov.hidden = false; }
     else if (state === 'pauze') { state = 'spel'; ov.hidden = true; lastStep = performance.now(); }
   }
 
