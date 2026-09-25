@@ -152,7 +152,7 @@
   .maker{margin:0;font-size:14px;color:var(--zacht);text-align:center}
   .maker a{color:var(--geel);font-weight:900;text-decoration:none}
   .maker a:hover,.maker a:focus-visible{text-decoration:underline}
-  footer.maker{padding-block:8px 16px}
+  footer.maker{padding-block:8px 16px;padding-inline:56px}  /* niet onder de geluidsknop */
   .ovlijst{width:100%;max-width:380px;text-align:left;cursor:default}
   .ovlijst li{padding:4px 8px}
   /* Hele lèst op het startscherm: scrollt binnen het vak, knoppen blijven in beeld */
@@ -223,13 +223,8 @@
     <div><b>Haagse bluf</b><span>+5, snel wezen!</span></div>
   </div>
 
-  <section class="lijst" id="lijstSec" hidden>
-    <h2>Haagse Toppâhs</h2>
-    <ol id="lijst"></ol>
-    <p class="help" id="lijstStatus">Lèst wordt geladen…</p>
-  </section>
 
-  <footer class="maker">Dit spel is gemaakt doâh <a href="https://www.instagram.com/the_hague_beachlife/" target="_blank" rel="noopener">@the_hague_beachlife</a>. Volg me op Insta!</footer>
+  <footer class="maker">Gemaakt doâh <a href="https://www.instagram.com/the_hague_beachlife/" target="_blank" rel="noopener">@the_hague_beachlife</a><br>Volg me voâh mooie Haagse plaatjes!</footer>
 </div>
 
 <script>
@@ -541,15 +536,6 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
     return mijn;
   }
 
-  async function laadLijst() {
-    if (!LB) return;
-    $('lijstSec').hidden = false;
-    try {
-      const lijst = await haalLijst();
-      tekenLijst($('lijst'), lijst);
-      $('lijstStatus').textContent = lijst.length ? 'Tik op een naam om het Insta-profiel te bekèke.' : 'Nog niemand op de lèst. Wordt jè de eâhste?';
-    } catch (e) { $('lijstStatus').textContent = 'De lèst kon niet geladen worden. Probeâh het latâh nog een keâh.'; }
-  }
 
   // Startscherm: knopje om de lèst te bekèke (en weer terug)
   const lijstBtn = $('lijstBtn');
@@ -697,7 +683,6 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
       form.hidden = true;
       await toonMijnPlek();
       toonDeel();
-      laadLijst();
     } catch (err) { meld.textContent = 'Opslaan lukte niet. Probeâh het nog een keâh.'; $('opslaanBtn').disabled = false; }
   });
 
@@ -796,9 +781,6 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
   }
   function teken(t) {
     tekenVeld();
-    // Naammerkje rechtsonder op het speelveld: gaat mee op elke screenshot of schermopname
-    ctx.save(); ctx.font = '900 17px Nunito, sans-serif'; ctx.textAlign = 'right'; ctx.textBaseline = 'bottom';
-    ctx.fillStyle = 'rgba(15,38,45,.38)'; ctx.fillText('Sneek doâh @the_hague_beachlife', C.width - 10, C.height - 8); ctx.restore();
     if (food) { const cx=(food.x+.5)*S, cy=(food.y+.5)*S; ({haring:tekenHaring,kroket:tekenKroket,patat:tekenPatat})[food.soort](cx,cy); }
     if (bonus && (bonus.leeft > 12 || Math.floor(t/150)%2)) tekenBluf((bonus.x+.5)*S,(bonus.y+.5)*S,t);
     tekenSlang(t);
@@ -834,7 +816,6 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
   }, {passive:false});
 
   reset();
-  laadLijst();
   requestAnimationFrame(loop);
 })();
 </script>
