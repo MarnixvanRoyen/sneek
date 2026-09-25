@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Sneek op z'n Haags</title>
-<meta name="description" content="Snake op z'n Haags: vreet harinkies, kroketten en patatje oorlog en haal de hoogste scoâh.">
+<meta name="description" content="Snake op z'n Haags: vreet harinkies, Dungelmann kroketten, patatje oâhlog, brâhdjes ei met uih en beschuitstuitâhs met zalf en haal de hoogste scoâh.">
 <meta property="og:title" content="Sneek op z'n Haags">
 <meta property="og:description" content="Kèn jè 't betâh? Vreet harinkies, ontwèk de meeuwe en kom in de Haagse Toppâhs. Een spel van @the_hague_beachlife.">
 <meta property="og:image" content="https://www.haagsesneek.nl/og.png?v=2">
@@ -99,6 +99,21 @@
   .overlay.start{gap:8px}
   .overlay.start .maker{padding-inline:56px}  /* niet onder de geluidsknop */
   .overlay.start .btn.stil{background:rgba(15,38,45,.6);border-color:#d7e6e8}
+  /* Menukaartje op het startscherm */
+  .menu{width:100%;max-width:360px;background:rgba(15,38,45,.78);border:2px solid rgba(245,197,24,.55);border-radius:14px;padding:6px 8px 9px}
+  .menu h3{margin:0 0 7px;font-family:"Titan One",sans-serif;font-weight:400;font-size:16px;color:var(--geel)}
+  .menu ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:9px 4px}
+  .menu li{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:3px 2px 4px;border-radius:10px;font-size:11px;line-height:1.15;font-weight:700;color:#fff;text-align:center}
+  .menu li b{color:var(--geel);font-size:12px}
+  .menu canvas{width:38px;height:38px;flex-shrink:0}
+  .menu li.nieuw{grid-column:span 2;flex-direction:row;gap:6px;padding:5px 8px;text-align:left;font-size:13px;background:rgba(47,143,70,.5);box-shadow:inset 0 0 0 2px var(--geel)}
+  .menu li.nieuw span{display:flex;flex-direction:column}
+  .menu li.nieuw b{font-size:15px}
+  .menu li.nieuw canvas{width:50px;height:50px}
+  .menu li.nieuw::before{content:"Nieuw!";position:absolute;top:-8px;right:-3px;background:#d9432f;color:#fff;font-size:9px;font-weight:900;padding:1px 5px;border-radius:6px;transform:rotate(8deg)}
+  .menu li.nieuw canvas{animation:stuiter .8s ease-in-out infinite}
+  @keyframes stuiter{50%{transform:translateY(-5px)}}
+  @media (prefers-reduced-motion:reduce){.menu li.nieuw canvas{animation:none}}
   .alleen-touch{display:none}
   @media (hover:none),(pointer:coarse){.alleen-desk{display:none}.alleen-touch{display:inline}}
   button{touch-action:manipulation}
@@ -187,7 +202,8 @@
       <div class="slangetje" id="slangetje" aria-hidden="true"><span></span><span style="animation-delay:.1s"></span><span style="animation-delay:.2s"></span><span style="animation-delay:.3s"></span><span style="animation-delay:.4s"></span><span style="animation-delay:.5s"></span><span style="animation-delay:.6s"></span></div>
       <h2 id="ovTitel">Hoi, âhwe!</h2>
       <div class="bigscore" id="bigScore" hidden></div>
-      <p id="ovTekst">Vreet zoveel mogelèk harinkies, kroketten en patat. Kèk uit voâh de rand, je ège staart en de meeuwe!</p>
+      <p id="ovTekst">Vreet zoveel mogelèk van 't menu. Kèk uit voâh de rand, je ège staart en de meeuwe!</p>
+      <div class="menu" id="menuKaart"><h3>Op 't menu, âhwe!</h3><ul id="menuLijst"></ul></div>
       <form class="scoreform" id="scoreForm" hidden>
         <label for="insta">Zet je naam op de lèst van Haagse Toppâhs</label>
         <div class="veld"><span>@</span><input id="insta" name="insta" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="31" placeholder="jouw_insta"></div>
@@ -218,9 +234,11 @@
 
   <div class="legend">
     <div><b>Harinkie</b><span>+1 punt</span></div>
-    <div><b>Kroket</b><span>+2 punte</span></div>
-    <div><b>Patatje oorlog</b><span>+3 punte</span></div>
-    <div><b>Haagse bluf</b><span>+5, snel wezen!</span></div>
+    <div><b>Dungelmann kroket</b><span>+2 punte</span></div>
+    <div><b>Patatje oâhlog</b><span>+3 punte</span></div>
+    <div><b>Brâhdje ei met uih</b><span>+4 punte, nieuw!</span></div>
+    <div><b>Beschuitstuitâh met zalf</b><span>+6 punte, nieuw!</span></div>
+    <div><b>Haagse bluf</b><span>+5, snel weze!</span></div>
   </div>
 
 
@@ -301,7 +319,7 @@ const Geluid = (() => {
     get aan() { return aan; },
     zet(v) { aan = v; try { localStorage.setItem('snek-geluid', v ? 'aan' : 'uit'); } catch (e) {} if (master) master.gain.setTargetAtTime(v ? 1 : 0, nu(), 0.05); },
     eet(soort) {
-      const f = {haring: 660, kroket: 784, patat: 988}[soort] || 700;
+      const f = {haring: 660, kroket: 784, patat: 988, ei: 1175, beschuit: 1319}[soort] || 700;
       toon(f, f * 1.5, 0.13, { type: 'square', vol: 0.09 }); toon(f * 1.5, f * 2, 0.1, { type: 'sine', vol: 0.12, delay: 0.06 });
     },
     bluf() { [784, 988, 1175, 1568].forEach((f, i) => toon(f, f, 0.14, { type: 'triangle', vol: 0.18, delay: i * 0.07 })); },
@@ -322,16 +340,18 @@ const SUPABASE_URL = 'https://bbmsggyqbhbcrziyblhr.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
 // ===========================================================
 (() => {
-  const N = 20, C = document.getElementById('c'), ctx = C.getContext('2d');
-  const S = C.width / N;
+  const N = 20, C = document.getElementById('c');
+  let ctx = C.getContext('2d'), S = C.width / N;
   const $ = id => document.getElementById(id);
   const ov = $('overlay'), toastEl = $('toast');
 
   const ETEN = {
-    haring: {pts:1, zeg:['Lekkâh harinkie!','Harinkie met uitjes, âhwe!','Van de kar op de Boulevard!']},
-    kroket: {pts:2, zeg:['Kroketje, lekkâh!','Uit de muur, joh!','Heet hoâh, pas op!']},
-    patat:  {pts:3, zeg:['Patatje oorlog!','Met ALLES erop!','Nâh, dat is smulle!']},
-    bluf:   {pts:5, zeg:['Haagse bluf! Chic hoâh!','Hé, meneâh de deftige!','Bluf van het Voorhout!']}
+    haring:   {pts:1, naam:'Harinkie', zeg:['Lekkâh harinkie!','Harinkie met uitjes, âhwe!','Van de kar op de Boulevard!']},
+    kroket:   {pts:2, naam:'Dungelmann kroket', zeg:['Dungelmann kroket, lekkâh!','Van Dungelmann, joh!','Heet hoâh, pas op!']},
+    patat:    {pts:3, naam:'Patatje oâhlog', zeg:['Patatje oâhlog!','Met ALLES erop!','Nâh, dat is smulle!']},
+    ei:       {pts:4, naam:'Brâhdje ei met uih', nieuw:true, zeg:['Brâhdje ei met uih, lekkâh!','Ei met uih, dat mot je hebbe!','Lekkâh vettig, âhwe!']},
+    beschuit: {pts:6, naam:'Beschuitstuitâh met zalf', nieuw:true, zeg:['Beschuitstuitâh met zalf!','Dikke laag zalf, âhwe!','Die stuitâht lekkâh!']},
+    bluf:     {pts:5, naam:'Haagse bluf', zeg:['Haagse bluf! Chic hoâh!','Hé, meneâh de deftige!','Bluf van het Voorhout!']}
   };
   // Tempo: ms per stapje (hoger = langzamer). Begint rustig, wordt steeds sneller.
   const TEMPO = [
@@ -407,7 +427,7 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
   }
   function nieuwEten() {
     const r = Math.random();
-    const soort = r < .6 ? 'haring' : r < .88 ? 'kroket' : 'patat';
+    const soort = r < .42 ? 'haring' : r < .64 ? 'kroket' : r < .78 ? 'patat' : r < .91 ? 'ei' : 'beschuit';
     food = {...vrij(), soort};
   }
   function reset() {
@@ -542,7 +562,7 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
   if (LB) lijstBtn.hidden = false;
   async function wisselToppers() {
     const sec = $('ovLijst'), plek = $('plek'), open = sec.hidden;
-    sec.hidden = !open; $('ovOl').classList.toggle('alles', open); $('ovTekst').hidden = open; $('stuurTip').hidden = open; $('slangetje').hidden = open; $('ovTitel').hidden = open;
+    sec.hidden = !open; $('ovOl').classList.toggle('alles', open); $('ovTekst').hidden = open; $('stuurTip').hidden = open; $('slangetje').hidden = open; $('ovTitel').hidden = open; $('menuKaart').hidden = open;
     lijstBtn.textContent = open ? 'Terug' : 'Haagse Toppâhs bekèke';
     if (!open) return;
     plek.textContent = 'Effe lade…'; $('ovOl').textContent = '';
@@ -691,7 +711,7 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
   function magOpnieuw() { return form.hidden && $('ovLijst').hidden && performance.now() - doodT > 900; }
 
   function begin() {
-    deelBtn.hidden = true;
+    deelBtn.hidden = true; $('menuKaart').hidden = true;
     form.hidden = true; $('ovLijst').hidden = true; $('ovTekst').hidden = false; lijstBtn.hidden = true; $('ovTitel').hidden = false;
     scrollTo(0, 0); document.documentElement.classList.add('speelt');
     Geluid.init(); laatsteTempo = '';
@@ -736,6 +756,32 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
     ctx.fillStyle='#d9432f'; ctx.beginPath(); ctx.moveTo(cx-S*.28,cy-S*.08); ctx.lineTo(cx+S*.28,cy-S*.08); ctx.lineTo(cx+S*.16,cy+S*.4); ctx.lineTo(cx-S*.16,cy+S*.4); ctx.closePath(); ctx.fill();
     ctx.fillStyle='#fff'; ctx.fillRect(cx-S*.2,cy+S*.05,S*.4,S*.06);
   }
+  function tekenEi(cx,cy) {
+    ctx.save(); ctx.translate(cx,cy); ctx.rotate(-.12);
+    ctx.fillStyle='#b8762f'; rrect(-S*.44,S*.02,S*.88,S*.2,S*.1); ctx.fill();          // onderkant brâhdje
+    ctx.fillStyle='#7fb24a'; ctx.fillRect(-S*.4,-S*.01,S*.8,S*.05);                    // blaadje sla
+    for (const a of [-.25,0,.25]) {                                                    // plakjes ei
+      ctx.fillStyle='#fff'; ctx.beginPath(); ctx.ellipse(a*S,-S*.03,S*.14,S*.1,0,0,7); ctx.fill();
+      ctx.fillStyle='#f5b50a'; ctx.beginPath(); ctx.arc(a*S,-S*.03,S*.06,0,7); ctx.fill();
+    }
+    ctx.strokeStyle='#b35fb6'; ctx.lineWidth=S*.04;                                    // uih-ringetjes
+    for (const a of [-.13,.13]) { ctx.beginPath(); ctx.arc(a*S,-S*.1,S*.065,0,7); ctx.stroke(); }
+    ctx.fillStyle='#d99a4e'; ctx.beginPath(); ctx.ellipse(0,-S*.17,S*.43,S*.2,0,Math.PI,0); ctx.fill();  // kapje
+    ctx.fillStyle='rgba(255,244,214,.85)';
+    for (const [a,b] of [[-.22,-.25],[-.05,-.31],[.12,-.27],[.26,-.22]]) { ctx.beginPath(); ctx.ellipse(a*S,b*S,S*.03,S*.018,.4,0,7); ctx.fill(); }
+    ctx.restore();
+  }
+  function tekenBeschuit(cx,cy,t) {
+    const hop = Math.abs(Math.sin((t||0)/200))*S*.16;                                   // stuitâhe!
+    ctx.fillStyle='rgba(0,0,0,.16)'; ctx.beginPath(); ctx.ellipse(cx,cy+S*.34,S*(.34-hop/S*.6),S*.07,0,0,7); ctx.fill();
+    ctx.save(); ctx.translate(cx,cy+S*.08-hop);
+    ctx.fillStyle='#b8762f'; ctx.beginPath(); ctx.ellipse(0,S*.05,S*.42,S*.22,0,0,7); ctx.fill();   // zijkant
+    ctx.fillStyle='#e9bd72'; ctx.beginPath(); ctx.ellipse(0,-S*.02,S*.42,S*.22,0,0,7); ctx.fill();  // bovenkant
+    ctx.fillStyle='#fff3bf'; ctx.beginPath(); ctx.ellipse(-S*.02,-S*.04,S*.31,S*.15,-.1,0,7); ctx.fill(); // zalf
+    ctx.strokeStyle='rgba(214,170,60,.7)'; ctx.lineWidth=S*.03; ctx.lineCap='round';
+    ctx.beginPath(); ctx.moveTo(-S*.18,-S*.06); ctx.quadraticCurveTo(0,-S*.13,S*.17,-S*.03); ctx.stroke();
+    ctx.restore();
+  }
   function tekenBluf(cx,cy,t) {
     const p = 1 + Math.sin(t/120)*.08;
     ctx.save(); ctx.translate(cx,cy); ctx.scale(p,p);
@@ -757,7 +803,7 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
     ctx.fillStyle='#f5c518'; ctx.beginPath(); ctx.moveTo(S*.5,-S*.12); ctx.lineTo(S*.72,-S*.06); ctx.lineTo(S*.5,-S*.02); ctx.fill();
     ctx.fillStyle='#d9432f'; ctx.fillRect(S*.6,-S*.07,S*.05,S*.04);
     ctx.fillStyle='#111'; ctx.beginPath(); ctx.arc(S*.42,-S*.14,S*.03,0,7); ctx.fill();
-    if (g.buit) { ctx.scale(.6,.6); ({haring:tekenHaring,kroket:tekenKroket,patat:tekenPatat})[g.buit](S*1.3,S*.2); }
+    if (g.buit) { ctx.scale(.6,.6); TEKEN[g.buit](S*1.3,S*.2,t); }
     ctx.restore();
   }
   function tekenSlang(t) {
@@ -779,9 +825,30 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
     // Haags petje (geel-groen)
     ctx.fillStyle='#f5c518'; ctx.beginPath(); ctx.arc(cx-dir.x*S*.12,cy-dir.y*S*.12,S*.2,0,7); ctx.fill();
   }
+  const TEKEN = {haring:tekenHaring, kroket:tekenKroket, patat:tekenPatat, ei:tekenEi, beschuit:tekenBeschuit, bluf:tekenBluf};
+  // Menukaartje op het startscherm: zelfde plaatjes als in het spel, klein getekend
+  (function maakMenu() {
+    const ul = $('menuLijst'), oud = [ctx, S];
+    for (const soort of ['ei','beschuit','haring','kroket','patat','bluf']) {
+      const e = ETEN[soort], li = document.createElement('li'), cv = document.createElement('canvas');
+      cv.width = cv.height = 100; ctx = cv.getContext('2d'); S = 94;
+      TEKEN[soort](50, 50, 0);
+      if (e.nieuw) li.className = 'nieuw';
+      const naam = document.createElement('span'); naam.textContent = e.naam;
+      const pt = document.createElement('b'); pt.textContent = '+' + e.pts + (soort === 'bluf' ? ', snel!' : '');
+      if (e.nieuw) { naam.append(pt); li.append(cv, naam); } else li.append(cv, naam, pt);
+      ul.append(li);
+    }
+    ctx = oud[0]; S = oud[1];
+  })();
   function teken(t) {
     tekenVeld();
-    if (food) { const cx=(food.x+.5)*S, cy=(food.y+.5)*S; ({haring:tekenHaring,kroket:tekenKroket,patat:tekenPatat})[food.soort](cx,cy); }
+    if (food) { const cx=(food.x+.5)*S, cy=(food.y+.5)*S;
+      if (ETEN[food.soort].nieuw) {   // nieuwe hapjes: gloeiend randje zodat ze opvallen
+        ctx.fillStyle = `rgba(245,197,24,${.28 + Math.sin(t/180)*.14})`; ctx.beginPath(); ctx.arc(cx,cy,S*.62,0,7); ctx.fill();
+        ctx.strokeStyle = '#2f8f46'; ctx.lineWidth = 2; ctx.stroke();
+      }
+      TEKEN[food.soort](cx,cy,t); }
     if (bonus && (bonus.leeft > 12 || Math.floor(t/150)%2)) tekenBluf((bonus.x+.5)*S,(bonus.y+.5)*S,t);
     tekenSlang(t);
     if (gull) tekenMeeuw(gull,t);
