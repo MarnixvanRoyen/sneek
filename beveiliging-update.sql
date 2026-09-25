@@ -67,3 +67,10 @@ grant execute on function public.bewaar_score(text, integer) to anon;
 -- B1. Rechtstreeks toevoegen in de tabel mag niet meer: alleen via de poortwachter.
 drop policy if exists "iedereen mag een score toevoegen" on public.scores;
 revoke insert, update, delete on public.scores from anon;
+
+-- B2. Ingelogde gebruikers bestaan niet in Sneek: recht op de poortwachter weghalen
+revoke execute on function public.bewaar_score(text, integer) from authenticated;
+
+-- Status 25 sept 2026: A, B1 en B2 uitgevoerd.
+-- Security Advisor toont nog 1 bewuste waarschuwing: anon mag bewaar_score uitvoeren
+-- (0028 anon_security_definer_function_executable). Dat is de bedoeling: het is de enige deur voor scores.
