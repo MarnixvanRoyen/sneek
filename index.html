@@ -177,6 +177,8 @@
   /* Deelknop na game over */
   .btn.deel{background:var(--groen);color:#fff;border-bottom-color:var(--groen-d)}
 </style>
+<!-- Bezoekersteller (GoatCounter): zonder cookies, geen persoonsgegevens. Dashboard: https://marremanrojas.goatcounter.com -->
+<script data-goatcounter="https://marremanrojas.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </head>
 <body>
 <div class="wrap">
@@ -652,6 +654,7 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
   }
 
   deelBtn.addEventListener('click', async e => {
+    tel('score-gedeeld', 'Scoâh gedeeld in story');
     e.stopPropagation();
     const f = deelFile || await deelKlaar;
     if (!f) return;
@@ -710,7 +713,10 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
   // Met het scoreformulier open start je alleen via de knop 'Nog een keâh!'.
   function magOpnieuw() { return form.hidden && $('ovLijst').hidden && performance.now() - doodT > 900; }
 
+  // Telt een gebeurtenis in GoatCounter (bv. een gestart potje). Werkt het niet (adblocker), dan gebeurt er gewoon niks.
+  function tel(pad, titel) { try { if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({path: pad, title: titel, event: true}); } catch (e) {} }
   function begin() {
+    tel('potje-gestart', 'Potje gestart');
     deelBtn.hidden = true; $('menuKaart').hidden = true;
     form.hidden = true; $('ovLijst').hidden = true; $('ovTekst').hidden = false; lijstBtn.hidden = true; $('ovTitel').hidden = false;
     scrollTo(0, 0); document.documentElement.classList.add('speelt');
