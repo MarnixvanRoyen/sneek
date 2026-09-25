@@ -771,15 +771,18 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
     for (const [a,b] of [[-.22,-.25],[-.05,-.31],[.12,-.27],[.26,-.22]]) { ctx.beginPath(); ctx.ellipse(a*S,b*S,S*.03,S*.018,.4,0,7); ctx.fill(); }
     ctx.restore();
   }
-  function tekenBeschuit(cx,cy,t) {
+  function tekenBeschuit(cx,cy,t) {   // beschuitstuitâh = bal gehakt, met zalf (mayo)
     const hop = Math.abs(Math.sin((t||0)/200))*S*.16;                                   // stuitâhe!
-    ctx.fillStyle='rgba(0,0,0,.16)'; ctx.beginPath(); ctx.ellipse(cx,cy+S*.34,S*(.34-hop/S*.6),S*.07,0,0,7); ctx.fill();
-    ctx.save(); ctx.translate(cx,cy+S*.08-hop);
-    ctx.fillStyle='#b8762f'; ctx.beginPath(); ctx.ellipse(0,S*.05,S*.42,S*.22,0,0,7); ctx.fill();   // zijkant
-    ctx.fillStyle='#e9bd72'; ctx.beginPath(); ctx.ellipse(0,-S*.02,S*.42,S*.22,0,0,7); ctx.fill();  // bovenkant
-    ctx.fillStyle='#fff3bf'; ctx.beginPath(); ctx.ellipse(-S*.02,-S*.04,S*.31,S*.15,-.1,0,7); ctx.fill(); // zalf
-    ctx.strokeStyle='rgba(214,170,60,.7)'; ctx.lineWidth=S*.03; ctx.lineCap='round';
-    ctx.beginPath(); ctx.moveTo(-S*.18,-S*.06); ctx.quadraticCurveTo(0,-S*.13,S*.17,-S*.03); ctx.stroke();
+    ctx.fillStyle='rgba(0,0,0,.16)'; ctx.beginPath(); ctx.ellipse(cx,cy+S*.36,S*(.3-hop/S*.6),S*.07,0,0,7); ctx.fill();
+    ctx.save(); ctx.translate(cx,cy+S*.04-hop);
+    ctx.fillStyle='#6b3a1c'; ctx.beginPath(); ctx.arc(0,0,S*.32,0,7); ctx.fill();                  // gehakt
+    ctx.fillStyle='#8a4d26'; ctx.beginPath(); ctx.arc(-S*.05,-S*.05,S*.26,0,7); ctx.fill();         // licht erop
+    ctx.fillStyle='rgba(60,28,10,.55)';                                                            // korreltjes
+    for (const [x,y] of [[-.17,.05],[.12,.12],[.18,-.05],[-.05,.18],[-.2,-.12],[.02,.02]]) { ctx.beginPath(); ctx.arc(x*S,y*S,S*.028,0,7); ctx.fill(); }
+    ctx.fillStyle='#fff8dc'; ctx.beginPath();                                                      // klodder zalf
+    ctx.moveTo(-S*.2,-S*.2); ctx.quadraticCurveTo(-S*.22,-S*.36,-S*.06,-S*.34); ctx.quadraticCurveTo(0,-S*.46,S*.1,-S*.35);
+    ctx.quadraticCurveTo(S*.24,-S*.34,S*.2,-S*.2); ctx.quadraticCurveTo(S*.12,-S*.12,S*.08,-S*.2); ctx.quadraticCurveTo(0,-S*.1,-S*.08,-S*.2); ctx.quadraticCurveTo(-S*.14,-S*.13,-S*.2,-S*.2); ctx.fill();
+    ctx.fillStyle='rgba(255,255,255,.9)'; ctx.beginPath(); ctx.arc(-S*.03,-S*.33,S*.03,0,7); ctx.fill();  // glim
     ctx.restore();
   }
   function tekenBluf(cx,cy,t) {
