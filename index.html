@@ -6,8 +6,8 @@
 <title>Sneek op z'n Haags</title>
 <meta name="description" content="Snake op z'n Haags: vreet harinkies, kroketten en patatje oorlog en haal de hoogste scoâh.">
 <meta property="og:title" content="Sneek op z'n Haags">
-<meta property="og:description" content="Kèn jij 't beter? Vreet harinkies, ontwèk de meeuwe en kom in de Haagse Toppâhs.">
-<meta property="og:image" content="https://www.haagsesneek.nl/og.png">
+<meta property="og:description" content="Kèn jè 't betâh? Vreet harinkies, ontwèk de meeuwe en kom in de Haagse Toppâhs. Een spel van @the_hague_beachlife.">
+<meta property="og:image" content="https://www.haagsesneek.nl/og.png?v=2">
 <meta property="og:url" content="https://www.haagsesneek.nl/">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#16323b">
@@ -159,6 +159,8 @@
   .ovlijst ol.alles{max-height:min(52vh,420px);overflow-y:auto;overscroll-behavior:contain;padding-right:4px}
   .ovlijst .plek{font-weight:900;color:var(--tekst);max-width:none}
   .lijst li.puntjes{display:block;text-align:center;color:var(--zacht);background:none;padding:0}
+  /* Deelknop na game over */
+  .btn.deel{background:var(--groen);color:#fff;border-bottom-color:var(--groen-d)}
 </style>
 </head>
 <body>
@@ -200,6 +202,7 @@
         <ol id="ovOl"></ol>
       </section>
       <button class="btn stil" id="lijstBtn" type="button" hidden>Haagse Toppâhs bekèke</button>
+      <button class="btn deel" id="deelBtn" type="button" hidden>Deel je scoâh in je story</button>
       <button class="btn" id="startBtn">Beginne, joh!</button>
       <p class="maker" id="makerStart">Gemaakt doâh <a href="https://www.instagram.com/the_hague_beachlife/" target="_blank" rel="noopener">@the_hague_beachlife</a></p>
     </div>
@@ -486,6 +489,7 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
   }
 
   function sterf(hoe) {
+    deelBtn.hidden = true; deelFile = null; laatstePlek = 0;
     $('ovLijst').hidden = true; $('ovTekst').hidden = false; lijstBtn.hidden = true; $('makerStart').hidden = true; $('ovTitel').hidden = false;
     state = 'dood'; doodT = performance.now(); document.documentElement.classList.remove('speelt');
     hoe === 'muur' ? Geluid.plons() : Geluid.au();
@@ -499,6 +503,7 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
     $('startBtn').textContent = 'Nog een keâh!';
     if (LB && score > 0) { ingezonden = false; form.hidden = false; inp.value = mijnNaam; meld.textContent = ''; $('opslaanBtn').disabled = false;
       if (matchMedia('(pointer:fine)').matches) setTimeout(() => inp.focus(), 150); }
+    else if (score > 0) toonDeel();   // geen scorelèst: meteen de deelknop
     ov.hidden = false;
   }
   // ---------- Highscorelèst ----------
@@ -573,6 +578,7 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
       const lijst = await haalLijst();
       const mijn = tekenLijst($('ovOl'), lijst, 5);  // top 5 + jouw plek, zodat alles op een telefoonscherm past
       const n = mijn + 1, beste = mijn >= 0 ? lijst[mijn].score : score;
+      laatstePlek = (mijn >= 0 && lijst[mijn].score === score) ? n : 0;
       plek.textContent = n === 1 ? 'Nummâh 1! Jè ben de baas van Den Haag!'
         : n > 0 && n <= 3 ? `Plek ${n}! Op het podium, âhwe!`
         : n > 0 ? `Je staat op plek ${n} van de ${lijst.length}.` : 'Je staat erop!';
@@ -580,10 +586,86 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
     } catch (e) { plek.textContent = 'Opgeslagen! Alleen de lèst kon niet geladen worden.'; }
   }
 
+  // ---------- Deel je scoâh: storyplaatje (1080x1920) in de huisstijl ----------
+  const deelBtn = $('deelBtn');
+  let deelFile = null, deelKlaar = null, laatstePlek = 0;
+  function toonDeel() { deelBtn.hidden = false; deelBtn.disabled = false; deelBtn.textContent = 'Deel je scoâh in je story'; deelKlaar = maakPlaatje(); }
+
+  async function maakPlaatje() {
+    const W = 1080, H = 1920, c = document.createElement('canvas'); c.width = W; c.height = H;
+    const g = c.getContext('2d');
+    try { await Promise.all([document.fonts.load('100px "Titan One"'), document.fonts.load('900 40px Nunito')]); } catch (e) {}
+    const foto = new Image(); foto.src = 'skyline.jpg';
+    try { await foto.decode(); } catch (e) {}
+    // achtergrond: eigen skyline-foto bovenin, zee-donker eronder
+    g.fillStyle = '#0f262d'; g.fillRect(0, 0, W, H);
+    if (foto.naturalWidth) {
+      const fh = W * foto.naturalHeight / foto.naturalWidth;
+      g.drawImage(foto, 0, 0, W, fh);
+      const v = g.createLinearGradient(0, fh * .55, 0, fh); v.addColorStop(0, 'rgba(15,38,45,0)'); v.addColorStop(1, '#0f262d');
+      g.fillStyle = v; g.fillRect(0, 0, W, fh + 2);
+    }
+    const tekst = (t, x, y, font, kleur, rand) => {
+      g.font = font; g.textAlign = 'center'; g.textBaseline = 'alphabetic';
+      if (rand) { g.lineWidth = rand; g.strokeStyle = '#0f262d'; g.lineJoin = 'round'; g.strokeText(t, x, y); }
+      g.fillStyle = kleur; g.fillText(t, x, y);
+    };
+    // titel over de lucht
+    tekst('Sneek', W/2, 330, '170px "Titan One"', '#f5c518', 22);
+    g.font = '84px "Titan One"'; const a = g.measureText("op z'n "), b = g.measureText('Haags'), x0 = W/2 - (a.width + b.width)/2;
+    g.textAlign = 'left'; g.lineWidth = 16; g.strokeStyle = '#0f262d'; g.lineJoin = 'round';
+    g.strokeText("op z'n ", x0, 430); g.fillStyle = '#f3efe2'; g.fillText("op z'n ", x0, 430);
+    g.strokeText('Haags', x0 + a.width, 430); g.fillStyle = '#5cc275'; g.fillText('Haags', x0 + a.width, 430);
+    // score op een donker vlak, zodat het leesbaar blijft op de foto
+    g.fillStyle = 'rgba(15,38,45,.8)'; g.beginPath(); g.roundRect(110, 630, W - 220, 660, 48); g.fill();
+    g.lineWidth = 6; g.strokeStyle = '#f5c518'; g.stroke();
+    // score
+    tekst('MÈN SCOÂH', W/2, 730, '900 46px Nunito', '#a9c3c6');
+    tekst(String(score), W/2, 960, '280px "Titan One"', '#f3efe2');
+    tekst(score === 1 ? 'punt' : 'punte', W/2, 1040, '900 52px Nunito', '#a9c3c6');
+    let y = 1130;
+    if (ingezonden && mijnNaam) { tekst('@' + mijnNaam, W/2, y, '900 58px Nunito', '#f3efe2'); y += 50; }
+    if (laatstePlek) {
+      const t = laatstePlek === 1 ? 'Nummâh 1 van Den Haag!' : `Plek ${laatstePlek} in de Haagse Toppâhs`;
+      g.font = '900 44px Nunito'; const w = g.measureText(t).width + 80;
+      g.fillStyle = '#1f6a32'; g.beginPath(); g.roundRect(W/2 - w/2, y + 8, w, 84, 42); g.fill();
+      g.fillStyle = '#2f8f46'; g.beginPath(); g.roundRect(W/2 - w/2, y, w, 84, 42); g.fill();
+      tekst(t, W/2, y + 57, '900 44px Nunito', '#fff');
+    }
+    // slangetje als versiering
+    const blok = 48, gat = 10, n = 7, bx = W/2 - (n*blok + (n-1)*gat)/2;
+    for (let i = 0; i < n; i++) { g.fillStyle = i % 2 ? '#f5c518' : '#2f8f46'; g.beginPath(); g.roundRect(bx + i*(blok+gat), 1322, blok, blok, 13); g.fill(); }
+    tekst("Kèn jè 't betâh?", W/2, 1500, '96px "Titan One"', '#f5c518');
+    tekst('Speel zelf op haagsesneek.nl', W/2, 1580, '900 50px Nunito', '#f3efe2');
+    // maker: groot en duidelijk
+    tekst('Gemaakt doâh', W/2, 1665, '900 40px Nunito', '#a9c3c6');
+    tekst('@the_hague_beachlife', W/2, 1745, '76px "Titan One"', '#f5c518');
+    const blob = await new Promise(r => c.toBlob(r, 'image/jpeg', .92));
+    deelFile = new File([blob], 'sneek-scoah.jpg', {type: 'image/jpeg'});
+    return deelFile;
+  }
+
+  deelBtn.addEventListener('click', async e => {
+    e.stopPropagation();
+    const f = deelFile || await deelKlaar;
+    if (!f) return;
+    if (navigator.canShare && navigator.canShare({files: [f]})) {
+      // telefoon: deelmenu openen, daar kies je Instagram > Verhaal
+      try { await navigator.share({files: [f]}); } catch (err) { if (err.name !== 'AbortError') bewaar(f); }
+    } else bewaar(f);
+  });
+  function bewaar(f) {
+    // computer (of oudere telefoon): plaatje downloaden
+    const a = document.createElement('a'); a.href = URL.createObjectURL(f); a.download = f.name;
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+    deelBtn.textContent = 'Plaatje opgeslage! Zet \'m in je story';
+  }
+
   form.addEventListener('click', e => e.stopPropagation());
   // Overslaan: niks opslaan, gewoon door
   $('overslaanBtn').addEventListener('click', () => {
     form.hidden = true; $('ovTekst').hidden = false; $('ovTekst').textContent = 'Prima, je scoâh is niet opgeslage. Nog een potje?';
+    toonDeel();
     $('startBtn').focus();
   });
   // Geluidsknop
@@ -614,6 +696,7 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
       meld.textContent = '';
       form.hidden = true;
       await toonMijnPlek();
+      toonDeel();
       laadLijst();
     } catch (err) { meld.textContent = 'Opslaan lukte niet. Probeâh het nog een keâh.'; $('opslaanBtn').disabled = false; }
   });
@@ -623,13 +706,14 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
   function magOpnieuw() { return form.hidden && $('ovLijst').hidden && performance.now() - doodT > 900; }
 
   function begin() {
+    deelBtn.hidden = true;
     form.hidden = true; $('ovLijst').hidden = true; $('ovTekst').hidden = false; lijstBtn.hidden = true; $('ovTitel').hidden = false;
     scrollTo(0, 0); document.documentElement.classList.add('speelt');
     Geluid.init(); laatsteTempo = '';
     reset(); state = 'spel'; ov.hidden = true; lastStep = performance.now();
   }
   function pauze() {
-    if (state === 'spel') { state = 'pauze'; $('ovTitel').textContent = 'Effe pâhze'; $('ovTekst').textContent = 'Bakkie koffie halen? Druk op spatie om verdâh te gaan.'; $('bigScore').hidden = true; $('startKop').hidden = true; $('slangetje').hidden = true; ov.classList.remove('start'); form.hidden = true; $('ovLijst').hidden = true; $('startBtn').textContent = 'Verdâh!'; ov.hidden = false; }
+    if (state === 'spel') { state = 'pauze'; deelBtn.hidden = true; $('ovTitel').textContent = 'Effe pâhze'; $('ovTekst').textContent = 'Bakkie koffie halen? Druk op spatie om verdâh te gaan.'; $('bigScore').hidden = true; $('startKop').hidden = true; $('slangetje').hidden = true; ov.classList.remove('start'); form.hidden = true; $('ovLijst').hidden = true; $('startBtn').textContent = 'Verdâh!'; ov.hidden = false; }
     else if (state === 'pauze') { state = 'spel'; ov.hidden = true; lastStep = performance.now(); }
   }
 
@@ -712,6 +796,9 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
   }
   function teken(t) {
     tekenVeld();
+    // Naammerkje rechtsonder op het speelveld: gaat mee op elke screenshot of schermopname
+    ctx.save(); ctx.font = '900 17px Nunito, sans-serif'; ctx.textAlign = 'right'; ctx.textBaseline = 'bottom';
+    ctx.fillStyle = 'rgba(15,38,45,.38)'; ctx.fillText('Sneek doâh @the_hague_beachlife', C.width - 10, C.height - 8); ctx.restore();
     if (food) { const cx=(food.x+.5)*S, cy=(food.y+.5)*S; ({haring:tekenHaring,kroket:tekenKroket,patat:tekenPatat})[food.soort](cx,cy); }
     if (bonus && (bonus.leeft > 12 || Math.floor(t/150)%2)) tekenBluf((bonus.x+.5)*S,(bonus.y+.5)*S,t);
     tekenSlang(t);
