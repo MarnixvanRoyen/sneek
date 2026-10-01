@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Sneek op z'n Haags</title>
-<meta name="description" content="Snake op z'n Haags: vreet harinkies, Dungelmann kroketten, patatje oâhlog, brâhdjes ei met uih, beschuitstuitâhs met zalf en hazelnoot gebakkies van Maison Kelder en haal de hoogste scoâh.">
+<meta name="description" content="Snake op z'n Haags: vreet harinkies, Dungelmann kroketten, patatje oâhlog, brâhdjes ei met uih, beschuitstuitâhs met zalf, Haagse Hopjes, Kompaan biertjes en hazelnoot gebakkies van Maison Kelder en haal de hoogste scoâh.">
 <meta property="og:title" content="Sneek op z'n Haags">
 <meta property="og:description" content="Kèn jè 't betâh? Vreet harinkies, ontwèk de Haagse Regah en kom in de Haagse Toppâhs. Een spel van @the_hague_beachlife.">
 <meta property="og:image" content="https://www.haagsesneek.nl/og.png?v=2">
@@ -28,19 +28,8 @@
   body{background:var(--zee);color:var(--tekst);font-family:"Nunito",system-ui,sans-serif;
     display:flex;justify-content:center;padding-inline:16px;padding-block:16px;box-sizing:border-box;
     background-image:radial-gradient(circle at 20% 0%,#24505d 0,transparent 55%),radial-gradient(circle at 90% 100%,#0f262d 0,transparent 60%);}
-  .wrap{width:100%;max-width:520px;display:flex;flex-direction:column;gap:12px}
-  header{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
   h1{font-family:"Titan One","Arial Black",sans-serif;font-weight:400;font-size:clamp(28px,7vw,40px);line-height:1;margin:0;letter-spacing:.5px}
   h1 .g{color:var(--geel)} h1 .gr{color:#5cc275}
-  .sub{margin:4px 0 0;color:var(--zacht);font-size:14px}
-  .stats{display:flex;gap:14px;font-variant-numeric:tabular-nums}
-  .stat{display:flex;flex-direction:column;align-items:flex-end}
-  .stat b{font-family:"Titan One",sans-serif;font-weight:400;font-size:24px;line-height:1}
-  .stat span{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--zacht)}
-  .speed{font-size:13px;color:var(--zacht);display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
-  .speed b{color:var(--geel)}
-  .board{position:relative;width:100%;aspect-ratio:1/1;max-width:100%;border-radius:10px;overflow:hidden;
-    box-shadow:0 0 0 4px var(--geel),0 0 0 8px var(--groen),0 18px 40px rgba(0,0,0,.4);touch-action:none}
   canvas{display:block;width:100%;height:100%}
   .overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
     text-align:center;gap:10px;padding:20px;background:rgba(22,50,59,.78);backdrop-filter:blur(2px);cursor:pointer}
@@ -48,22 +37,7 @@
   .overlay p{margin:0;max-width:34ch;line-height:1.45}
   .btn{margin-top:6px;font:inherit;font-weight:900;font-size:16px;background:var(--geel);color:#1b2a1f;border:0;
     border-bottom:4px solid #b88f00;border-radius:10px;padding:10px 20px;cursor:pointer}
-  .btn:focus-visible,.pad button:focus-visible{outline:3px solid var(--schuim);outline-offset:2px}
-  .toast{position:absolute;left:50%;top:12px;transform:translateX(-50%);background:var(--groen);color:#fff;
-    font-weight:900;padding:6px 14px;border-radius:999px;white-space:nowrap;font-size:15px;
-    box-shadow:0 4px 0 var(--groen-d);transition:opacity .25s,transform .25s;pointer-events:none}
-  .toast.weg{opacity:0;transform:translate(-50%,-8px)}
-  .toast.regah{background:var(--rood);box-shadow:0 4px 0 #9a2b1c}
-  .legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;font-size:13px}
-  .legend div{background:var(--zee2);border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;gap:2px}
-  .legend b{font-size:14px} .legend span{color:var(--zacht)}
-  .pad{display:grid;grid-template-columns:repeat(3,64px);grid-template-rows:repeat(2,52px);gap:6px;justify-content:center}
-  .pad button{font-size:22px;background:var(--zee2);color:var(--tekst);border:0;border-bottom:3px solid #0d2228;border-radius:10px;cursor:pointer}
-  .pad button:active{transform:translateY(2px)}
-  .pad .u{grid-column:2} .pad .l{grid-column:1;grid-row:2} .pad .d{grid-column:2;grid-row:2} .pad .r{grid-column:3;grid-row:2}
-  .help{font-size:12px;color:var(--zacht);text-align:center;margin:0}
-  .pad{display:none!important} /* besturing op telefoon gaat via vegen */
-  @media (prefers-reduced-motion:reduce){.toast{transition:none}}
+  .btn:focus-visible{outline:3px solid var(--schuim);outline-offset:2px}
   body{margin:0;min-height:100%}
   [hidden]{display:none!important}
   /* Start-, pauze- en game-over-scherm: over het hele scherm, zodat alles past op een telefoon */
@@ -75,7 +49,6 @@
   html.speelt,html.speelt body{overflow:hidden;touch-action:none;overscroll-behavior:none}
   .overlay .tip{font-size:14px;color:var(--zacht);font-weight:700}
   .wrap>*{flex-shrink:0}
-  .stat span{white-space:nowrap}
   /* Startscherm: skyline van Den Haag bij zonsondergang (foto: @the_hague_beachlife).
      Titel bovenin over de lucht, zon + skyline vrij in beeld, tekst en knoppen onderin op het donker. */
   .overlay.start{justify-content:flex-start;
@@ -96,21 +69,22 @@
   .overlay.start .kop,.overlay.start h2{-webkit-text-stroke:7px #0f262d;paint-order:stroke fill;text-shadow:0 4px 16px rgba(0,0,0,.6)}
   .overlay.start p{font-weight:700;color:#fff;text-shadow:0 1px 2px #000,0 0 10px rgba(0,0,0,.9),0 0 22px rgba(0,0,0,.6)}
   .overlay.start .tip{color:#d7e6e8}
-  .overlay.start{gap:8px}
+  .overlay.start{gap:6px}
   .overlay.start .maker{padding-inline:56px}  /* niet onder de geluidsknop */
   .overlay.start .btn.stil{background:rgba(15,38,45,.6);border-color:#d7e6e8}
   /* Menukaartje op het startscherm */
   .menu{width:100%;max-width:360px;background:rgba(15,38,45,.78);border:2px solid rgba(245,197,24,.55);border-radius:14px;padding:6px 8px 9px}
   .menu h3{margin:0 0 7px;font-family:"Titan One",sans-serif;font-weight:400;font-size:16px;color:var(--geel)}
-  .menu ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(12,1fr);gap:9px 4px}
-  .menu li{grid-column:span 4;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:3px 2px 4px;border-radius:10px;font-size:11px;line-height:1.15;font-weight:700;color:#fff;text-align:center}
+  .menu ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(12,1fr);gap:6px 4px}
+  .menu li{grid-column:span 4;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:1px 2px 2px;border-radius:10px;font-size:11px;line-height:1.15;font-weight:700;color:#fff;text-align:center}
   .menu li b{color:var(--geel);font-size:12px}
-  .menu canvas{width:38px;height:38px;flex-shrink:0}
+  .menu canvas{width:32px;height:32px;flex-shrink:0}
   .menu li.nieuw{grid-column:span 6;flex-direction:row;gap:6px;padding:5px 8px;text-align:left;font-size:13px;background:rgba(47,143,70,.5);box-shadow:inset 0 0 0 2px var(--geel)}
   .menu li.breed{grid-column:span 12;justify-content:center}
-  .menu li.nieuw span{display:flex;flex-direction:column}
+  .menu li.nieuw span.tekst{display:flex;flex-direction:column}
+  .menu li .sub{font-size:11px;font-weight:700;color:#d7e6e8;line-height:1.15}
   .menu li.nieuw b{font-size:15px}
-  .menu li.nieuw canvas{width:50px;height:50px}
+  .menu li.nieuw canvas{width:46px;height:46px}
   .menu li.nieuw::before{content:"Nieuw!";position:absolute;top:-8px;right:-3px;background:#d9432f;color:#fff;font-size:9px;font-weight:900;padding:1px 5px;border-radius:6px;transform:rotate(8deg)}
   .menu li.nieuw canvas{animation:stuiter .8s ease-in-out infinite}
   @keyframes stuiter{50%{transform:translateY(-5px)}}
@@ -121,13 +95,6 @@
   @media (max-width:600px){
     body{padding-block:10px}
     .wrap{gap:10px}
-    header{flex-wrap:nowrap;align-items:center}
-    h1{font-size:clamp(18px,5.6vw,30px);white-space:nowrap}
-    .sub{display:none}
-    .stats{gap:10px}
-    .stat b{font-size:20px}
-    .stat span{font-size:9px}
-    .speed{font-size:12px}
     .overlay p{font-size:15px}
   }
   .overlay .kop{font-family:"Titan One",sans-serif;font-size:clamp(36px,10vw,56px);line-height:.95;color:var(--geel);text-shadow:0 4px 0 #0f262d}
@@ -168,7 +135,6 @@
   .maker{margin:0;font-size:14px;color:var(--zacht);text-align:center}
   .maker a{color:var(--geel);font-weight:900;text-decoration:none}
   .maker a:hover,.maker a:focus-visible{text-decoration:underline}
-  footer.maker{padding-block:8px 16px;padding-inline:56px}  /* niet onder de geluidsknop */
   .ovlijst{width:100%;max-width:380px;text-align:left;cursor:default}
   .ovlijst li{padding:4px 8px}
   /* Hele lèst op het startscherm: scrollt binnen het vak, knoppen blijven in beeld */
@@ -177,75 +143,107 @@
   .lijst li.puntjes{display:block;text-align:center;color:var(--zacht);background:none;padding:0}
   /* Deelknop na game over */
   .btn.deel{background:var(--groen);color:#fff;border-bottom-color:var(--groen-d)}
+  /* ====== Speelscherm (sinds 1 okt 2026): kopstrook / decor + veld / meldingstrook ======
+     Alles past altijd in één scherm: de breedte wordt zo gekozen dat ook de hoogte past.
+     --verh = hoogte van de speelkaart gedeeld door de breedte (stad 0,18 + veld 1 + zee met Pier 0,14).
+     --vast = alles wat niet meeschaalt (kopstrook, meldingstrook, tussenruimtes, rand van het scherm). */
+  body{padding-top:max(10px,env(safe-area-inset-top));padding-bottom:max(10px,env(safe-area-inset-bottom))}
+  body{align-items:center}
+  .wrap{--verh:1.32;--vast:112px;width:100%;display:flex;flex-direction:column;gap:8px;
+    max-width:min(520px,calc((100vh - var(--vast)) / var(--verh)));
+    max-width:min(520px,calc((100dvh - var(--vast) - env(safe-area-inset-top) - env(safe-area-inset-bottom)) / var(--verh)))}
+  .kopstrook{display:flex;align-items:center;justify-content:space-between;gap:10px;height:26px}
+  .kopstrook h1{font-size:clamp(16px,5vw,21px);white-space:nowrap}
+  .stand{display:flex;gap:12px;align-items:baseline;font-size:12px;font-weight:800;color:var(--zacht);white-space:nowrap;font-variant-numeric:tabular-nums}
+  .stand b{display:inline-block;font-family:"Titan One",sans-serif;font-weight:400;font-size:17px;color:var(--tekst)}
+  .stand .rk b{font-size:14px;color:var(--geel)}
+  .stand b.pop{animation:pop .35s ease-out}
+  @keyframes pop{40%{transform:scale(1.4);color:var(--geel)}}
+  /* Speelkaart: stad bovenin, strand (het veld) in het midden, zee met de Pier onderin */
+  .speelkaart{border-radius:14px;overflow:hidden;background:#0f262d;box-shadow:0 18px 40px rgba(0,0,0,.4)}
+  /* Kleuren van het decor per tijd van de dag (uitgerekend uit de echte kleuren: avond warmer, nacht donkerder) */
+  .speelkaart{--steen-l:#9d6b41;--steen-m:#845a36;--steen-d:#66462c;--steen-x:#443020;--lei-l:#666154;--lei-d:#42433d;--trap-l:#7f492f;--trap-d:#603724;--zilver-l:#ad9377;--zilver-d:#776b5a;--zilver-x:#5b5549;--koepel-l:#446f54;--koepel-d:#284e3d;--koepel-r:#8a9471;--koepelvoet:#863524;--rood-l:#91402b;--rood-d:#692e20;--blauw-l:#3f5b66;--blauw-d:#2a424e;--kanteel-l:#733526;--kanteel-d:#50271e;--min-l:#4d3a2f;--min-d:#362b24;--slank-l:#8b7a64;--slank-d:#605a4c;--boom:#2a3c2a;--boom-d:#202f23;--grond:#343229;--kozijn:#be976f;--beton-l:#b59472;--beton-d:#826b53;--beton-x:#5d4f3f;--glas-l:#6a6d5d;--glas-d:#424d44;--wit:#c7a280;--wit-d:#a08569;--gondel:#2d3531;--l1:#1f3f4a;--l2:#c98f4a;--ver:#5b5a57;--zh:#8a6e55;--z2:#14323b;--golf:#b98d5e;--raam:#f5c518;--raamop:.75;--zon:.9;--zondag:0;--maan:0;--vlieger:.9}
+  .speelkaart[data-tijd="dag"]{--steen-l:#bca079;--steen-m:#a18866;--steen-d:#816e53;--steen-x:#5c4f3f;--lei-l:#81939b;--lei-d:#5a6970;--trap-l:#9c7258;--trap-d:#7b5945;--zilver-l:#cdd7d9;--zilver-d:#93a0a5;--zilver-x:#758287;--koepel-l:#5ca59b;--koepel-d:#3e7871;--koepel-r:#a8d9ce;--koepelvoet:#a45545;--rood-l:#af6551;--rood-d:#844c3f;--blauw-l:#5789ba;--blauw-d:#406891;--kanteel-l:#8e5649;--kanteel-d:#69433a;--min-l:#665c59;--min-d:#4d4846;--slank-l:#a9b5b8;--slank-d:#7b888d;--boom:#406050;--boom-d:#354e43;--grond:#4a524e;--kozijn:#dfdccc;--beton-l:#d7d8d0;--beton-d:#9fa099;--beton-x:#777a75;--glas-l:#85a4ab;--glas-d:#59777f;--wit:#eaede9;--wit-d:#bfc4c0;--gondel:#44565d;--l1:#4f8799;--l2:#a9c7c9;--ver:#7fa3ab;--zh:#6c9ba5;--z2:#2a5966;--golf:#8fb7bd;--raam:#f3efe2;--raamop:.12;--zon:0;--zondag:.85;--maan:0;--vlieger:1}
+  .speelkaart[data-tijd="nacht"]{--steen-l:#31362f;--steen-m:#292d27;--steen-d:#20231e;--steen-x:#161715;--lei-l:#20303e;--lei-d:#15212b;--trap-l:#282421;--trap-d:#1e1b18;--zilver-l:#364959;--zilver-d:#253642;--zilver-x:#1c2a35;--koepel-l:#16373e;--koepel-d:#0d272c;--koepel-r:#2b4a54;--koepelvoet:#2a1a18;--rood-l:#2d1f1d;--rood-d:#211615;--blauw-l:#142d4c;--blauw-d:#0d203a;--kanteel-l:#241b1a;--kanteel-d:#191313;--min-l:#181c21;--min-d:#121519;--slank-l:#2c3d4a;--slank-d:#1e2d38;--boom:#0d1e1d;--boom-d:#0a1718;--grond:#11191c;--kozijn:#3b4b53;--beton-l:#394955;--beton-d:#29363d;--beton-x:#1d272d;--glas-l:#213645;--glas-d:#152632;--wit:#3e5160;--wit-d:#32424e;--gondel:#0e1b22;--l1:#08171c;--l2:#1d3a46;--ver:#1c3540;--zh:#1d3a44;--z2:#07151a;--golf:#2c5260;--raam:#f5c518;--raamop:.9;--zon:0;--zondag:0;--maan:.9;--vlieger:0}
+  .decor{display:block;width:100%;height:auto}
+  .ring{background:var(--groen);padding:4px}
+  .board{position:relative;aspect-ratio:1/1;border:4px solid var(--geel);border-radius:5px;overflow:hidden;touch-action:none}
+  /* Meldingstrook: altijd 1 regel en dezelfde hoogte, dus de rest verspringt nooit */
+  .strook{position:relative;height:38px;flex:none;display:flex;align-items:center;gap:8px;padding:0 12px 0 6px;border-radius:10px;
+    background:var(--zee2);color:var(--tekst);font-weight:800;font-size:15px;white-space:nowrap;overflow:hidden;transition:background-color .2s}
+  .strook canvas{width:28px;height:28px;flex:none}
+  #strookTekst{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
+  #strookTekst b{font-family:"Titan One",sans-serif;font-weight:400;color:var(--geel);margin-right:6px}
+  #strookTekst.in{animation:strookIn .22s ease-out}
+  @keyframes strookIn{from{opacity:0;transform:translateY(7px)}}
+  .strook.rust{color:var(--zacht);font-weight:700}
+  .strook.tempo,.strook.bonus,.strook.nieuw{background:var(--groen);color:#fff}
+  .strook.tempo b,.strook.bonus b,.strook.nieuw b{color:var(--geel)}
+  .strook.nieuw{box-shadow:inset 0 0 0 2px var(--geel)}
+  .strook.regah{background:var(--rood);color:#fff}
+  .strook.regah b{color:#fff}
+  .strook.record{background:var(--geel);color:#1b2a1f}
+  .strook.record b{color:#1b2a1f}
+  .strook.effect{background:#5b3a1e;color:#fff;box-shadow:inset 0 0 0 2px var(--geel)}
+  .strook .balk{position:absolute;left:0;bottom:0;width:100%;height:4px;background:var(--geel);transform-origin:left;transform:scaleX(0);transition:transform .25s linear}
+  @media (prefers-reduced-motion:reduce){#strookTekst.in,.stand b.pop{animation:none}}
+  /* Game over: klein menu-rijtje + maker onderaan */
+  .overlay.dood .menu{order:30;max-width:340px;padding:5px 8px 7px}
+  .overlay.dood .maker{order:31;padding-inline:56px}  /* niet onder de geluidsknop */
+  @media (max-width:360px){#ptWoord{display:none} .stand{gap:8px} .kopstrook h1{font-size:15px}}
+  .overlay.dood .menu .snel{display:none}
+  .maker .volg{display:none} .overlay.dood .maker .volg{display:inline}
+  .overlay.dood .menu h3{font-size:13px;margin:0 0 3px}
+  .overlay.dood .menu ul{display:flex;justify-content:space-between;gap:2px}
+  .overlay.dood .menu li,.overlay.dood .menu li.nieuw{padding:0;background:none;box-shadow:none;flex-direction:column;gap:0;font-size:11px}
+  .overlay.dood .menu li .naam,.overlay.dood .menu li .sub,.overlay.dood .menu li::before{display:none}
+  .overlay.dood .menu li b,.overlay.dood .menu li.nieuw b{font-size:12px}
+  .overlay.dood .menu canvas,.overlay.dood .menu li.nieuw canvas{width:30px;height:30px;animation:none}
 </style>
 <!-- Bezoekersteller (GoatCounter): zonder cookies, geen persoonsgegevens. Dashboard: https://marremanrojas.goatcounter.com -->
 <script data-goatcounter="https://marremanrojas.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </head>
 <body>
 <div class="wrap">
-  <header>
-    <div>
-      <h1><span class="g">Sneek</span> op z'n <span class="gr">Haags</span></h1>
-      <p class="sub">Van Scheveninge tot de Schilderswèk</p>
-    </div>
-    <div class="stats">
-      <div class="stat"><b id="score">0</b><span>Punte</span></div>
-      <div class="stat"><b id="best">0</b><span>Beste scoâh</span></div>
-    </div>
+  <header class="kopstrook">
+    <h1><span class="g">Sneek</span> op z'n <span class="gr">Haags</span></h1>
+    <div class="stand"><span class="pt"><b id="score">0</b> <span id="ptWoord">punte</span></span><span class="rk">rekkâhd <b id="best">0</b></span></div>
   </header>
   <button class="geluidknop" id="geluidBtn" type="button" aria-label="Geluid aan of uit"></button>
 
-  <div class="speed"><span>Tempo: <b id="tempo">Wandele ovâh de Boulevard</b></span><span id="lengte">Lengte: 3</span></div>
-
-  <div class="board" id="board">
-    <canvas id="c" width="600" height="600" aria-label="Speelveld"></canvas>
-    <div class="toast weg" id="toast"></div>
-    <div class="overlay start" id="overlay">
-      <div class="kop" id="startKop">Sneek<small><i>op z'n</i> Haags</small></div>
-      <div class="slangetje" id="slangetje" aria-hidden="true"><span></span><span style="animation-delay:.1s"></span><span style="animation-delay:.2s"></span><span style="animation-delay:.3s"></span><span style="animation-delay:.4s"></span><span style="animation-delay:.5s"></span><span style="animation-delay:.6s"></span></div>
-      <h2 id="ovTitel">Hoi, âhwe!</h2>
-      <div class="bigscore" id="bigScore" hidden></div>
-      <p id="ovTekst">Vreet zoveel mogelèk van 't menu. Kèk uit voâh de rand, je ège staart en de Haagse Regah!</p>
-      <div class="menu" id="menuKaart"><h3>Op 't menu, âhwe!</h3><ul id="menuLijst"></ul></div>
-      <form class="scoreform" id="scoreForm" hidden>
-        <label for="insta">Zet je naam op de lèst van Haagse Toppâhs</label>
-        <div class="veld"><span>@</span><input id="insta" name="insta" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="31" placeholder="jouw_insta"></div>
-        <div class="rij"><button class="btn" type="submit" id="opslaanBtn">Opslaan</button><button class="btn stil" type="button" id="overslaanBtn">Laat maâh zitte</button></div>
-        <p class="overslaan">Geen Insta invullen? Dan komt je scoâh niet op de lèst.</p>
-        <p class="melding" id="melding"></p>
-      </form>
-      <p class="tip" id="stuurTip"><span class="alleen-touch">Sture doe je doâh te vege.</span><span class="alleen-desk">Sture doe je met de pèltjes of WASD.</span></p>
-      <section class="lijst ovlijst" id="ovLijst" hidden>
-        <h2>Haagse Toppâhs</h2>
-        <p class="plek" id="plek"></p>
-        <ol id="ovOl"></ol>
-      </section>
-      <button class="btn stil" id="lijstBtn" type="button" hidden>Haagse Toppâhs bekèke</button>
-      <button class="btn deel" id="deelBtn" type="button" hidden>Deel je scoâh in je story</button>
-      <button class="btn" id="startBtn">Beginne, joh!</button>
-      <p class="maker" id="makerStart">Gemaakt doâh <a href="https://www.instagram.com/the_hague_beachlife/" target="_blank" rel="noopener">@the_hague_beachlife</a></p>
-    </div>
+  <div class="speelkaart" id="speelkaart" data-tijd="avond">
+    <svg class="decor boven" viewBox="0 0 600 108" data-vb-klein="0 0 600 108" data-vb-ruim="30 0 470 108" aria-hidden="true" focusable="false"><!-- Zelf getekend (naar eigen foto's): Ridderzaal op het Binnenhof, daarachter de vulpen (Hoftoren), de groene koepel, de tieten (Castalia) en meer skyline --><defs><linearGradient id="dbLucht" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--l1)"/><stop offset="1" style="stop-color:var(--l2)"/></linearGradient><linearGradient id="dbToren" x1="0" y1="0" x2="1" y2="0"><stop offset="0" style="stop-color:var(--steen-l)"/><stop offset=".45" style="stop-color:var(--steen-m)"/><stop offset="1" style="stop-color:var(--steen-x)"/></linearGradient><linearGradient id="dbKegel" x1="0" y1="0" x2="1" y2="0"><stop offset="0" style="stop-color:var(--lei-l)"/><stop offset="1" style="stop-color:var(--lei-d)"/></linearGradient><linearGradient id="dbKoepel" x1="0" y1="0" x2="1" y2="0"><stop offset="0" style="stop-color:var(--koepel-l)"/><stop offset="1" style="stop-color:var(--koepel-d)"/></linearGradient><linearGradient id="dbVulpen" x1="0" y1="0" x2="1" y2="0"><stop offset="0" style="stop-color:var(--zilver-l)"/><stop offset="1" style="stop-color:var(--zilver-d)"/></linearGradient><radialGradient id="dbSchaduw"><stop offset="0" stop-color="#000" stop-opacity=".45"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient><clipPath id="dbVulpenVlak"><path d="M226 102V13L234 3Q250 16 262 36V102Z"/></clipPath><pattern id="dbR1" x="41.5" y="25" width="3" height="3.5" patternUnits="userSpaceOnUse"><rect width="1.4" height="1.6" style="fill:var(--slank-d);opacity:0.55"/></pattern><pattern id="dbR2" x="228" y="40" width="2.6" height="5" patternUnits="userSpaceOnUse"><rect width="1.2" height="2" style="fill:var(--slank-d);opacity:0.55"/></pattern><pattern id="dbR3" x="270" y="79" width="3.5" height="5" patternUnits="userSpaceOnUse"><rect width="2" height="2.5" style="fill:var(--kozijn);opacity:0.5"/></pattern><pattern id="dbR4" x="307.6" y="58" width="3.2" height="4.4" patternUnits="userSpaceOnUse"><rect width="1.6" height="2.6" style="fill:var(--kozijn);opacity:0.55"/></pattern><pattern id="dbR5" x="339.6" y="58" width="3.2" height="4.4" patternUnits="userSpaceOnUse"><rect width="1.6" height="2.6" style="fill:var(--kozijn);opacity:0.55"/></pattern><pattern id="dbR6" x="378" y="18" width="3" height="4" patternUnits="userSpaceOnUse"><rect width="1.4" height="2.4" style="fill:var(--kanteel-d);opacity:1"/></pattern><pattern id="dbR7" x="417.5" y="23" width="2.8" height="3.6" patternUnits="userSpaceOnUse"><rect width="1.4" height="2" style="fill:var(--min-d);opacity:1"/></pattern><pattern id="dbR8" x="444.5" y="31" width="2.8" height="3.6" patternUnits="userSpaceOnUse"><rect width="1.4" height="2" style="fill:var(--min-d);opacity:1"/></pattern><pattern id="dbR9" x="74" y="76" width="5" height="7" patternUnits="userSpaceOnUse"><rect width="2.4" height="3.4" style="fill:var(--steen-x);opacity:1"/></pattern></defs><rect width="600" height="108" fill="url(#dbLucht)"/><circle cx="300" cy="84" r="22" style="fill:#f7d469;opacity:var(--zon)"/><circle cx="300" cy="84" r="40" style="fill:#f5c518;opacity:calc(var(--zon) * .25)"/><circle cx="488" cy="14" r="7" style="fill:#fbe9a0;opacity:var(--zondag)"/><g style="opacity:var(--maan)"><circle cx="486" cy="16" r="8" fill="#efe6cf"/><circle cx="483" cy="14" r="1.8" fill="#d9cfb6"/><circle cx="489" cy="19" r="1.3" fill="#d9cfb6"/><circle cx="40" cy="10" r="0.9" fill="#fff"/><circle cx="120" cy="6" r="0.8" fill="#fff"/><circle cx="200" cy="14" r="0.7" fill="#fff"/><circle cx="410" cy="8" r="0.9" fill="#fff"/><circle cx="470" cy="24" r="0.7" fill="#fff"/><circle cx="575" cy="10" r="0.8" fill="#fff"/><circle cx="355" cy="6" r="0.6" fill="#fff"/></g><g style="fill:var(--ver)"><rect x="4" y="42" width="16" height="60"/><path d="M24 102V40Q31.0 30 38 40V102Z"/><rect x="60" y="50" width="12" height="52"/><path d="M470 102V44Q478.0 34 486 44V102Z"/><rect x="490" y="30" width="18" height="72"/><rect x="512" y="44" width="14" height="58"/><rect x="532" y="52" width="20" height="50"/><rect x="556" y="40" width="14" height="62"/><rect x="574" y="58" width="22" height="44"/><path d="M588 102V44L592 26L596 44V102Z"/></g><rect x="40" y="22" width="12" height="80" style="fill:var(--slank-l)"/><path d="M52 22L56 24V102H52Z" style="fill:var(--slank-d)"/><line x1="46" y1="22" x2="46" y2="15" stroke="#6f7a7f" stroke-width=".8"/><circle cx="46" cy="14.5" r="1.6" fill="#e2412d"/><rect x="41.5" y="25" width="9.0" height="73.5" fill="url(#dbR1)"/><g style="fill:var(--raam);opacity:var(--raamop)"><rect x="41.5" y="25.0" width="1.4" height="1.6"/><rect x="44.5" y="25.0" width="1.4" height="1.6"/><rect x="41.5" y="28.5" width="1.4" height="1.6"/><rect x="41.5" y="32.0" width="1.4" height="1.6"/><rect x="47.5" y="32.0" width="1.4" height="1.6"/><rect x="44.5" y="35.5" width="1.4" height="1.6"/><rect x="47.5" y="35.5" width="1.4" height="1.6"/><rect x="47.5" y="39.0" width="1.4" height="1.6"/><rect x="41.5" y="42.5" width="1.4" height="1.6"/><rect x="41.5" y="49.5" width="1.4" height="1.6"/><rect x="47.5" y="49.5" width="1.4" height="1.6"/><rect x="41.5" y="53.0" width="1.4" height="1.6"/><rect x="44.5" y="53.0" width="1.4" height="1.6"/><rect x="47.5" y="53.0" width="1.4" height="1.6"/><rect x="44.5" y="56.5" width="1.4" height="1.6"/><rect x="41.5" y="63.5" width="1.4" height="1.6"/><rect x="44.5" y="63.5" width="1.4" height="1.6"/><rect x="47.5" y="63.5" width="1.4" height="1.6"/><rect x="47.5" y="67.0" width="1.4" height="1.6"/><rect x="47.5" y="70.5" width="1.4" height="1.6"/><rect x="47.5" y="74.0" width="1.4" height="1.6"/><rect x="44.5" y="81.0" width="1.4" height="1.6"/><rect x="41.5" y="84.5" width="1.4" height="1.6"/><rect x="41.5" y="88.0" width="1.4" height="1.6"/><rect x="47.5" y="88.0" width="1.4" height="1.6"/><rect x="44.5" y="95.0" width="1.4" height="1.6"/></g><path d="M262 36L270 41V102H262Z" style="fill:var(--zilver-x)"/><path d="M226 102V13L234 3Q250 16 262 36V102Z" fill="url(#dbVulpen)"/><g clip-path="url(#dbVulpenVlak)"><g style="stroke:var(--zilver-d);fill:none" stroke-width="0.7"><line x1="227.5" y1="0" x2="227.5" y2="102"/><line x1="230.1" y1="0" x2="230.1" y2="102"/><line x1="232.7" y1="0" x2="232.7" y2="102"/><line x1="235.3" y1="0" x2="235.3" y2="102"/><line x1="237.9" y1="0" x2="237.9" y2="102"/><line x1="240.5" y1="0" x2="240.5" y2="102"/><line x1="243.1" y1="0" x2="243.1" y2="102"/><line x1="245.7" y1="0" x2="245.7" y2="102"/><line x1="248.3" y1="0" x2="248.3" y2="102"/><line x1="250.9" y1="0" x2="250.9" y2="102"/><line x1="253.5" y1="0" x2="253.5" y2="102"/><line x1="256.1" y1="0" x2="256.1" y2="102"/><line x1="258.7" y1="0" x2="258.7" y2="102"/><line x1="261.3" y1="0" x2="261.3" y2="102"/></g><g style="stroke:var(--zilver-x);fill:none" stroke-width="0.35" opacity=".6"><line x1="224" y1="22" x2="264" y2="22"/><line x1="224" y1="27" x2="264" y2="27"/><line x1="224" y1="32" x2="264" y2="32"/><line x1="224" y1="37" x2="264" y2="37"/><line x1="224" y1="42" x2="264" y2="42"/><line x1="224" y1="47" x2="264" y2="47"/><line x1="224" y1="52" x2="264" y2="52"/><line x1="224" y1="57" x2="264" y2="57"/><line x1="224" y1="62" x2="264" y2="62"/><line x1="224" y1="67" x2="264" y2="67"/><line x1="224" y1="72" x2="264" y2="72"/><line x1="224" y1="77" x2="264" y2="77"/><line x1="224" y1="82" x2="264" y2="82"/><line x1="224" y1="87" x2="264" y2="87"/><line x1="224" y1="92" x2="264" y2="92"/><line x1="224" y1="97" x2="264" y2="97"/></g></g><rect x="222" y="24" width="4" height="78" style="fill:var(--zilver-d)"/><path d="M224 24Q224 9 234 3" style="stroke:var(--zilver-l);fill:none" stroke-width="1.3"/><g clip-path="url(#dbVulpenVlak)"><g style="fill:var(--raam);opacity:var(--raamop)"><rect x="246.2" y="40.0" width="1.2" height="2"/><rect x="228.0" y="45.0" width="1.2" height="2"/><rect x="235.8" y="45.0" width="1.2" height="2"/><rect x="241.0" y="45.0" width="1.2" height="2"/><rect x="243.6" y="45.0" width="1.2" height="2"/><rect x="246.2" y="45.0" width="1.2" height="2"/><rect x="251.4" y="45.0" width="1.2" height="2"/><rect x="254.0" y="45.0" width="1.2" height="2"/><rect x="230.6" y="50.0" width="1.2" height="2"/><rect x="246.2" y="50.0" width="1.2" height="2"/><rect x="228.0" y="55.0" width="1.2" height="2"/><rect x="230.6" y="55.0" width="1.2" height="2"/><rect x="233.2" y="55.0" width="1.2" height="2"/><rect x="235.8" y="55.0" width="1.2" height="2"/><rect x="243.6" y="55.0" width="1.2" height="2"/><rect x="246.2" y="55.0" width="1.2" height="2"/><rect x="238.4" y="60.0" width="1.2" height="2"/><rect x="256.6" y="60.0" width="1.2" height="2"/><rect x="230.6" y="65.0" width="1.2" height="2"/><rect x="233.2" y="65.0" width="1.2" height="2"/><rect x="235.8" y="65.0" width="1.2" height="2"/><rect x="238.4" y="65.0" width="1.2" height="2"/><rect x="243.6" y="65.0" width="1.2" height="2"/><rect x="246.2" y="65.0" width="1.2" height="2"/><rect x="248.8" y="65.0" width="1.2" height="2"/><rect x="251.4" y="65.0" width="1.2" height="2"/><rect x="256.6" y="65.0" width="1.2" height="2"/><rect x="233.2" y="70.0" width="1.2" height="2"/><rect x="235.8" y="70.0" width="1.2" height="2"/><rect x="243.6" y="70.0" width="1.2" height="2"/><rect x="256.6" y="70.0" width="1.2" height="2"/><rect x="228.0" y="75.0" width="1.2" height="2"/><rect x="233.2" y="75.0" width="1.2" height="2"/><rect x="238.4" y="75.0" width="1.2" height="2"/><rect x="241.0" y="75.0" width="1.2" height="2"/><rect x="248.8" y="75.0" width="1.2" height="2"/><rect x="254.0" y="75.0" width="1.2" height="2"/><rect x="235.8" y="80.0" width="1.2" height="2"/><rect x="241.0" y="80.0" width="1.2" height="2"/><rect x="254.0" y="80.0" width="1.2" height="2"/><rect x="241.0" y="85.0" width="1.2" height="2"/><rect x="248.8" y="85.0" width="1.2" height="2"/><rect x="251.4" y="85.0" width="1.2" height="2"/><rect x="254.0" y="85.0" width="1.2" height="2"/><rect x="256.6" y="85.0" width="1.2" height="2"/><rect x="246.2" y="90.0" width="1.2" height="2"/><rect x="248.8" y="90.0" width="1.2" height="2"/><rect x="251.4" y="90.0" width="1.2" height="2"/><rect x="254.0" y="90.0" width="1.2" height="2"/><rect x="241.0" y="95.0" width="1.2" height="2"/><rect x="256.6" y="95.0" width="1.2" height="2"/></g></g><rect x="268" y="76" width="32" height="26" style="fill:var(--koepelvoet)"/><rect x="270" y="79" width="28.0" height="20.0" fill="url(#dbR3)"/><g style="fill:var(--raam);opacity:var(--raamop)"><rect x="273.5" y="79.0" width="2" height="2.5"/><rect x="284.0" y="79.0" width="2" height="2.5"/><rect x="287.5" y="79.0" width="2" height="2.5"/><rect x="270.0" y="84.0" width="2" height="2.5"/><rect x="273.5" y="84.0" width="2" height="2.5"/><rect x="277.0" y="84.0" width="2" height="2.5"/><rect x="287.5" y="84.0" width="2" height="2.5"/><rect x="273.5" y="89.0" width="2" height="2.5"/><rect x="280.5" y="89.0" width="2" height="2.5"/><rect x="284.0" y="89.0" width="2" height="2.5"/><rect x="273.5" y="94.0" width="2" height="2.5"/><rect x="284.0" y="94.0" width="2" height="2.5"/><rect x="287.5" y="94.0" width="2" height="2.5"/><rect x="291.0" y="94.0" width="2" height="2.5"/><rect x="294.5" y="94.0" width="2" height="2.5"/></g><path d="M267 77C267 56 275 46 284 43C293 46 301 56 301 77Z" fill="url(#dbKoepel)"/><g style="stroke:var(--koepel-r);fill:none" stroke-width="0.7" opacity=".75"><path d="M284 43Q275 56 268 77"/><path d="M284 43Q279.5 56 276.0 77"/><path d="M284 43Q284 56 284 77"/><path d="M284 43Q288.5 56 292.0 77"/><path d="M284 43Q293 56 300 77"/><path d="M269 66Q284 60 299 66M271 56Q284 51 297 56"/></g><line x1="284" y1="43" x2="284" y2="37" stroke="#555" stroke-width=".8"/><path d="M318 20L327 23L339 56L330 54Z" style="fill:var(--blauw-l)"/><path d="M330 54L339 56V102H330Z" style="fill:var(--blauw-d)"/><path d="M306 102V54L318 20L330 54V102Z" style="fill:var(--rood-l)"/><path d="M318 20L330 54V102H327V56Z" style="fill:var(--rood-d)" opacity=".45"/><rect x="307.6" y="58" width="22.4" height="44.0" fill="url(#dbR4)"/><g style="fill:var(--raam);opacity:var(--raamop)"><rect x="310.8" y="58.0" width="1.6" height="2.6"/><rect x="314.0" y="58.0" width="1.6" height="2.6"/><rect x="317.2" y="58.0" width="1.6" height="2.6"/><rect x="323.6" y="58.0" width="1.6" height="2.6"/><rect x="314.0" y="62.4" width="1.6" height="2.6"/><rect x="307.6" y="66.8" width="1.6" height="2.6"/><rect x="310.8" y="66.8" width="1.6" height="2.6"/><rect x="314.0" y="66.8" width="1.6" height="2.6"/><rect x="317.2" y="66.8" width="1.6" height="2.6"/><rect x="323.6" y="66.8" width="1.6" height="2.6"/><rect x="314.0" y="71.2" width="1.6" height="2.6"/><rect x="326.8" y="71.2" width="1.6" height="2.6"/><rect x="310.8" y="75.6" width="1.6" height="2.6"/><rect x="314.0" y="75.6" width="1.6" height="2.6"/><rect x="310.8" y="80.0" width="1.6" height="2.6"/><rect x="326.8" y="84.4" width="1.6" height="2.6"/><rect x="317.2" y="88.8" width="1.6" height="2.6"/><rect x="320.4" y="88.8" width="1.6" height="2.6"/><rect x="323.6" y="88.8" width="1.6" height="2.6"/><rect x="326.8" y="88.8" width="1.6" height="2.6"/><rect x="307.6" y="93.2" width="1.6" height="2.6"/><rect x="310.8" y="93.2" width="1.6" height="2.6"/><rect x="323.6" y="93.2" width="1.6" height="2.6"/><rect x="310.8" y="97.6" width="1.6" height="2.6"/><rect x="320.4" y="97.6" width="1.6" height="2.6"/><rect x="326.8" y="97.6" width="1.6" height="2.6"/></g><g style="fill:var(--rood-d)"><rect x="316.5" y="30" width=".9" height="2.2"/><rect x="319.0" y="30" width=".9" height="2.2"/><rect x="314.0" y="38" width=".9" height="2.2"/><rect x="317.0" y="38" width=".9" height="2.2"/><rect x="320.0" y="38" width=".9" height="2.2"/><rect x="323.0" y="38" width=".9" height="2.2"/><rect x="311.0" y="46" width=".9" height="2.2"/><rect x="314.5" y="46" width=".9" height="2.2"/><rect x="318.0" y="46" width=".9" height="2.2"/><rect x="321.5" y="46" width=".9" height="2.2"/><rect x="325.0" y="46" width=".9" height="2.2"/></g><path d="M350 20L359 23L371 56L362 54Z" style="fill:var(--blauw-l)"/><path d="M362 54L371 56V102H362Z" style="fill:var(--blauw-d)"/><path d="M338 102V54L350 20L362 54V102Z" style="fill:var(--rood-l)"/><path d="M350 20L362 54V102H359V56Z" style="fill:var(--rood-d)" opacity=".45"/><rect x="339.6" y="58" width="22.4" height="44.0" fill="url(#dbR5)"/><g style="fill:var(--raam);opacity:var(--raamop)"><rect x="349.2" y="58.0" width="1.6" height="2.6"/><rect x="352.4" y="58.0" width="1.6" height="2.6"/><rect x="358.8" y="58.0" width="1.6" height="2.6"/><rect x="339.6" y="62.4" width="1.6" height="2.6"/><rect x="342.8" y="62.4" width="1.6" height="2.6"/><rect x="349.2" y="62.4" width="1.6" height="2.6"/><rect x="355.6" y="62.4" width="1.6" height="2.6"/><rect x="358.8" y="62.4" width="1.6" height="2.6"/><rect x="339.6" y="66.8" width="1.6" height="2.6"/><rect x="349.2" y="66.8" width="1.6" height="2.6"/><rect x="339.6" y="71.2" width="1.6" height="2.6"/><rect x="342.8" y="71.2" width="1.6" height="2.6"/><rect x="346.0" y="71.2" width="1.6" height="2.6"/><rect x="352.4" y="71.2" width="1.6" height="2.6"/><rect x="355.6" y="71.2" width="1.6" height="2.6"/><rect x="358.8" y="71.2" width="1.6" height="2.6"/><rect x="346.0" y="75.6" width="1.6" height="2.6"/><rect x="349.2" y="75.6" width="1.6" height="2.6"/><rect x="339.6" y="80.0" width="1.6" height="2.6"/><rect x="342.8" y="80.0" width="1.6" height="2.6"/><rect x="349.2" y="80.0" width="1.6" height="2.6"/><rect x="352.4" y="80.0" width="1.6" height="2.6"/><rect x="342.8" y="84.4" width="1.6" height="2.6"/><rect x="349.2" y="84.4" width="1.6" height="2.6"/><rect x="358.8" y="84.4" width="1.6" height="2.6"/><rect x="346.0" y="88.8" width="1.6" height="2.6"/><rect x="349.2" y="88.8" width="1.6" height="2.6"/><rect x="355.6" y="88.8" width="1.6" height="2.6"/><rect x="358.8" y="88.8" width="1.6" height="2.6"/><rect x="339.6" y="93.2" width="1.6" height="2.6"/><rect x="342.8" y="93.2" width="1.6" height="2.6"/><rect x="346.0" y="93.2" width="1.6" height="2.6"/><rect x="349.2" y="93.2" width="1.6" height="2.6"/><rect x="352.4" y="93.2" width="1.6" height="2.6"/><rect x="358.8" y="93.2" width="1.6" height="2.6"/><rect x="342.8" y="97.6" width="1.6" height="2.6"/><rect x="346.0" y="97.6" width="1.6" height="2.6"/><rect x="349.2" y="97.6" width="1.6" height="2.6"/><rect x="352.4" y="97.6" width="1.6" height="2.6"/><rect x="355.6" y="97.6" width="1.6" height="2.6"/></g><g style="fill:var(--rood-d)"><rect x="348.5" y="30" width=".9" height="2.2"/><rect x="351.0" y="30" width=".9" height="2.2"/><rect x="346.0" y="38" width=".9" height="2.2"/><rect x="349.0" y="38" width=".9" height="2.2"/><rect x="352.0" y="38" width=".9" height="2.2"/><rect x="355.0" y="38" width=".9" height="2.2"/><rect x="343.0" y="46" width=".9" height="2.2"/><rect x="346.5" y="46" width=".9" height="2.2"/><rect x="350.0" y="46" width=".9" height="2.2"/><rect x="353.5" y="46" width=".9" height="2.2"/><rect x="357.0" y="46" width=".9" height="2.2"/></g><path d="M404 14L411 17V102H404Z" style="fill:var(--kanteel-d)"/><rect x="376" y="14" width="28" height="88" style="fill:var(--kanteel-l)"/><g style="fill:var(--kanteel-l)"><rect x="376.0" y="10" width="2.2" height="4"/><rect x="379.6" y="10" width="2.2" height="4"/><rect x="383.2" y="10" width="2.2" height="4"/><rect x="386.8" y="10" width="2.2" height="4"/><rect x="390.4" y="10" width="2.2" height="4"/><rect x="394.0" y="10" width="2.2" height="4"/><rect x="397.6" y="10" width="2.2" height="4"/><rect x="401.2" y="10" width="2.2" height="4"/></g><rect x="378" y="18" width="24.0" height="84.0" fill="url(#dbR6)"/><g style="fill:var(--raam);opacity:var(--raamop)"><rect x="381.0" y="18.0" width="1.4" height="2.4"/><rect x="390.0" y="18.0" width="1.4" height="2.4"/><rect x="393.0" y="22.0" width="1.4" height="2.4"/><rect x="384.0" y="26.0" width="1.4" height="2.4"/><rect x="387.0" y="26.0" width="1.4" height="2.4"/><rect x="390.0" y="26.0" width="1.4" height="2.4"/><rect x="393.0" y="26.0" width="1.4" height="2.4"/><rect x="399.0" y="26.0" width="1.4" height="2.4"/><rect x="378.0" y="30.0" width="1.4" height="2.4"/><rect x="381.0" y="30.0" width="1.4" height="2.4"/><rect x="393.0" y="30.0" width="1.4" height="2.4"/><rect x="396.0" y="30.0" width="1.4" height="2.4"/><rect x="399.0" y="30.0" width="1.4" height="2.4"/><rect x="381.0" y="34.0" width="1.4" height="2.4"/><rect x="387.0" y="34.0" width="1.4" height="2.4"/><rect x="399.0" y="34.0" width="1.4" height="2.4"/><rect x="381.0" y="38.0" width="1.4" height="2.4"/><rect x="387.0" y="38.0" width="1.4" height="2.4"/><rect x="399.0" y="38.0" width="1.4" height="2.4"/><rect x="381.0" y="42.0" width="1.4" height="2.4"/><rect x="384.0" y="42.0" width="1.4" height="2.4"/><rect x="387.0" y="42.0" width="1.4" height="2.4"/><rect x="393.0" y="42.0" width="1.4" height="2.4"/><rect x="396.0" y="42.0" width="1.4" height="2.4"/><rect x="399.0" y="42.0" width="1.4" height="2.4"/><rect x="378.0" y="46.0" width="1.4" height="2.4"/><rect x="378.0" y="50.0" width="1.4" height="2.4"/><rect x="384.0" y="50.0" width="1.4" height="2.4"/><rect x="393.0" y="50.0" width="1.4" height="2.4"/><rect x="387.0" y="54.0" width="1.4" height="2.4"/><rect x="393.0" y="58.0" width="1.4" height="2.4"/><rect x="396.0" y="58.0" width="1.4" height="2.4"/><rect x="399.0" y="58.0" width="1.4" height="2.4"/><rect x="381.0" y="62.0" width="1.4" height="2.4"/><rect x="378.0" y="66.0" width="1.4" height="2.4"/><rect x="396.0" y="66.0" width="1.4" height="2.4"/><rect x="378.0" y="70.0" width="1.4" height="2.4"/><rect x="381.0" y="70.0" width="1.4" height="2.4"/><rect x="384.0" y="70.0" width="1.4" height="2.4"/><rect x="390.0" y="70.0" width="1.4" height="2.4"/><rect x="396.0" y="74.0" width="1.4" height="2.4"/><rect x="399.0" y="74.0" width="1.4" height="2.4"/><rect x="378.0" y="78.0" width="1.4" height="2.4"/><rect x="384.0" y="78.0" width="1.4" height="2.4"/><rect x="390.0" y="78.0" width="1.4" height="2.4"/><rect x="393.0" y="78.0" width="1.4" height="2.4"/><rect x="396.0" y="78.0" width="1.4" height="2.4"/><rect x="384.0" y="82.0" width="1.4" height="2.4"/><rect x="396.0" y="82.0" width="1.4" height="2.4"/><rect x="378.0" y="86.0" width="1.4" height="2.4"/><rect x="387.0" y="86.0" width="1.4" height="2.4"/><rect x="378.0" y="90.0" width="1.4" height="2.4"/><rect x="381.0" y="90.0" width="1.4" height="2.4"/><rect x="387.0" y="90.0" width="1.4" height="2.4"/><rect x="393.0" y="90.0" width="1.4" height="2.4"/><rect x="378.0" y="94.0" width="1.4" height="2.4"/><rect x="393.0" y="94.0" width="1.4" height="2.4"/><rect x="378.0" y="98.0" width="1.4" height="2.4"/><rect x="381.0" y="98.0" width="1.4" height="2.4"/><rect x="390.0" y="98.0" width="1.4" height="2.4"/><rect x="393.0" y="98.0" width="1.4" height="2.4"/><rect x="396.0" y="98.0" width="1.4" height="2.4"/><rect x="399.0" y="98.0" width="1.4" height="2.4"/></g><path d="M438 20L443 23V102H438Z" style="fill:var(--min-d)"/><rect x="416" y="20" width="22" height="82" style="fill:var(--min-l)"/><rect x="417.5" y="23" width="19.6" height="79.2" fill="url(#dbR7)"/><g style="fill:var(--raam);opacity:var(--raamop)"><rect x="420.3" y="23.0" width="1.4" height="2"/><rect x="428.7" y="23.0" width="1.4" height="2"/><rect x="420.3" y="26.6" width="1.4" height="2"/><rect x="423.1" y="26.6" width="1.4" height="2"/><rect x="425.9" y="26.6" width="1.4" height="2"/><rect x="434.3" y="26.6" width="1.4" height="2"/><rect x="417.5" y="30.2" width="1.4" height="2"/><rect x="420.3" y="30.2" width="1.4" height="2"/><rect x="423.1" y="30.2" width="1.4" height="2"/><rect x="425.9" y="30.2" width="1.4" height="2"/><rect x="431.5" y="30.2" width="1.4" height="2"/><rect x="417.5" y="33.8" width="1.4" height="2"/><rect x="420.3" y="33.8" width="1.4" height="2"/><rect x="425.9" y="33.8" width="1.4" height="2"/><rect x="428.7" y="33.8" width="1.4" height="2"/><rect x="434.3" y="37.4" width="1.4" height="2"/><rect x="428.7" y="41.0" width="1.4" height="2"/><rect x="431.5" y="41.0" width="1.4" height="2"/><rect x="417.5" y="44.6" width="1.4" height="2"/><rect x="423.1" y="44.6" width="1.4" height="2"/><rect x="425.9" y="44.6" width="1.4" height="2"/><rect x="434.3" y="44.6" width="1.4" height="2"/><rect x="420.3" y="48.2" width="1.4" height="2"/><rect x="425.9" y="48.2" width="1.4" height="2"/><rect x="428.7" y="48.2" width="1.4" height="2"/><rect x="431.5" y="48.2" width="1.4" height="2"/><rect x="434.3" y="48.2" width="1.4" height="2"/><rect x="423.1" y="51.8" width="1.4" height="2"/><rect x="431.5" y="51.8" width="1.4" height="2"/><rect x="434.3" y="51.8" width="1.4" height="2"/><rect x="417.5" y="55.4" width="1.4" height="2"/><rect x="420.3" y="55.4" width="1.4" height="2"/><rect x="423.1" y="55.4" width="1.4" height="2"/><rect x="425.9" y="55.4" width="1.4" height="2"/><rect x="428.7" y="55.4" width="1.4" height="2"/><rect x="431.5" y="55.4" width="1.4" height="2"/><rect x="423.1" y="59.0" width="1.4" height="2"/><rect x="425.9" y="59.0" width="1.4" height="2"/><rect x="431.5" y="59.0" width="1.4" height="2"/><rect x="434.3" y="59.0" width="1.4" height="2"/><rect x="417.5" y="62.6" width="1.4" height="2"/><rect x="420.3" y="62.6" width="1.4" height="2"/><rect x="425.9" y="62.6" width="1.4" height="2"/><rect x="417.5" y="66.2" width="1.4" height="2"/><rect x="420.3" y="66.2" width="1.4" height="2"/><rect x="423.1" y="66.2" width="1.4" height="2"/><rect x="425.9" y="66.2" width="1.4" height="2"/><rect x="428.7" y="66.2" width="1.4" height="2"/><rect x="420.3" y="69.8" width="1.4" height="2"/><rect x="423.1" y="69.8" width="1.4" height="2"/><rect x="417.5" y="73.4" width="1.4" height="2"/><rect x="420.3" y="73.4" width="1.4" height="2"/><rect x="434.3" y="73.4" width="1.4" height="2"/><rect x="417.5" y="77.0" width="1.4" height="2"/><rect x="420.3" y="77.0" width="1.4" height="2"/><rect x="425.9" y="80.6" width="1.4" height="2"/><rect x="431.5" y="80.6" width="1.4" height="2"/><rect x="420.3" y="84.2" width="1.4" height="2"/><rect x="423.1" y="84.2" width="1.4" height="2"/><rect x="425.9" y="84.2" width="1.4" height="2"/><rect x="434.3" y="84.2" width="1.4" height="2"/><rect x="417.5" y="87.8" width="1.4" height="2"/><rect x="425.9" y="87.8" width="1.4" height="2"/><rect x="428.7" y="87.8" width="1.4" height="2"/><rect x="434.3" y="87.8" width="1.4" height="2"/><rect x="417.5" y="91.4" width="1.4" height="2"/><rect x="434.3" y="91.4" width="1.4" height="2"/><rect x="417.5" y="95.0" width="1.4" height="2"/><rect x="425.9" y="95.0" width="1.4" height="2"/><rect x="428.7" y="95.0" width="1.4" height="2"/><rect x="417.5" y="98.6" width="1.4" height="2"/><rect x="420.3" y="98.6" width="1.4" height="2"/><rect x="428.7" y="98.6" width="1.4" height="2"/><rect x="431.5" y="98.6" width="1.4" height="2"/><rect x="434.3" y="98.6" width="1.4" height="2"/></g><path d="M463 28L468 31V102H463Z" style="fill:var(--min-d)"/><rect x="443" y="28" width="20" height="74" style="fill:var(--min-l)"/><rect x="444.5" y="31" width="16.8" height="68.4" fill="url(#dbR8)"/><g style="fill:var(--raam);opacity:var(--raamop)"><rect x="444.5" y="31.0" width="1.4" height="2"/><rect x="450.1" y="31.0" width="1.4" height="2"/><rect x="444.5" y="34.6" width="1.4" height="2"/><rect x="450.1" y="34.6" width="1.4" height="2"/><rect x="455.7" y="34.6" width="1.4" height="2"/><rect x="458.5" y="34.6" width="1.4" height="2"/><rect x="447.3" y="38.2" width="1.4" height="2"/><rect x="455.7" y="38.2" width="1.4" height="2"/><rect x="458.5" y="38.2" width="1.4" height="2"/><rect x="444.5" y="41.8" width="1.4" height="2"/><rect x="452.9" y="41.8" width="1.4" height="2"/><rect x="455.7" y="41.8" width="1.4" height="2"/><rect x="458.5" y="41.8" width="1.4" height="2"/><rect x="447.3" y="45.4" width="1.4" height="2"/><rect x="450.1" y="45.4" width="1.4" height="2"/><rect x="452.9" y="45.4" width="1.4" height="2"/><rect x="455.7" y="45.4" width="1.4" height="2"/><rect x="455.7" y="49.0" width="1.4" height="2"/><rect x="458.5" y="49.0" width="1.4" height="2"/><rect x="450.1" y="52.6" width="1.4" height="2"/><rect x="455.7" y="52.6" width="1.4" height="2"/><rect x="458.5" y="52.6" width="1.4" height="2"/><rect x="444.5" y="56.2" width="1.4" height="2"/><rect x="447.3" y="56.2" width="1.4" height="2"/><rect x="450.1" y="56.2" width="1.4" height="2"/><rect x="452.9" y="56.2" width="1.4" height="2"/><rect x="455.7" y="56.2" width="1.4" height="2"/><rect x="444.5" y="59.8" width="1.4" height="2"/><rect x="450.1" y="59.8" width="1.4" height="2"/><rect x="452.9" y="59.8" width="1.4" height="2"/><rect x="444.5" y="63.4" width="1.4" height="2"/><rect x="447.3" y="63.4" width="1.4" height="2"/><rect x="452.9" y="63.4" width="1.4" height="2"/><rect x="458.5" y="63.4" width="1.4" height="2"/><rect x="444.5" y="67.0" width="1.4" height="2"/><rect x="450.1" y="67.0" width="1.4" height="2"/><rect x="452.9" y="67.0" width="1.4" height="2"/><rect x="444.5" y="70.6" width="1.4" height="2"/><rect x="447.3" y="70.6" width="1.4" height="2"/><rect x="450.1" y="70.6" width="1.4" height="2"/><rect x="455.7" y="70.6" width="1.4" height="2"/><rect x="447.3" y="74.2" width="1.4" height="2"/><rect x="450.1" y="74.2" width="1.4" height="2"/><rect x="458.5" y="74.2" width="1.4" height="2"/><rect x="447.3" y="77.8" width="1.4" height="2"/><rect x="450.1" y="77.8" width="1.4" height="2"/><rect x="452.9" y="77.8" width="1.4" height="2"/><rect x="450.1" y="81.4" width="1.4" height="2"/><rect x="452.9" y="81.4" width="1.4" height="2"/><rect x="447.3" y="85.0" width="1.4" height="2"/><rect x="450.1" y="85.0" width="1.4" height="2"/><rect x="452.9" y="85.0" width="1.4" height="2"/><rect x="444.5" y="88.6" width="1.4" height="2"/><rect x="444.5" y="92.2" width="1.4" height="2"/><rect x="447.3" y="92.2" width="1.4" height="2"/><rect x="450.1" y="92.2" width="1.4" height="2"/><rect x="455.7" y="92.2" width="1.4" height="2"/><rect x="458.5" y="92.2" width="1.4" height="2"/><rect x="447.3" y="95.8" width="1.4" height="2"/><rect x="450.1" y="95.8" width="1.4" height="2"/><rect x="452.9" y="95.8" width="1.4" height="2"/><rect x="458.5" y="95.8" width="1.4" height="2"/></g><path d="M0 102V92Q5 89.9 10 92.8Q15 90.0 20 91.5Q25 86.3 30 91.2Q35 88.0 40 92.4Q45 87.8 50 91.5Q55 87.7 60 92.2Q65 88.7 70 92.5Q75 89.4 80 92.3Q85 86.5 90 92.7Q95 87.2 100 92.1Q105 87.5 110 92.5Q115 86.8 120 91.5Q125 87.0 130 91.3Q135 89.5 140 92.2Q145 87.3 150 91.8Q155 90.0 160 92.0Q165 86.9 170 92.6Q175 88.6 180 93.0Q185 86.4 190 91.9Q195 89.3 200 92.7Q205 89.7 210 91.1Q215 87.2 220 91.2Q225 86.8 230 92.9Q235 88.3 240 92.9Q245 87.5 250 92.7Q255 87.8 260 91.5Q265 89.1 270 92.9Q275 86.4 280 92.2Q285 88.5 290 91.4Q295 87.5 300 91.3Q305 86.8 310 91.5Q315 88.4 320 92.3Q325 86.8 330 91.0Q335 87.3 340 92.4Q345 86.7 350 91.6Q355 86.8 360 92.6Q365 88.2 370 91.1Q375 86.4 380 91.8Q385 88.2 390 92.3Q395 86.4 400 91.3Q405 88.8 410 91.8Q415 87.1 420 91.6Q425 89.8 430 91.6Q435 88.3 440 91.7Q445 87.7 450 92.7Q455 90.0 460 91.7Q465 86.8 470 92.5Q475 86.8 480 91.0Q485 89.6 490 91.8Q495 89.3 500 91.8Q505 89.5 510 91.9Q515 86.7 520 91.0Q525 88.2 530 92.3Q535 89.6 540 91.2Q545 88.5 550 91.7Q555 88.0 560 91.3Q565 87.1 570 92.0Q575 89.7 580 91.2Q585 88.0 590 92.6Q595 89.9 600 91.4V102Z" style="fill:var(--boom)"/><g style="fill:var(--boom-d)"><rect x="500" y="90" width="26" height="12"/><path d="M500 90L513 83L526 90Z"/><rect x="232" y="92" width="40" height="10"/><rect x="390" y="91" width="34" height="11"/></g><rect x="0" y="102" width="600" height="6" style="fill:var(--grond)"/><path d="M70 102V72H73V67H76V62H79V57H83V53H87V57H91V62H94V67H97V72H100V102Z" style="fill:var(--trap-l)"/><path d="M87 53V102H100V72H97V67H94V62H91V57Z" style="fill:var(--trap-d)" opacity=".5"/><rect x="74" y="76" width="25.0" height="21.0" fill="url(#dbR9)"/><g style="fill:var(--raam);opacity:var(--raamop)"><rect x="74.0" y="76.0" width="2.4" height="3.4"/><rect x="89.0" y="76.0" width="2.4" height="3.4"/><rect x="94.0" y="76.0" width="2.4" height="3.4"/><rect x="79.0" y="83.0" width="2.4" height="3.4"/><rect x="74.0" y="90.0" width="2.4" height="3.4"/><rect x="84.0" y="90.0" width="2.4" height="3.4"/><rect x="89.0" y="90.0" width="2.4" height="3.4"/></g><ellipse cx="150" cy="103" rx="66" ry="4" fill="url(#dbSchaduw)"/><path d="M96 58L118 62V102H96Z" style="fill:var(--steen-d)"/><path d="M118 62L150 26L126 18L94 56Z" style="fill:var(--lei-l)"/><path d="M118 62L150 26L146 25L114 61Z" style="fill:var(--lei-d)"/><path d="M105.0 54.5L108.0 49.5L111.0 54.5Z" style="fill:var(--lei-d)"/><path d="M113.0 45.0L116.0 40.0L119.0 45.0Z" style="fill:var(--lei-d)"/><path d="M121.0 35.5L124.0 30.5L127.0 35.5Z" style="fill:var(--lei-d)"/><g style="fill:var(--steen-x)"><rect x="100" y="70" width="3" height="7" rx="1.5"/><rect x="108" y="72" width="3" height="7" rx="1.5"/></g><path d="M118 102V62L150 26L182 62V102Z" style="fill:var(--steen-l)"/><path d="M150 26L182 62V102H174V64Z" style="fill:var(--steen-m)" opacity=".55"/><path d="M118 62L150 26L182 62" style="stroke:var(--steen-d);fill:none" stroke-width="1.6"/><g style="fill:var(--steen-d)"><circle cx="122.0" cy="56.3" r=".9"/><circle cx="178.0" cy="56.3" r=".9"/><circle cx="126.0" cy="51.8" r=".9"/><circle cx="174.0" cy="51.8" r=".9"/><circle cx="130.0" cy="47.3" r=".9"/><circle cx="170.0" cy="47.3" r=".9"/><circle cx="134.0" cy="42.8" r=".9"/><circle cx="166.0" cy="42.8" r=".9"/><circle cx="138.0" cy="38.3" r=".9"/><circle cx="162.0" cy="38.3" r=".9"/><circle cx="142.0" cy="33.8" r=".9"/><circle cx="158.0" cy="33.8" r=".9"/><circle cx="146.0" cy="29.3" r=".9"/><circle cx="154.0" cy="29.3" r=".9"/></g><path d="M150 26V19M147.5 21.5H152.5" stroke="#6b5a45" stroke-width="1"/><path d="M118 62H182" style="stroke:var(--steen-d);fill:none" stroke-width="1.2"/><g style="fill:var(--steen-x)"><circle cx="145" cy="49" r="2.6"/><circle cx="155" cy="49" r="2.6"/></g><g style="stroke:var(--steen-d);fill:none" stroke-width="0.6"><path d="M128 59a2.5 2.5 0 0 1 5 0"/><path d="M133 59a2.5 2.5 0 0 1 5 0"/><path d="M138 59a2.5 2.5 0 0 1 5 0"/><path d="M143 59a2.5 2.5 0 0 1 5 0"/><path d="M148 59a2.5 2.5 0 0 1 5 0"/><path d="M153 59a2.5 2.5 0 0 1 5 0"/><path d="M158 59a2.5 2.5 0 0 1 5 0"/><path d="M163 59a2.5 2.5 0 0 1 5 0"/><path d="M168 59a2.5 2.5 0 0 1 5 0"/></g><path d="M124 84V70Q126 65 128 70V84Z" style="fill:var(--steen-x)"/><path d="M131 84V70Q133 65 135 70V84Z" style="fill:var(--steen-x)"/><path d="M165 84V70Q167 65 169 70V84Z" style="fill:var(--steen-x)"/><path d="M172 84V70Q174 65 176 70V84Z" style="fill:var(--steen-x)"/><circle cx="150" cy="73" r="8.5" style="fill:var(--steen-x)"/><g style="fill:var(--raam);opacity:var(--raamop)"><circle cx="150" cy="73" r="7.5"/><path d="M124 84V70Q126 65 128 70V84ZM172 84V70Q174 65 176 70V84Z"/></g><g style="stroke:var(--steen-l);fill:none" stroke-width="0.7"><circle cx="150" cy="73" r="3"/><line x1="153.00" y1="73.00" x2="158.00" y2="73.00"/><line x1="152.60" y1="74.50" x2="156.93" y2="77.00"/><line x1="151.50" y1="75.60" x2="154.00" y2="79.93"/><line x1="150.00" y1="76.00" x2="150.00" y2="81.00"/><line x1="148.50" y1="75.60" x2="146.00" y2="79.93"/><line x1="147.40" y1="74.50" x2="143.07" y2="77.00"/><line x1="147.00" y1="73.00" x2="142.00" y2="73.00"/><line x1="147.40" y1="71.50" x2="143.07" y2="69.00"/><line x1="148.50" y1="70.40" x2="146.00" y2="66.07"/><line x1="150.00" y1="70.00" x2="150.00" y2="65.00"/><line x1="151.50" y1="70.40" x2="154.00" y2="66.07"/><line x1="152.60" y1="71.50" x2="156.93" y2="69.00"/><circle cx="150" cy="73" r="8.5"/></g><rect x="164" y="88" width="6" height="9" style="fill:var(--steen-x)"/><path d="M143 102V92H157V102Z" style="fill:var(--steen-x)"/><path d="M141.5 92.5L150 85L158.5 92.5Z" style="fill:var(--lei-l)"/><path d="M150 85L158.5 92.5H155Z" style="fill:var(--lei-d)"/><g style="fill:var(--steen-l)"><rect x="143" y="92" width="1.5" height="10"/><rect x="155.5" y="92" width="1.5" height="10"/></g><rect x="104" y="40" width="15" height="62" fill="url(#dbToren)"/><rect x="103" y="38" width="17" height="3" fill="url(#dbToren)"/><g style="stroke:var(--steen-x);fill:none" stroke-width="0.6" opacity=".6"><path d="M104 58H119M104 78H119"/></g><g style="fill:var(--steen-x)"><rect x="109" y="48" width="2.4" height="6" rx="1.2"/><rect x="109" y="66" width="2.4" height="6" rx="1.2"/><rect x="109" y="84" width="2.4" height="6" rx="1.2"/></g><path d="M103 38L111.5 13L120 38Z" fill="url(#dbKegel)"/><line x1="111.5" y1="13" x2="111.5" y2="7" stroke="#c9a23a" stroke-width=".9"/><circle cx="111.5" cy="6.5" r="1" fill="#c9a23a"/><rect x="180" y="42" width="15" height="60" fill="url(#dbToren)"/><rect x="179" y="40" width="17" height="3" fill="url(#dbToren)"/><g style="stroke:var(--steen-x);fill:none" stroke-width="0.6" opacity=".6"><path d="M180 60H195M180 80H195"/></g><g style="fill:var(--steen-x)"><rect x="185" y="50" width="2.4" height="6" rx="1.2"/><rect x="185" y="68" width="2.4" height="6" rx="1.2"/><rect x="185" y="86" width="2.4" height="6" rx="1.2"/></g><path d="M179 40L187.5 17L196 40Z" fill="url(#dbKegel)"/><line x1="187.5" y1="17" x2="187.5" y2="11" stroke="#c9a23a" stroke-width=".9"/><circle cx="187.5" cy="10.5" r="1" fill="#c9a23a"/><circle cx="111.5" cy="44" r="2.2" fill="#e8d9a6" stroke="#c9a23a" stroke-width=".5"/><g style="fill:var(--raam);opacity:var(--raamop)"></g></svg>
+    <div class="ring"><div class="board" id="board"><canvas id="c" width="600" height="600" aria-label="Speelveld"></canvas></div></div>
+    <svg class="decor onder" viewBox="0 0 600 84" data-vb-klein="0 0 600 84" data-vb-ruim="120 0 480 84" aria-hidden="true" focusable="false"><!-- Zelf getekend (naar eigen foto's): de Pier van Scheveninge met bungeetoren, paviljoen en reuzenrad --><defs><linearGradient id="doLucht" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--l1)"/><stop offset="1" style="stop-color:var(--l2)"/></linearGradient><linearGradient id="doZee" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--zh)"/><stop offset="1" style="stop-color:var(--z2)"/></linearGradient><linearGradient id="doPaal" x1="0" y1="0" x2="1" y2="0"><stop offset="0" style="stop-color:var(--beton-l)"/><stop offset=".45" style="stop-color:var(--beton-d)"/><stop offset="1" style="stop-color:var(--beton-x)"/></linearGradient><linearGradient id="doSchacht" x1="0" y1="0" x2="1" y2="0"><stop offset="0" style="stop-color:var(--wit)"/><stop offset="1" style="stop-color:var(--wit-d)"/></linearGradient><radialGradient id="doNaaf" cx=".35" cy=".35"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#b9bab4"/></radialGradient></defs><rect width="600" height="34" fill="url(#doLucht)"/><circle cx="232" cy="34" r="12" style="fill:#f7d469;opacity:var(--zon)"/><rect y="34" width="600" height="50" fill="url(#doZee)"/><path d="M220 37h24M224 41h16M228 46h8" stroke="#f7d469" stroke-width="1.2" style="opacity:calc(var(--zon) * .8)"/><g style="opacity:var(--maan)"><circle cx="70" cy="12" r="5" fill="#efe6cf"/><path d="M66 38h8M67 43h6" stroke="#efe6cf" stroke-width="1" opacity=".6"/></g><path d="M0 34H600" style="stroke:var(--l2)" stroke-width=".8" opacity=".8"/><g style="stroke:var(--golf);fill:none" stroke-width="1" stroke-linecap="round" opacity=".7"><path d="M143 37.0q1.5 -0.7 3.0 0"/><path d="M327 37.1q1.5 -0.7 3.0 0"/><path d="M222 37.3q1.5 -0.8 3.0 0"/><path d="M362 37.5q1.5 -0.8 3.1 0"/><path d="M375 37.8q1.6 -0.8 3.1 0"/><path d="M39 38.1q1.6 -0.8 3.2 0"/><path d="M8 38.4q1.6 -0.8 3.3 0"/><path d="M502 38.8q1.7 -0.8 3.3 0"/><path d="M156 39.2q1.7 -0.8 3.4 0"/><path d="M141 39.5q1.7 -0.9 3.5 0"/><path d="M597 40.0q1.8 -0.9 3.5 0"/><path d="M282 40.4q1.8 -0.9 3.6 0"/><path d="M502 40.8q1.9 -0.9 3.7 0"/><path d="M286 41.3q1.9 -0.9 3.8 0"/><path d="M383 41.7q1.9 -1.0 3.9 0"/><path d="M90 42.2q2.0 -1.0 4.0 0"/><path d="M381 42.7q2.0 -1.0 4.1 0"/><path d="M521 43.2q2.1 -1.0 4.2 0"/><path d="M314 43.7q2.1 -1.1 4.3 0"/><path d="M445 44.2q2.2 -1.1 4.4 0"/><path d="M403 44.8q2.2 -1.1 4.5 0"/><path d="M38 45.3q2.3 -1.1 4.6 0"/><path d="M455 45.9q2.3 -1.2 4.7 0"/><path d="M355 46.5q2.4 -1.2 4.8 0"/><path d="M181 47.1q2.5 -1.2 4.9 0"/><path d="M19 47.6q2.5 -1.3 5.0 0"/><path d="M519 48.2q2.6 -1.3 5.1 0"/><path d="M284 48.9q2.6 -1.3 5.3 0"/><path d="M431 49.5q2.7 -1.3 5.4 0"/><path d="M527 50.1q2.7 -1.4 5.5 0"/><path d="M428 50.7q2.8 -1.4 5.6 0"/><path d="M553 51.4q2.9 -1.4 5.7 0"/><path d="M237 52.0q2.9 -1.5 5.9 0"/><path d="M481 52.7q3.0 -1.5 6.0 0"/><path d="M267 53.4q3.1 -1.5 6.1 0"/><path d="M561 54.1q3.1 -1.6 6.2 0"/><path d="M527 54.7q3.2 -1.6 6.4 0"/><path d="M58 55.4q3.3 -1.6 6.5 0"/><path d="M82 56.1q3.3 -1.7 6.6 0"/><path d="M130 56.8q3.4 -1.7 6.8 0"/><path d="M579 57.6q3.5 -1.7 6.9 0"/><path d="M262 58.3q3.5 -1.8 7.1 0"/><path d="M376 59.0q3.6 -1.8 7.2 0"/><path d="M181 59.7q3.7 -1.8 7.3 0"/><path d="M304 60.5q3.7 -1.9 7.5 0"/><path d="M232 61.2q3.8 -1.9 7.6 0"/><path d="M211 62.0q3.9 -1.9 7.8 0"/><path d="M351 62.8q4.0 -2.0 7.9 0"/><path d="M351 63.5q4.0 -2.0 8.1 0"/><path d="M543 64.3q4.1 -2.1 8.2 0"/><path d="M409 65.1q4.2 -2.1 8.4 0"/><path d="M557 65.9q4.3 -2.1 8.5 0"/><path d="M514 66.7q4.3 -2.2 8.7 0"/><path d="M595 67.5q4.4 -2.2 8.8 0"/><path d="M403 68.3q4.5 -2.2 9.0 0"/><path d="M98 69.1q4.6 -2.3 9.1 0"/><path d="M516 69.9q4.6 -2.3 9.3 0"/><path d="M579 70.8q4.7 -2.4 9.5 0"/><path d="M543 71.6q4.8 -2.4 9.6 0"/><path d="M341 72.4q4.9 -2.4 9.8 0"/><path d="M428 73.3q5.0 -2.5 9.9 0"/><path d="M127 74.1q5.1 -2.5 10.1 0"/><path d="M499 75.0q5.1 -2.6 10.3 0"/><path d="M344 75.8q5.2 -2.6 10.4 0"/><path d="M171 76.7q5.3 -2.6 10.6 0"/><path d="M38 77.6q5.4 -2.7 10.8 0"/><path d="M512 78.4q5.5 -2.7 10.9 0"/><path d="M594 79.3q5.6 -2.8 11.1 0"/><path d="M53 80.2q5.6 -2.8 11.3 0"/><path d="M480 81.1q5.7 -2.9 11.4 0"/></g><g style="opacity:var(--vlieger)"><path d="M137 13Q146 3 155 13Q146 8 137 13Z" fill="#f5c518"/><path d="M138 13L160 54M154 13L160 54" stroke="#2a2a2a" stroke-width=".3" opacity=".6"/><g fill="#1d2a2f"><circle cx="160" cy="53" r="1.1"/><rect x="159.2" y="54" width="1.6" height="4.5"/></g><rect x="156.5" y="58.4" width="7" height="1.2" rx=".6" fill="#e9e3d0"/><path d="M203 10Q212 0 221 10Q212 5 203 10Z" fill="#d9432f"/><path d="M204 10L200 62M220 10L200 62" stroke="#2a2a2a" stroke-width=".3" opacity=".6"/><g fill="#1d2a2f"><circle cx="200" cy="61" r="1.1"/><rect x="199.2" y="62" width="1.6" height="4.5"/></g><rect x="196.5" y="66.4" width="7" height="1.2" rx=".6" fill="#e9e3d0"/><path d="M171 24Q180 14 189 24Q180 19 171 24Z" fill="#2f8f46"/><path d="M31 18Q40 8 49 18Q40 13 31 18Z" fill="#f5c518"/><path d="M81 26Q90 16 99 26Q90 21 81 26Z" fill="#d9432f"/><path d="M82 26L80 58M98 26L80 58" stroke="#2a2a2a" stroke-width=".3" opacity=".6"/><g fill="#1d2a2f"><circle cx="80" cy="57" r="1.1"/><rect x="79.2" y="58" width="1.6" height="4.5"/></g><rect x="76.5" y="62.4" width="7" height="1.2" rx=".6" fill="#e9e3d0"/><g fill="#1d2a2f"><circle cx="224" cy="59" r="1.2"/><rect x="223.2" y="60" width="1.6" height="5"/></g><path d="M226 57L222 68" stroke="#1d2a2f" stroke-width=".5"/><rect x="218" y="65" width="12" height="1.6" rx=".8" fill="#4a7fb8"/></g><g style="fill:var(--z2)" opacity=".55"><rect x="250" y="78" width="3.2" height="6"/><rect x="258" y="78" width="3.2" height="6"/><rect x="266" y="78" width="3.2" height="6"/><rect x="274" y="78" width="3.2" height="6"/><rect x="282" y="78" width="3.2" height="6"/><rect x="290" y="78" width="3.2" height="6"/><rect x="298" y="78" width="3.2" height="6"/><rect x="306" y="78" width="3.2" height="6"/><rect x="314" y="78" width="3.2" height="6"/><rect x="322" y="78" width="3.2" height="6"/><rect x="330" y="78" width="3.2" height="6"/><rect x="338" y="78" width="3.2" height="6"/><rect x="346" y="78" width="3.2" height="6"/><rect x="354" y="78" width="3.2" height="6"/><rect x="362" y="78" width="3.2" height="6"/><rect x="370" y="78" width="3.2" height="6"/><rect x="378" y="78" width="3.2" height="6"/><rect x="386" y="78" width="3.2" height="6"/><rect x="394" y="78" width="3.2" height="6"/><rect x="402" y="78" width="3.2" height="6"/><rect x="410" y="78" width="3.2" height="6"/><rect x="418" y="78" width="3.2" height="6"/><rect x="426" y="78" width="3.2" height="6"/><rect x="434" y="78" width="3.2" height="6"/><rect x="442" y="78" width="3.2" height="6"/><rect x="450" y="78" width="3.2" height="6"/><rect x="458" y="78" width="3.2" height="6"/><rect x="466" y="78" width="3.2" height="6"/><rect x="474" y="78" width="3.2" height="6"/><rect x="482" y="78" width="3.2" height="6"/><rect x="490" y="78" width="3.2" height="6"/><rect x="498" y="78" width="3.2" height="6"/><rect x="506" y="78" width="3.2" height="6"/><rect x="514" y="78" width="3.2" height="6"/><rect x="522" y="78" width="3.2" height="6"/><rect x="530" y="78" width="3.2" height="6"/><rect x="538" y="78" width="3.2" height="6"/><rect x="546" y="78" width="3.2" height="6"/><rect x="554" y="78" width="3.2" height="6"/><rect x="562" y="78" width="3.2" height="6"/><rect x="570" y="78" width="3.2" height="6"/><rect x="578" y="78" width="3.2" height="6"/><rect x="586" y="78" width="3.2" height="6"/><rect x="594" y="78" width="3.2" height="6"/><rect x="602" y="78" width="3.2" height="6"/></g><rect x="250" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="258" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="266" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="274" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="282" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="290" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="298" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="306" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="314" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="322" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="330" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="338" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="346" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="354" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="362" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="370" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="378" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="386" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="394" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="402" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="410" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="418" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="426" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="434" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="442" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="450" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="458" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="466" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="474" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="482" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="490" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="498" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="506" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="514" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="522" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="530" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="538" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="546" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="554" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="562" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="570" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="578" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="586" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="594" y="57" width="3.2" height="21" fill="url(#doPaal)"/><rect x="602" y="57" width="3.2" height="21" fill="url(#doPaal)"/><path d="M296 50V30H440V50Z" style="fill:var(--glas-l)"/><path d="M296 30L300 28H436L440 30Z" style="fill:var(--beton-l)"/><path d="M310 30V20H426V30Z" style="fill:var(--glas-d)"/><path d="M310 20L314 18H422L426 20Z" style="fill:var(--beton-l)"/><path d="M332 18Q368 8 404 18Z" style="fill:var(--beton-d)"/><path d="M340 17Q368 10 396 17" style="stroke:var(--beton-l);fill:none" stroke-width="0.8"/><g style="stroke:var(--beton-l);fill:none" stroke-width="0.5" opacity=".7"><line x1="300" y1="30" x2="300" y2="50"/><line x1="306" y1="30" x2="306" y2="50"/><line x1="312" y1="30" x2="312" y2="50"/><line x1="318" y1="30" x2="318" y2="50"/><line x1="324" y1="30" x2="324" y2="50"/><line x1="330" y1="30" x2="330" y2="50"/><line x1="336" y1="30" x2="336" y2="50"/><line x1="342" y1="30" x2="342" y2="50"/><line x1="348" y1="30" x2="348" y2="50"/><line x1="354" y1="30" x2="354" y2="50"/><line x1="360" y1="30" x2="360" y2="50"/><line x1="366" y1="30" x2="366" y2="50"/><line x1="372" y1="30" x2="372" y2="50"/><line x1="378" y1="30" x2="378" y2="50"/><line x1="384" y1="30" x2="384" y2="50"/><line x1="390" y1="30" x2="390" y2="50"/><line x1="396" y1="30" x2="396" y2="50"/><line x1="402" y1="30" x2="402" y2="50"/><line x1="408" y1="30" x2="408" y2="50"/><line x1="414" y1="30" x2="414" y2="50"/><line x1="420" y1="30" x2="420" y2="50"/><line x1="426" y1="30" x2="426" y2="50"/><line x1="432" y1="30" x2="432" y2="50"/><line x1="438" y1="30" x2="438" y2="50"/><line x1="314" y1="20" x2="314" y2="30"/><line x1="320" y1="20" x2="320" y2="30"/><line x1="326" y1="20" x2="326" y2="30"/><line x1="332" y1="20" x2="332" y2="30"/><line x1="338" y1="20" x2="338" y2="30"/><line x1="344" y1="20" x2="344" y2="30"/><line x1="350" y1="20" x2="350" y2="30"/><line x1="356" y1="20" x2="356" y2="30"/><line x1="362" y1="20" x2="362" y2="30"/><line x1="368" y1="20" x2="368" y2="30"/><line x1="374" y1="20" x2="374" y2="30"/><line x1="380" y1="20" x2="380" y2="30"/><line x1="386" y1="20" x2="386" y2="30"/><line x1="392" y1="20" x2="392" y2="30"/><line x1="398" y1="20" x2="398" y2="30"/><line x1="404" y1="20" x2="404" y2="30"/><line x1="410" y1="20" x2="410" y2="30"/><line x1="416" y1="20" x2="416" y2="30"/><line x1="422" y1="20" x2="422" y2="30"/><path d="M296 40H440"/></g><path d="M244 50L247 48H600V50Z" style="fill:var(--beton-l)"/><rect x="244" y="50" width="356" height="4" style="fill:var(--beton-d)"/><rect x="248" y="54" width="352" height="3" style="fill:var(--beton-x)"/><path d="M440 45H600" style="stroke:var(--beton-d);fill:none" stroke-width="0.6"/><g style="stroke:var(--beton-d);fill:none" stroke-width="0.5"><path d="M442 45V48"/><path d="M447 45V48"/><path d="M452 45V48"/><path d="M457 45V48"/><path d="M462 45V48"/><path d="M467 45V48"/><path d="M472 45V48"/><path d="M477 45V48"/><path d="M482 45V48"/><path d="M487 45V48"/><path d="M492 45V48"/><path d="M497 45V48"/><path d="M502 45V48"/><path d="M507 45V48"/><path d="M512 45V48"/><path d="M517 45V48"/><path d="M522 45V48"/><path d="M527 45V48"/><path d="M532 45V48"/><path d="M537 45V48"/><path d="M542 45V48"/><path d="M547 45V48"/><path d="M552 45V48"/><path d="M557 45V48"/><path d="M562 45V48"/><path d="M567 45V48"/><path d="M572 45V48"/><path d="M577 45V48"/><path d="M582 45V48"/><path d="M587 45V48"/><path d="M592 45V48"/><path d="M597 45V48"/></g><rect x="250" y="47" width="36" height="3" style="fill:var(--beton-d)"/><rect x="265" y="10" width="6" height="37" fill="url(#doSchacht)"/><ellipse cx="264.5" cy="43.0" rx="6" ry="1.5" style="fill:var(--wit)"/><path d="M258.5 43.0a6 1.5 0 0 0 12 0" style="stroke:var(--beton-d);fill:none" stroke-width="0.6"/><ellipse cx="271.5" cy="38.4" rx="6" ry="1.5" style="fill:var(--wit)"/><path d="M265.5 38.4a6 1.5 0 0 0 12 0" style="stroke:var(--beton-d);fill:none" stroke-width="0.6"/><ellipse cx="264.5" cy="33.8" rx="6" ry="1.5" style="fill:var(--wit)"/><path d="M258.5 33.8a6 1.5 0 0 0 12 0" style="stroke:var(--beton-d);fill:none" stroke-width="0.6"/><ellipse cx="271.5" cy="29.2" rx="6" ry="1.5" style="fill:var(--wit)"/><path d="M265.5 29.2a6 1.5 0 0 0 12 0" style="stroke:var(--beton-d);fill:none" stroke-width="0.6"/><ellipse cx="264.5" cy="24.6" rx="6" ry="1.5" style="fill:var(--wit)"/><path d="M258.5 24.6a6 1.5 0 0 0 12 0" style="stroke:var(--beton-d);fill:none" stroke-width="0.6"/><ellipse cx="271.5" cy="20.0" rx="6" ry="1.5" style="fill:var(--wit)"/><path d="M265.5 20.0a6 1.5 0 0 0 12 0" style="stroke:var(--beton-d);fill:none" stroke-width="0.6"/><ellipse cx="264.5" cy="15.4" rx="6" ry="1.5" style="fill:var(--wit)"/><path d="M258.5 15.4a6 1.5 0 0 0 12 0" style="stroke:var(--beton-d);fill:none" stroke-width="0.6"/><rect x="261" y="5" width="14" height="5" rx="1" style="fill:var(--wit)"/><rect x="261" y="8.5" width="14" height="1.5" style="fill:var(--wit-d)"/><path d="M268 5V1M262 2H300M298 2V12" stroke="#5a5f60" stroke-width=".9" fill="none"/><rect x="296.6" y="12" width="2.8" height="2.4" fill="#5a5f60"/><rect x="486" y="47" width="28" height="3" style="fill:var(--beton-d)"/><path d="M489 47L500 26L511 47M494 47L500 26L506 47" style="stroke:var(--wit-d);fill:none" stroke-width="1.4"/><g style="stroke:var(--wit);fill:none" stroke-width="0.45" opacity=".85"><line x1="500" y1="26" x2="519.0" y2="26.0"/><line x1="500" y1="26" x2="518.4" y2="30.9"/><line x1="500" y1="26" x2="516.5" y2="35.5"/><line x1="500" y1="26" x2="513.4" y2="39.4"/><line x1="500" y1="26" x2="509.5" y2="42.5"/><line x1="500" y1="26" x2="504.9" y2="44.4"/><line x1="500" y1="26" x2="500.0" y2="45.0"/><line x1="500" y1="26" x2="495.1" y2="44.4"/><line x1="500" y1="26" x2="490.5" y2="42.5"/><line x1="500" y1="26" x2="486.6" y2="39.4"/><line x1="500" y1="26" x2="483.5" y2="35.5"/><line x1="500" y1="26" x2="481.6" y2="30.9"/><line x1="500" y1="26" x2="481.0" y2="26.0"/><line x1="500" y1="26" x2="481.6" y2="21.1"/><line x1="500" y1="26" x2="483.5" y2="16.5"/><line x1="500" y1="26" x2="486.6" y2="12.6"/><line x1="500" y1="26" x2="490.5" y2="9.5"/><line x1="500" y1="26" x2="495.1" y2="7.6"/><line x1="500" y1="26" x2="500.0" y2="7.0"/><line x1="500" y1="26" x2="504.9" y2="7.6"/><line x1="500" y1="26" x2="509.5" y2="9.5"/><line x1="500" y1="26" x2="513.4" y2="12.6"/><line x1="500" y1="26" x2="516.5" y2="16.5"/><line x1="500" y1="26" x2="518.4" y2="21.1"/></g><circle cx="500" cy="26" r="19" style="stroke:var(--wit);fill:none" stroke-width="1.5"/><circle cx="500" cy="26" r="17" style="stroke:var(--wit-d);fill:none" stroke-width="0.6"/><g style="fill:var(--gondel)" stroke="#f4f3ee" stroke-width=".35"><rect x="518.2" y="24.9" width="2.6" height="2.4" rx=".6"/><rect x="517.0" y="31.6" width="2.6" height="2.4" rx=".6"/><rect x="513.6" y="37.4" width="2.6" height="2.4" rx=".6"/><rect x="508.4" y="41.8" width="2.6" height="2.4" rx=".6"/><rect x="502.1" y="44.1" width="2.6" height="2.4" rx=".6"/><rect x="495.3" y="44.1" width="2.6" height="2.4" rx=".6"/><rect x="488.9" y="41.8" width="2.6" height="2.4" rx=".6"/><rect x="483.8" y="37.4" width="2.6" height="2.4" rx=".6"/><rect x="480.4" y="31.6" width="2.6" height="2.4" rx=".6"/><rect x="479.2" y="24.9" width="2.6" height="2.4" rx=".6"/><rect x="480.4" y="18.2" width="2.6" height="2.4" rx=".6"/><rect x="483.8" y="12.4" width="2.6" height="2.4" rx=".6"/><rect x="488.9" y="8.0" width="2.6" height="2.4" rx=".6"/><rect x="495.3" y="5.7" width="2.6" height="2.4" rx=".6"/><rect x="502.1" y="5.7" width="2.6" height="2.4" rx=".6"/><rect x="508.4" y="8.0" width="2.6" height="2.4" rx=".6"/><rect x="513.6" y="12.4" width="2.6" height="2.4" rx=".6"/><rect x="517.0" y="18.2" width="2.6" height="2.4" rx=".6"/></g><circle cx="500" cy="26" r="3.2" fill="url(#doNaaf)"/><g style="fill:var(--raam);opacity:var(--raamop)"><rect x="301" y="31" width="4" height="8"/><rect x="307" y="31" width="4" height="8"/><rect x="313" y="31" width="4" height="8"/><rect x="331" y="31" width="4" height="8"/><rect x="343" y="31" width="4" height="8"/><rect x="355" y="31" width="4" height="8"/><rect x="373" y="31" width="4" height="8"/><rect x="385" y="31" width="4" height="8"/><rect x="391" y="31" width="4" height="8"/><rect x="397" y="31" width="4" height="8"/><rect x="403" y="31" width="4" height="8"/><rect x="409" y="31" width="4" height="8"/><rect x="415" y="31" width="4" height="8"/><rect x="427" y="31" width="4" height="8"/><rect x="433" y="31" width="4" height="8"/><rect x="321" y="21" width="4" height="8"/><rect x="339" y="21" width="4" height="8"/><rect x="345" y="21" width="4" height="8"/><rect x="393" y="21" width="4" height="8"/><rect x="405" y="21" width="4" height="8"/><rect x="411" y="21" width="4" height="8"/><circle cx="250" cy="52" r=".9"/><circle cx="259" cy="52" r=".9"/><circle cx="268" cy="52" r=".9"/><circle cx="277" cy="52" r=".9"/><circle cx="286" cy="52" r=".9"/><circle cx="295" cy="52" r=".9"/><circle cx="304" cy="52" r=".9"/><circle cx="313" cy="52" r=".9"/><circle cx="322" cy="52" r=".9"/><circle cx="331" cy="52" r=".9"/><circle cx="340" cy="52" r=".9"/><circle cx="349" cy="52" r=".9"/><circle cx="358" cy="52" r=".9"/><circle cx="367" cy="52" r=".9"/><circle cx="376" cy="52" r=".9"/><circle cx="385" cy="52" r=".9"/><circle cx="394" cy="52" r=".9"/><circle cx="403" cy="52" r=".9"/><circle cx="412" cy="52" r=".9"/><circle cx="421" cy="52" r=".9"/><circle cx="430" cy="52" r=".9"/><circle cx="439" cy="52" r=".9"/><circle cx="448" cy="52" r=".9"/><circle cx="457" cy="52" r=".9"/><circle cx="466" cy="52" r=".9"/><circle cx="475" cy="52" r=".9"/><circle cx="484" cy="52" r=".9"/><circle cx="493" cy="52" r=".9"/><circle cx="502" cy="52" r=".9"/><circle cx="511" cy="52" r=".9"/><circle cx="520" cy="52" r=".9"/><circle cx="529" cy="52" r=".9"/><circle cx="538" cy="52" r=".9"/><circle cx="547" cy="52" r=".9"/><circle cx="556" cy="52" r=".9"/><circle cx="565" cy="52" r=".9"/><circle cx="574" cy="52" r=".9"/><circle cx="583" cy="52" r=".9"/><circle cx="592" cy="52" r=".9"/><rect x="262.5" y="6" width="11" height="1.6"/><circle cx="518.7" cy="29.2" r=".9"/><circle cx="516.5" cy="35.4" r=".9"/><circle cx="512.3" cy="40.5" r=".9"/><circle cx="506.6" cy="43.8" r=".9"/><circle cx="500.1" cy="45.0" r=".9"/><circle cx="493.6" cy="43.9" r=".9"/><circle cx="487.9" cy="40.6" r=".9"/><circle cx="483.6" cy="35.6" r=".9"/><circle cx="481.3" cy="29.4" r=".9"/><circle cx="481.3" cy="22.8" r=".9"/><circle cx="483.5" cy="16.6" r=".9"/><circle cx="487.7" cy="11.5" r=".9"/><circle cx="493.4" cy="8.2" r=".9"/><circle cx="499.9" cy="7.0" r=".9"/><circle cx="506.4" cy="8.1" r=".9"/><circle cx="512.1" cy="11.4" r=".9"/><circle cx="516.4" cy="16.4" r=".9"/><circle cx="518.7" cy="22.6" r=".9"/></g></svg>
   </div>
 
-  <div class="pad" aria-label="Besturing">
-    <button class="u" data-dir="up" aria-label="Omhoog">▲</button>
-    <button class="l" data-dir="left" aria-label="Links">◀</button>
-    <button class="d" data-dir="down" aria-label="Omlaag">▼</button>
-    <button class="r" data-dir="right" aria-label="Rechts">▶</button>
+  <div class="strook rust" id="strook"><canvas id="strookIcoon" width="56" height="56" aria-hidden="true"></canvas><span id="strookTekst"></span><i class="balk" id="strookBalk"></i></div>
+
+  <div class="overlay start" id="overlay">
+    <div class="kop" id="startKop">Sneek<small><i>op z'n</i> Haags</small></div>
+    <div class="slangetje" id="slangetje" aria-hidden="true"><span></span><span style="animation-delay:.1s"></span><span style="animation-delay:.2s"></span><span style="animation-delay:.3s"></span><span style="animation-delay:.4s"></span><span style="animation-delay:.5s"></span><span style="animation-delay:.6s"></span></div>
+    <h2 id="ovTitel">Hoi, âhwe!</h2>
+    <div class="bigscore" id="bigScore" hidden></div>
+    <p id="ovTekst">Vreet zoveel mogelèk van 't menu. Kèk uit voâh de rand, je ège staart en de Haagse Regah!</p>
+    <div class="menu" id="menuKaart"><h3>Op 't menu, âhwe!</h3><ul id="menuLijst"></ul></div>
+    <form class="scoreform" id="scoreForm" hidden>
+      <label for="insta">Zet je naam op de lèst van Haagse Toppâhs</label>
+      <div class="veld"><span>@</span><input id="insta" name="insta" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="31" placeholder="jouw_insta"></div>
+      <div class="rij"><button class="btn" type="submit" id="opslaanBtn">Opslaan</button><button class="btn stil" type="button" id="overslaanBtn">Laat maâh zitte</button></div>
+      <p class="overslaan">Geen Insta invullen? Dan komt je scoâh niet op de lèst.</p>
+      <p class="melding" id="melding"></p>
+    </form>
+    <p class="tip" id="stuurTip"><span class="alleen-touch">Sture doe je doâh te vege.</span><span class="alleen-desk">Sture doe je met de pèltjes of WASD.</span></p>
+    <section class="lijst ovlijst" id="ovLijst" hidden>
+      <h2>Haagse Toppâhs</h2>
+      <p class="plek" id="plek"></p>
+      <ol id="ovOl"></ol>
+    </section>
+    <button class="btn stil" id="lijstBtn" type="button" hidden>Haagse Toppâhs bekèke</button>
+    <button class="btn deel" id="deelBtn" type="button" hidden>Deel je scoâh in je story</button>
+    <button class="btn" id="startBtn">Beginne, joh!</button>
+    <p class="maker" id="makerStart">Gemaakt doâh <a href="https://www.instagram.com/the_hague_beachlife/" target="_blank" rel="noopener">@the_hague_beachlife</a><span class="volg"><br>Volg me voâh mooie Haagse plaatjes!</span></p>
   </div>
-  <p class="help"><span class="alleen-desk">Pèltjes of WASD om te sture · spatie of P voâh pâhze · M voâh geluid</span><span class="alleen-touch">Veeg in de richting waâh je heen wil, overal op het scherm</span></p>
-
-  <div class="legend">
-    <div><b>Harinkie</b><span>+1 punt</span></div>
-    <div><b>Dungelmann kroket</b><span>+2 punte</span></div>
-    <div><b>Patatje oâhlog</b><span>+3 punte</span></div>
-    <div><b>Brâhdje ei met uih</b><span>+4 punte, nieuw!</span></div>
-    <div><b>Beschuitstuitâh met zalf</b><span>+6 punte, nieuw!</span></div>
-    <div><b>Maison Kelder hazelnoot gebakkie</b><span>+5, snel weze! Nieuw!</span></div>
-  </div>
-
-
-  <footer class="maker">Gemaakt doâh <a href="https://www.instagram.com/the_hague_beachlife/" target="_blank" rel="noopener">@the_hague_beachlife</a><br>Volg me voâh mooie Haagse plaatjes!</footer>
 </div>
 
 <script>
@@ -332,9 +330,13 @@ const Geluid = (() => {
     get aan() { return aan; },
     zet(v) { aan = v; try { localStorage.setItem('snek-geluid', v ? 'aan' : 'uit'); } catch (e) {} if (master) master.gain.setTargetAtTime(v ? 1 : 0, nu(), 0.05); },
     eet(soort) {
-      const f = {haring: 660, kroket: 784, patat: 988, ei: 1175, beschuit: 1319}[soort] || 700;
+      const f = {haring: 660, kroket: 784, patat: 988, ei: 1175, beschuit: 1319, hopje: 880, bier: 1047}[soort] || 700;
       toon(f, f * 1.5, 0.13, { type: 'square', vol: 0.09 }); toon(f * 1.5, f * 2, 0.1, { type: 'sine', vol: 0.12, delay: 0.06 });
     },
+    // Kompaan biertje: 'pssst' van het flesje + drie slokken
+    bier() { ruisje(0.35, { type: 'highpass', f0: 5000, f1: 1800, vol: 0.12, attack: 0.005 }); [0, 0.13, 0.26].forEach((d, i) => toon(240 - i * 25, 170 - i * 25, 0.1, { vol: 0.2, delay: 0.32 + d })); },
+    // Haags Hopje: knabbel-knabbel en dan een kick omhoog
+    hopje() { for (let i = 0; i < 3; i++) ruisje(0.035, { type: 'bandpass', f0: 2600, f1: 1900, q: 3, vol: 0.28, delay: i * 0.07, attack: 0.002 }); toon(500, 1500, 0.28, { type: 'square', vol: 0.06, delay: 0.22 }); },
     gebak() { [784, 988, 1175, 1568].forEach((f, i) => toon(f, f, 0.14, { type: 'triangle', vol: 0.18, delay: i * 0.07 })); },
     regah() { klepper(16, 0.4); },
     jat() { klepper(10, 0.45); toon(500, 180, 0.35, { type: 'triangle', vol: 0.12, delay: 0.55 }); },
@@ -356,16 +358,33 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
   const N = 20, C = document.getElementById('c');
   let ctx = C.getContext('2d'), S = C.width / N;
   const $ = id => document.getElementById(id);
-  const ov = $('overlay'), toastEl = $('toast');
+  const ov = $('overlay');
 
   const ETEN = {
     haring:   {pts:1, naam:'Harinkie', zeg:['Lekkâh harinkie!','Harinkie met uitjes, âhwe!','Van de kar op de Boulevard!']},
     kroket:   {pts:2, naam:'Dungelmann kroket', zeg:['Dungelmann kroket, lekkâh!','Van Dungelmann, joh!','Heet hoâh, pas op!']},
     patat:    {pts:3, naam:'Patatje oâhlog', zeg:['Patatje oâhlog!','Met ALLES erop!','Nâh, dat is smulle!']},
-    ei:       {pts:4, naam:'Brâhdje ei met uih', nieuw:true, zeg:['Brâhdje ei met uih, lekkâh!','Ei met uih, dat mot je hebbe!','Lekkâh vettig, âhwe!']},
-    beschuit: {pts:6, naam:'Beschuitstuitâh met zalf', nieuw:true, zeg:['Beschuitstuitâh met zalf!','Dikke laag zalf, âhwe!','Die stuitâht lekkâh!']},
-    gebak:    {pts:5, naam:'Maison Kelder hazelnoot gebakkie', nieuw:true, zeg:['Hazelnoot gebakkie, chic hoâh!','Van Maison Kelder, âhwe!','Hé, meneâh de deftige!']}
+    ei:       {pts:4, naam:'Brâhdje ei met uih', zeg:['Brâhdje ei met uih, lekkâh!','Ei met uih, dat mot je hebbe!','Lekkâh vettig, âhwe!']},
+    beschuit: {pts:6, naam:'Beschuitstuitâh met zalf', zeg:['Beschuitstuitâh met zalf!','Dikke laag zalf, âhwe!','Die stuitâht lekkâh!']},
+    gebak:    {pts:5, naam:'Maison Kelder hazelnoot gebakkie', zeg:['Hazelnoot gebakkie, chic hoâh!','Van Maison Kelder, âhwe!','Hé, meneâh de deftige!']},
+    // Nieuw sinds 1 okt 2026
+    hopje:    {pts:3, naam:'Haags Hopje', nieuw:true, sub:'Koffiekick: dubbel!', zeg:['Haags Hopje, lekkâh!','Koffie in een snoepie, âhwe!','Snoepie van baron Hop!']},
+    bier:     {pts:5, naam:'Kompaan biertje', nieuw:true, sub:'Effe rustig an', zeg:['Proost, âhwe!','Kompaan, van hieâh uit Den Haag!',"Biertje op 't terras, lekkâh!"]}
   };
+  // ====== Instellingen hapjes (makkelijk aan te passen) ======
+  // Kans per hapje in procent (samen 100). Het gebakkie is een losse bonus en staat hier niet in.
+  const KANSEN = {haring:36, kroket:19, patat:12, ei:11, hopje:8, beschuit:8, bier:6};
+  // Effecten van de nieuwe hapjes. Zet EFFECTEN_AAN op false: dan geven ze alleen punten.
+  //   ms = hoe lang (speeltijd, pâhze telt niet mee), tempo = stapjes langzamer (>1) of snellâh (<1), x = punten keer
+  const EFFECTEN_AAN = true;
+  const EFFECT = {
+    hopje: {ms:5000, tempo:0.85, x:2, start:'Koffiekick! Dubbele punte', rust:'Koffiekick: dubbele punte!', toon:'Pak \'t Hopje: dubbele punte!'},
+    bier:  {ms:6000, tempo:1.3,  x:1, start:'Proost! Effe rustig an', rust:'Biertje op: effe rustig an', toon:'Pak \'t biertje: effe rustig an!'}
+  };
+  // Decor rond het veld: 'auto' = volgt de klok (dag / avond / nacht), of vast 'dag', 'avond' of 'nacht'
+  const DECOR_TIJD = 'auto';
+  // Hoe lang een melding in de strook blèft staan (ms), en hoe lang belangrijke meldingen minstens blijven
+  const MELD_MS = 2000, MELD_MIN = {1:0, 2:900, 3:1500};
   // Tempo: ms per stapje (hoger = langzamer). Begint rustig, wordt steeds sneller.
   const TEMPO = [
     {min:0,  ms:240, naam:'Slentere ovâh de Boulevard'},
@@ -425,6 +444,7 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
   };
   const pick = a => a[Math.floor(Math.random()*a.length)];
 
+  let effect = null, bestBijStart = 0, recordGemeld = false, tempoNaam = TEMPO[0].naam, vorigeScore = 0;
   let laatsteTempo = '', laatsteDood = '', doodT = 0, snake, dir, queue, food, bonus, regah, score, best = 0, timer = null, state = 'start', lastStep = 0, stepMs = 150, tick = 0;
   try { best = +localStorage.getItem('snek-best') || 0; } catch(e) {}
   $('best').textContent = best;
@@ -439,28 +459,77 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
     }
   }
   function nieuwEten() {
-    const r = Math.random();
-    const soort = r < .42 ? 'haring' : r < .64 ? 'kroket' : r < .78 ? 'patat' : r < .91 ? 'ei' : 'beschuit';
+    const totaal = Object.values(KANSEN).reduce((a, b) => a + b, 0);
+    let r = Math.random() * totaal, soort = 'haring';
+    for (const [k, v] of Object.entries(KANSEN)) { if (r < v) { soort = k; break; } r -= v; }
     food = {...vrij(), soort};
+    if (state === 'spel' && EFFECT[soort] && EFFECTEN_AAN) strook(EFFECT[soort].toon, {prio:2, icoon:soort, stijl:'nieuw'});
   }
   function reset() {
     snake = [{x:9,y:10},{x:8,y:10},{x:7,y:10}];
-    dir = {x:1,y:0}; queue = []; score = 0; bonus = null; regah = null; food = null; tick = 0;
+    dir = {x:1,y:0}; queue = []; score = 0; bonus = null; regah = null; food = null; tick = 0; effect = null; vorigeScore = 0;
     nieuwEten(); updateHud();
   }
   function updateHud() {
-    $('score').textContent = score;
-    $('lengte').textContent = 'Lengte: ' + snake.length;
+    const sc = $('score');
+    sc.textContent = score; $('ptWoord').textContent = score === 1 ? 'punt' : 'punte';
+    if (score > vorigeScore) { sc.classList.remove('pop'); void sc.offsetWidth; sc.classList.add('pop'); }   // klein sprongetje bij punten
+    vorigeScore = score;
     let t = TEMPO[0]; for (const x of TEMPO) if (score >= x.min) t = x;
-    if (state === 'spel' && laatsteTempo && t.naam !== laatsteTempo) Geluid.tram();  // sneller!
-    laatsteTempo = t.naam;
-    stepMs = t.ms; $('tempo').textContent = t.naam;
+    if (state === 'spel' && laatsteTempo && t.naam !== laatsteTempo) { Geluid.tram(); strook(t.naam, {prio:2, icoon:'tram', stijl:'tempo', pre:'Snellâh!'}); }
+    laatsteTempo = t.naam; tempoNaam = t.naam;
+    stepMs = Math.max(55, Math.round(t.ms * (effect ? EFFECT[effect.soort].tempo : 1)));
+    if (!strookNu) rust();
   }
-  let toastT;
-  function toast(txt, regah) {
-    toastEl.textContent = txt; toastEl.classList.toggle('regah', !!regah);
-    toastEl.classList.remove('weg'); clearTimeout(toastT);
-    toastT = setTimeout(() => toastEl.classList.add('weg'), 1300);
+
+  // ---------- Meldingstrook onder het veld ----------
+  // prio 1 = gekèt (eten), 2 = handig (tempo, nieuw hapje, gebakkie), 3 = belangrijk (Regah, rekkâhd).
+  // Een nieuwe melding vervangt de oude, behalve als de oude belangrèkâh is en nog maâh kort staat:
+  // dan wacht een belangrijke melding even in de rij, en valt gekèt weg (de punten zie je toch bovenin).
+  const strookEl = $('strook'), strookTxt = $('strookTekst'), strookBalk = $('strookBalk'), strookCv = $('strookIcoon');
+  let strookNu = null, strookT = null, strookRij = [];
+  function strook(tekst, o = {}) {
+    const m = {tekst, prio: o.prio || 1, icoon: o.icoon || null, stijl: o.stijl || '', pre: o.pre || '', t: 0};
+    const nu = performance.now();
+    if (strookNu && m.prio <= strookNu.prio && nu - strookNu.t < MELD_MIN[strookNu.prio]) {
+      if (m.prio < 2) return;
+      strookRij = strookRij.filter(x => x.stijl !== m.stijl).concat(m).slice(-2); m.t = nu;
+      clearTimeout(strookT); strookT = setTimeout(volgende, MELD_MIN[strookNu.prio] - (nu - strookNu.t));
+      return;
+    }
+    toonMelding(m);
+  }
+  function toonMelding(m) {
+    m.t = performance.now(); strookNu = m;
+    zetStrook(m.tekst, m.icoon, m.stijl, m.pre);
+    clearTimeout(strookT); strookT = setTimeout(volgende, strookRij.length ? Math.max(700, MELD_MIN[m.prio]) : MELD_MS);
+  }
+  function volgende() {
+    const nu = performance.now();
+    strookRij = strookRij.filter(x => nu - x.t < 3000);          // oude wachtende meldingen niet meer tonen
+    if (strookRij.length) toonMelding(strookRij.shift());
+    else if (strookNu && nu - strookNu.t < MELD_MS - 20) { clearTimeout(strookT); strookT = setTimeout(volgende, MELD_MS - (nu - strookNu.t)); }
+    else { strookNu = null; rust(); }
+  }
+  // Rust-stand: het tempo, of het effect van een hopje/biertje dat nog loopt
+  function rust() {
+    if (effect) zetStrook(EFFECT[effect.soort].rust, effect.soort, 'effect');
+    else zetStrook(tempoNaam, 'tram', 'rust');
+  }
+  function leegStrook() { clearTimeout(strookT); strookNu = null; strookRij = []; }
+  let strookWas = '';
+  function zetStrook(tekst, icoon, stijl, pre) {
+    const sleutel = [tekst, icoon, stijl, pre].join('|');
+    if (sleutel === strookWas) return; strookWas = sleutel;
+    strookEl.className = 'strook ' + (stijl || '');
+    strookTxt.textContent = '';
+    if (pre) { const b = document.createElement('b'); b.textContent = pre; strookTxt.append(b); }
+    strookTxt.append(tekst);
+    // te lang? dan de letters iets kleinâh, zodat het op 1 regel past
+    strookTxt.style.fontSize = '';
+    for (let f = 15; f > 11 && strookTxt.scrollWidth > strookTxt.clientWidth + 1; f--) strookTxt.style.fontSize = f - 1 + 'px';
+    strookTxt.classList.remove('in'); void strookTxt.offsetWidth; strookTxt.classList.add('in');
+    tekenIcoon(icoon);
   }
 
   const DIRS = {up:{x:0,y:-1},down:{x:0,y:1},left:{x:-1,y:0},right:{x:1,y:0}};
@@ -483,25 +552,39 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
     const body = eet ? snake : snake.slice(0,-1);
     if (body.some(s => s.x===h.x && s.y===h.y)) return sterf('staart');
     snake.unshift(h);
+    // Lopend effect (hopje/biertje) aftellen in speeltijd
+    if (effect && (effect.rest -= stepMs) <= 0) { effect = null; if (!strookNu) rust(); }
+    const keer = effect ? EFFECT[effect.soort].x : 1;            // koffiekick = dubbele punte
     if (eet) {
-      score += ETEN[food.soort].pts; toast(pick(ETEN[food.soort].zeg)); Geluid.eet(food.soort);
+      const soort = food.soort, pts = ETEN[soort].pts * keer;
+      score += pts;
+      if (EFFECT[soort] && EFFECTEN_AAN) {
+        effect = {soort, rest: EFFECT[soort].ms};
+        Geluid[soort](); strook(EFFECT[soort].start, {prio:2, icoon:soort, stijl:'effect', pre:'+' + pts});
+      } else {
+        EFFECT[soort] ? Geluid[soort]() : Geluid.eet(soort);
+        strook(pick(ETEN[soort].zeg), {icoon:soort, pre:'+' + pts});
+      }
       if (regah && regah.doel === 'food') regah.doel = null;
       nieuwEten();
     } else if (bonus && h.x===bonus.x && h.y===bonus.y) {
-      score += ETEN.gebak.pts; toast(pick(ETEN.gebak.zeg)); Geluid.gebak(); bonus = null;
+      const pts = ETEN.gebak.pts * keer;
+      score += pts; strook(pick(ETEN.gebak.zeg), {icoon:'gebak', pre:'+' + pts}); Geluid.gebak(); bonus = null;
       snake.push({...snake[snake.length-1]}, {...snake[snake.length-1]});
       snake.pop();
     } else snake.pop();
+    // Nieuw rekkâhd tijdens het spelen (alleen als je al een rekkâhd had)
+    if (!recordGemeld && bestBijStart > 0 && score > bestBijStart) { recordGemeld = true; strook('Nieuw rekkâhd, âhwe!', {prio:3, icoon:'kroon', stijl:'record'}); }
 
     // Hazelnoot gebakkie van Maison Kelder verschijnt af en toe
-    if (!bonus && Math.random() < .012 && score > 2) bonus = {...vrij(), leeft: 45};
+    if (!bonus && Math.random() < .012 && score > 2) { bonus = {...vrij(), leeft: 45}; strook('Hazelnoot gebakkie! Snel weze!', {prio:2, icoon:'gebak', stijl:'bonus'}); }
     if (bonus && --bonus.leeft <= 0) bonus = null;
 
     // De Haagse Regah (ooievaar) komt je eten jatte!
     if (!regah && Math.random() < .008 && score > 4) {
       const vanLinks = Math.random() < .5;
       regah = {x: vanLinks ? -2 : N+1, y: Math.random()*N, doel:'food'};
-      toast(pick(['Kèk uit, de Haagse Regah!','Daâh heb je de Regah!','De Regah komt eraan, âhwe!']), true); Geluid.regah();
+      strook(pick(['Kèk uit, de Haagse Regah!','Daâh heb je de Regah!','De Regah komt eraan, âhwe!']), {prio:3, icoon:'regah', stijl:'regah'}); Geluid.regah();
     }
     if (regah) {
       const tx = regah.doel==='food' ? food.x : (regah.x < N/2 ? -4 : N+3);
@@ -509,16 +592,19 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
       const dx = tx-regah.x, dy = ty-regah.y, d = Math.hypot(dx,dy);
       const v = .55;
       if (d < v) {
-        if (regah.doel === 'food') { toast(pick(['De Regah jat je eten, tjonge!','Hé! Die Regah gapt je hapje!']), true); Geluid.jat(); regah.doel = null; regah.buit = food.soort; nieuwEten(); }
+        if (regah.doel === 'food') { strook(pick(['De Regah jat je eten, tjonge!','Hé! Die Regah gapt je hapje!']), {prio:3, icoon:'regah', stijl:'regah'}); Geluid.jat(); regah.doel = null; regah.buit = food.soort; nieuwEten(); }
         else regah = null;
       } else { regah.x += dx/d*v; regah.y += dy/d*v; regah.links = dx < 0; }
     }
     updateHud();
+    strookBalk.style.transform = `scaleX(${effect ? Math.max(0, effect.rest / EFFECT[effect.soort].ms) : 0})`;
   }
 
   function sterf(hoe) {
+    effect = null; leegStrook(); strookBalk.style.transform = 'scaleX(0)';
+    ov.classList.add('dood'); $('menuKaart').hidden = false;
     deelBtn.hidden = true; deelFile = null; laatstePlek = 0;
-    $('ovLijst').hidden = true; $('ovTekst').hidden = false; lijstBtn.hidden = true; $('makerStart').hidden = true; $('ovTitel').hidden = false;
+    $('ovLijst').hidden = true; $('ovTekst').hidden = false; lijstBtn.hidden = true; $('makerStart').hidden = false; $('ovTitel').hidden = false;
     state = 'dood'; doodT = performance.now(); document.documentElement.classList.remove('speelt');
     hoe === 'muur' ? Geluid.plons() : Geluid.au();
     if (score > best && best > 0) setTimeout(() => Geluid.record(), 900);
@@ -728,14 +814,23 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
   function tel(pad, titel) { try { if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({path: pad, title: titel, event: true}); } catch (e) {} }
   function begin() {
     tel('potje-gestart', 'Potje gestart');
-    deelBtn.hidden = true; $('menuKaart').hidden = true;
+    deelBtn.hidden = true; $('menuKaart').hidden = true; ov.classList.remove('dood'); $('makerStart').hidden = true;
     form.hidden = true; $('ovLijst').hidden = true; $('ovTekst').hidden = false; lijstBtn.hidden = true; $('ovTitel').hidden = false;
     scrollTo(0, 0); document.documentElement.classList.add('speelt');
     Geluid.init(); laatsteTempo = '';
+    zetDecorTijd(); maatDecor(); maatCanvas();
     reset(); state = 'spel'; ov.hidden = true; lastStep = performance.now();
+    bestBijStart = best; recordGemeld = false; leegStrook(); strookBalk.style.transform = 'scaleX(0)';
+    strook(matchMedia('(pointer:coarse)').matches ? 'Veeg om te sture, overal op \'t scherm' : 'Pèltjes of WASD · spatie = pâhze', {icoon:'slang'});
+  }
+  // Decor: dag, avond of nacht (volgt de klok van de speler, per potje opnieuw bekeken)
+  function zetDecorTijd() {
+    let tijd = DECOR_TIJD;
+    if (tijd === 'auto') { const u = new Date().getHours(); tijd = u >= 7 && u < 18 ? 'dag' : u >= 18 && u < 22 ? 'avond' : 'nacht'; }
+    $('speelkaart').dataset.tijd = tijd;
   }
   function pauze() {
-    if (state === 'spel') { state = 'pauze'; deelBtn.hidden = true; $('ovTitel').textContent = 'Effe pâhze'; $('ovTekst').textContent = 'Bakkie koffie halen? Druk op spatie om verdâh te gaan.'; $('bigScore').hidden = true; $('startKop').hidden = true; $('slangetje').hidden = true; ov.classList.remove('start'); form.hidden = true; $('ovLijst').hidden = true; $('startBtn').textContent = 'Verdâh!'; ov.hidden = false; }
+    if (state === 'spel') { state = 'pauze'; deelBtn.hidden = true; ov.classList.remove('dood'); $('menuKaart').hidden = true; $('makerStart').hidden = true; $('ovTitel').textContent = 'Effe pâhze'; $('ovTekst').textContent = 'Bakkie koffie halen? Druk op spatie om verdâh te gaan.'; $('bigScore').hidden = true; $('startKop').hidden = true; $('slangetje').hidden = true; ov.classList.remove('start'); form.hidden = true; $('ovLijst').hidden = true; $('startBtn').textContent = 'Verdâh!'; ov.hidden = false; }
     else if (state === 'pauze') { state = 'spel'; ov.hidden = true; lastStep = performance.now(); }
   }
 
@@ -748,7 +843,8 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
     }
     // zandkorreltjes
     ctx.fillStyle='rgba(150,120,60,.18)';
-    for (let i=0;i<70;i++){const a=(i*9301+49297)%233280/233280, b=(i*4933+1117)%233280/233280;ctx.fillRect(a*C.width,b*C.height,2,2);}
+    const k = S/15;
+    for (let i=0;i<70;i++){const a=(i*9301+49297)%233280/233280, b=(i*4933+1117)%233280/233280;ctx.fillRect(a*C.width,b*C.height,k,k);}
   }
   function tekenHaring(cx,cy) {
     ctx.save(); ctx.translate(cx,cy); ctx.rotate(-.35);
@@ -820,6 +916,36 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
     ctx.fillStyle='rgba(255,255,255,.7)'; ctx.beginPath(); ctx.arc(-S*.03,-S*.29,S*.018,0,7); ctx.fill();          // glim
     ctx.restore();
   }
+  function tekenHopje(cx,cy) {   // Haags Hopje: koffiesnoepje in een doorzichtig papiertje met draaitjes
+    ctx.save(); ctx.translate(cx,cy); ctx.rotate(-.25);
+    ctx.fillStyle='rgba(0,0,0,.15)'; ctx.beginPath(); ctx.ellipse(S*.02,S*.3,S*.34,S*.07,0,0,7); ctx.fill();         // schaduw
+    for (const k of [-1,1]) {                                                                                    // draaitjes van het papiertje
+      ctx.fillStyle='rgba(255,255,255,.85)'; ctx.beginPath(); ctx.moveTo(k*S*.22,-S*.05); ctx.lineTo(k*S*.47,-S*.2); ctx.lineTo(k*S*.41,0); ctx.lineTo(k*S*.47,S*.2); ctx.lineTo(k*S*.22,S*.05); ctx.closePath(); ctx.fill();
+      ctx.strokeStyle='rgba(120,100,80,.5)'; ctx.lineWidth=S*.02; ctx.beginPath(); ctx.moveTo(k*S*.27,0); ctx.lineTo(k*S*.44,-S*.13); ctx.moveTo(k*S*.27,0); ctx.lineTo(k*S*.44,S*.13); ctx.stroke();
+    }
+    ctx.fillStyle='#6e3b12'; rrect(-S*.25,-S*.2,S*.5,S*.4,S*.1); ctx.fill();                                       // het snoepje
+    ctx.fillStyle='#95541f'; rrect(-S*.21,-S*.16,S*.42,S*.3,S*.08); ctx.fill();
+    ctx.fillStyle='rgba(255,226,180,.7)'; rrect(-S*.16,-S*.13,S*.18,S*.06,S*.03); ctx.fill();                          // glim
+    ctx.fillStyle='rgba(255,255,255,.22)'; rrect(-S*.27,-S*.22,S*.54,S*.44,S*.11); ctx.fill();                         // papiertje eroverheen
+    ctx.restore();
+  }
+  function tekenBier(cx,cy) {   // biertje van Kompaan: tulpglas met schuimkraag (eigen tekening, geen logo)
+    ctx.save(); ctx.translate(cx,cy);
+    ctx.fillStyle='rgba(0,0,0,.15)'; ctx.beginPath(); ctx.ellipse(0,S*.42,S*.24,S*.06,0,0,7); ctx.fill();            // schaduw
+    const glas = () => { ctx.beginPath(); ctx.moveTo(-S*.2,-S*.26); ctx.quadraticCurveTo(-S*.29,S*.08,-S*.1,S*.3); ctx.lineTo(S*.1,S*.3); ctx.quadraticCurveTo(S*.29,S*.08,S*.2,-S*.26); ctx.closePath(); };
+    glas(); ctx.fillStyle='#e39a17'; ctx.fill();                                                                  // bier
+    ctx.fillStyle='rgba(255,214,110,.6)'; ctx.beginPath(); ctx.ellipse(-S*.09,S*.02,S*.045,S*.18,.08,0,7); ctx.fill(); // licht in 't glas
+    ctx.fillStyle='rgba(255,255,255,.75)';                                                                        // belletjes
+    for (const [a,b] of [[.07,.16],[.1,.02],[.04,-.08],[-.02,.2]]) { ctx.beginPath(); ctx.arc(a*S,b*S,S*.022,0,7); ctx.fill(); }
+    ctx.fillStyle='#2f8f46'; ctx.beginPath(); ctx.arc(0,S*.09,S*.075,0,7); ctx.fill();                                // etiketje in Haagse kleuren
+    ctx.fillStyle='#f5c518'; ctx.beginPath(); ctx.arc(0,S*.09,S*.042,0,7); ctx.fill();
+    glas(); ctx.strokeStyle='rgba(255,255,255,.8)'; ctx.lineWidth=S*.03; ctx.stroke();                            // glas
+    ctx.fillStyle='#dfe9ea'; ctx.fillRect(-S*.035,S*.3,S*.07,S*.08); rrect(-S*.17,S*.36,S*.34,S*.06,S*.03); ctx.fill(); // voetje
+    ctx.fillStyle='#fffaf0';                                                                                      // schuimkraag
+    for (const [a,b,r] of [[-.13,-.28,.1],[0,-.34,.13],[.13,-.28,.1],[-.2,-.21,.05]]) { ctx.beginPath(); ctx.arc(a*S,b*S,r*S,0,7); ctx.fill(); }
+    ctx.fillRect(-S*.22,-S*.3,S*.44,S*.08);
+    ctx.restore();
+  }
   function tekenRegah(g,t) {   // de Haagse Regah: ooievaar in vlucht, nek naar voren, rooie pote naar achteren
     const cx=(g.x+.5)*S, cy=(g.y+.5)*S, f=Math.sin(t/110)*S*.28;
     ctx.save(); ctx.translate(cx,cy); ctx.scale(g.links ? -1.2 : 1.2, 1.2);   // 't is een grote vogel
@@ -861,32 +987,86 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
       ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(ex,ey,S*.13,0,7); ctx.fill();
       ctx.fillStyle='#111'; ctx.beginPath(); ctx.arc(ex+dir.x*S*.04,ey+dir.y*S*.04,S*.06,0,7); ctx.fill();
     }
-    if (Math.floor(t/400)%3===0) { ctx.strokeStyle='#d9432f'; ctx.lineWidth=2.5; ctx.beginPath(); const tx=cx+dir.x*S*.5, ty=cy+dir.y*S*.5; ctx.moveTo(tx,ty); ctx.lineTo(tx+dir.x*S*.2,ty+dir.y*S*.2); ctx.stroke(); }
+    if (Math.floor(t/400)%3===0) { ctx.strokeStyle='#d9432f'; ctx.lineWidth=S/12; ctx.beginPath(); const tx=cx+dir.x*S*.5, ty=cy+dir.y*S*.5; ctx.moveTo(tx,ty); ctx.lineTo(tx+dir.x*S*.2,ty+dir.y*S*.2); ctx.stroke(); }
     // Haags petje (geel-groen)
     ctx.fillStyle='#f5c518'; ctx.beginPath(); ctx.arc(cx-dir.x*S*.12,cy-dir.y*S*.12,S*.2,0,7); ctx.fill();
   }
-  const TEKEN = {haring:tekenHaring, kroket:tekenKroket, patat:tekenPatat, ei:tekenEi, beschuit:tekenBeschuit, gebak:tekenGebak};
+  const TEKEN = {haring:tekenHaring, kroket:tekenKroket, patat:tekenPatat, ei:tekenEi, beschuit:tekenBeschuit, gebak:tekenGebak, hopje:tekenHopje, bier:tekenBier};
+  // Tekent iets met een ander canvas en een andere vakjesmaat (voor het menu en de icoontjes in de strook)
+  function metCtx(g, s, fn) { const oud = [ctx, S]; ctx = g; S = s; g.save(); try { fn(); } finally { g.restore(); ctx = oud[0]; S = oud[1]; } }
+  // Icoontjes voor de meldingstrook (56x56, getoond op 28x28)
+  const ICOON = {
+    tram() {   // Haags trammetje
+      ctx.fillStyle='#d9432f'; rrect(6,16,44,26,7); ctx.fill();
+      ctx.fillStyle='#f3efe2'; rrect(10,21,36,9,3); ctx.fill();
+      ctx.fillStyle='#16323b'; for (const x of [12,24,36]) ctx.fillRect(x,22,8,7);
+      ctx.fillStyle='#f5c518'; ctx.fillRect(6,34,44,3);
+      ctx.fillStyle='#111'; for (const x of [16,40]) { ctx.beginPath(); ctx.arc(x,44,4,0,7); ctx.fill(); }
+      ctx.strokeStyle='#a9c3c6'; ctx.lineWidth=2.5; ctx.beginPath(); ctx.moveTo(22,16); ctx.lineTo(30,6); ctx.lineTo(36,16); ctx.stroke();
+    },
+    kroon() {
+      ctx.fillStyle='#1b2a1f'; ctx.beginPath(); ctx.moveTo(8,42); ctx.lineTo(6,16); ctx.lineTo(18,28); ctx.lineTo(28,10); ctx.lineTo(38,28); ctx.lineTo(50,16); ctx.lineTo(48,42); ctx.closePath(); ctx.fill();
+      ctx.fillStyle='#2f8f46'; for (const x of [18,28,38]) { ctx.beginPath(); ctx.arc(x,36,3.2,0,7); ctx.fill(); }
+    },
+    slang() {
+      ctx.fillStyle='#f5c518'; rrect(2,20,18,18,6); ctx.fill();
+      ctx.fillStyle='#2f8f46'; rrect(18,14,32,30,11); ctx.fill();
+      for (const y of [22,36]) { ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(38,y,5,0,7); ctx.fill(); ctx.fillStyle='#111'; ctx.beginPath(); ctx.arc(40,y,2.4,0,7); ctx.fill(); }
+    }
+  };
+  function tekenIcoon(soort) {
+    const g = strookCv.getContext('2d'); g.clearRect(0, 0, 56, 56);
+    if (!soort) return;
+    if (soort === 'regah') metCtx(g, 20, () => { ctx.translate(28 - S*.58, 25 - S*.5); tekenRegah({x:0, y:0, links:false}, 200); });
+    else if (TEKEN[soort]) metCtx(g, soort === 'gebak' ? 40 : 46, () => TEKEN[soort](28, 28, 0));
+    else metCtx(g, 46, () => ICOON[soort]());
+  }
+  // Canvas net zo scherp als het scherm (telefoon heeft 2 à 3 schermpixels per CSS-pixel)
+  function maatCanvas() {
+    const css = C.clientWidth || 300, dpr = Math.min(window.devicePixelRatio || 1, 3);
+    const px = Math.max(N * 15, Math.min(N * 60, Math.round(css * dpr / N) * N));
+    if (C.width !== px) { C.width = C.height = px; S = px / N; }
+  }
+  // Decor ingezoomd (gebouwen groter) als er hoogte over is; anders de hele tekening. Het veld wordt hier nooit kleinâh door.
+  function maatDecor() {
+    const kaart = $('speelkaart'), svgs = [...kaart.querySelectorAll('svg.decor')];
+    svgs.forEach(v => v.setAttribute('viewBox', v.dataset.vbKlein)); document.body.style.alignItems = '';
+    const W = kaart.clientWidth, verhouding = vb => { const [, , w, h] = vb.split(' ').map(Number); return h / w; };
+    const extra = svgs.reduce((t, v) => t + W * (verhouding(v.dataset.vbRuim) - verhouding(v.dataset.vbKlein)), 0);
+    const st = getComputedStyle(document.body);
+    const vrij = innerHeight - parseFloat(st.paddingTop) - parseFloat(st.paddingBottom) - document.querySelector('.wrap').getBoundingClientRect().height;
+    if (vrij < extra + 8) return;
+    const botst = () => $('strook').getBoundingClientRect().bottom > $('geluidBtn').getBoundingClientRect().top - 4;
+    const eerst = botst();
+    svgs.forEach(v => v.setAttribute('viewBox', v.dataset.vbRuim));
+    if (!eerst && botst()) document.body.style.alignItems = 'flex-start';                       // dan liever bovenaan beginnen
+    if (!eerst && botst()) { svgs.forEach(v => v.setAttribute('viewBox', v.dataset.vbKlein)); document.body.style.alignItems = ''; }   // nooit onder de geluidsknop
+  }
+  addEventListener('resize', () => { maatDecor(); maatCanvas(); });
   // Menukaartje op het startscherm: zelfde plaatjes als in het spel, klein getekend
   (function maakMenu() {
-    const ul = $('menuLijst'), oud = [ctx, S];
-    for (const soort of ['gebak','ei','beschuit','haring','kroket','patat']) {
+    const ul = $('menuLijst');
+    for (const soort of ['bier','hopje','haring','kroket','patat','ei','beschuit','gebak']) {
       const e = ETEN[soort], li = document.createElement('li'), cv = document.createElement('canvas');
-      cv.width = cv.height = 100; ctx = cv.getContext('2d'); S = 94;
-      TEKEN[soort](50, 50, 0);
-      if (e.nieuw) li.className = soort === 'gebak' ? 'nieuw breed' : 'nieuw';
-      const naam = document.createElement('span'); naam.textContent = e.naam;
-      const pt = document.createElement('b'); pt.textContent = '+' + e.pts + (soort === 'gebak' ? ', snel!' : '');
-      if (e.nieuw) { naam.append(pt); li.append(cv, naam); } else li.append(cv, naam, pt);
+      cv.width = cv.height = 100;
+      metCtx(cv.getContext('2d'), soort === 'gebak' ? 80 : 94, () => TEKEN[soort](50, 50, 0));
+      const naam = document.createElement('span'); naam.className = 'naam'; naam.textContent = e.naam;
+      const pt = document.createElement('b'); pt.textContent = '+' + e.pts;
+      if (soort === 'gebak') { const sn = document.createElement('span'); sn.className = 'snel'; sn.textContent = ', snel!'; pt.append(sn); }
+      if (e.nieuw) {
+        li.className = 'nieuw';
+        const sub = document.createElement('span'); sub.className = 'sub'; sub.textContent = EFFECTEN_AAN && e.sub ? e.sub : '';
+        const tk = document.createElement('span'); tk.className = 'tekst'; tk.append(naam, pt, sub); li.append(cv, tk);
+      } else li.append(cv, naam, pt);
       ul.append(li);
     }
-    ctx = oud[0]; S = oud[1];
   })();
   function teken(t) {
     tekenVeld();
     if (food) { const cx=(food.x+.5)*S, cy=(food.y+.5)*S;
       if (ETEN[food.soort].nieuw) {   // nieuwe hapjes: gloeiend randje zodat ze opvallen
         ctx.fillStyle = `rgba(245,197,24,${.28 + Math.sin(t/180)*.14})`; ctx.beginPath(); ctx.arc(cx,cy,S*.62,0,7); ctx.fill();
-        ctx.strokeStyle = '#2f8f46'; ctx.lineWidth = 2; ctx.stroke();
+        ctx.strokeStyle = '#2f8f46'; ctx.lineWidth = S/15; ctx.stroke();
       }
       TEKEN[food.soort](cx,cy,t); }
     if (bonus && (bonus.leeft > 12 || Math.floor(t/150)%2)) tekenGebak((bonus.x+.5)*S,(bonus.y+.5)*S,t);
@@ -910,7 +1090,6 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
   });
   $('startBtn').addEventListener('click', e => { e.stopPropagation(); state==='pauze' ? pauze() : begin(); });
   ov.addEventListener('click', () => { if (state==='pauze') pauze(); else if ((state==='start' && $('ovLijst').hidden) || magOpnieuw()) begin(); });
-  document.querySelectorAll('.pad button').forEach(b => b.addEventListener('pointerdown', e => { e.preventDefault(); if (state!=='pauze') stuur(b.dataset.dir); }));
   let t0=null; const board=$('board');
   // Vegen werkt overal op het scherm, niet alleen op het speelveld
   document.addEventListener('touchstart', e => { t0 = e.touches[0]; }, {passive:true});
@@ -922,7 +1101,8 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
     t0 = t;
   }, {passive:false});
 
-  reset();
+  zetDecorTijd(); maatDecor(); maatCanvas();
+  reset(); rust();
   requestAnimationFrame(loop);
 })();
 </script>
