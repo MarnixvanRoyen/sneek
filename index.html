@@ -167,7 +167,10 @@
   .speelkaart[data-tijd="nacht"]{--steen-l:#31362f;--steen-m:#292d27;--steen-d:#20231e;--steen-x:#161715;--lei-l:#20303e;--lei-d:#15212b;--trap-l:#282421;--trap-d:#1e1b18;--zilver-l:#364959;--zilver-d:#253642;--zilver-x:#1c2a35;--koepel-l:#16373e;--koepel-d:#0d272c;--koepel-r:#2b4a54;--koepelvoet:#2a1a18;--rood-l:#2d1f1d;--rood-d:#211615;--blauw-l:#142d4c;--blauw-d:#0d203a;--kanteel-l:#241b1a;--kanteel-d:#191313;--min-l:#181c21;--min-d:#121519;--slank-l:#2c3d4a;--slank-d:#1e2d38;--boom:#0d1e1d;--boom-d:#0a1718;--grond:#11191c;--kozijn:#3b4b53;--beton-l:#394955;--beton-d:#29363d;--beton-x:#1d272d;--glas-l:#213645;--glas-d:#152632;--wit:#3e5160;--wit-d:#32424e;--gondel:#0e1b22;--l1:#08171c;--l2:#1d3a46;--ver:#1c3540;--zh:#1d3a44;--z2:#07151a;--golf:#2c5260;--raam:#f5c518;--raamop:.9;--zon:0;--zondag:0;--maan:.9;--vlieger:0}
   .decor{display:block;width:100%;height:auto}
   .ring{background:var(--groen);padding:4px}
-  .board{position:relative;aspect-ratio:1/1;border:4px solid var(--geel);border-radius:5px;overflow:hidden;touch-action:none}
+  /* Het canvas bepaalt zelf de hoogte (vierkant). Vroeger: .board aspect-ratio + canvas height:100%. Safari rekende die
+     100% vanaf de buitenmaat mét rand (8 px te hoog), waardoor de onderste rij half achter de rand verdween (fix 02-10-2026). */
+  .board{position:relative;border:4px solid var(--geel);border-radius:5px;overflow:hidden;touch-action:none}
+  .board canvas{width:100%;height:auto;aspect-ratio:1/1}
   /* Meldingstrook: altijd 1 regel en dezelfde hoogte, dus de rest verspringt nooit */
   .strook{position:relative;height:38px;flex:none;display:flex;align-items:center;gap:8px;padding:0 12px 0 6px;border-radius:10px;
     background:var(--zee2);color:var(--tekst);font-weight:800;font-size:15px;white-space:nowrap;overflow:hidden;transition:background-color .2s}
