@@ -188,6 +188,11 @@
   .strook.record{background:var(--geel);color:#1b2a1f}
   .strook.record b{color:#1b2a1f}
   .strook.effect{background:#5b3a1e;color:#fff;box-shadow:inset 0 0 0 2px var(--geel)}
+  /* Pâhze (sinds 02-10-2026): alleen in de strook, niets over het veld; veld iets dof zodat je ziet dat het stilstaat */
+  .strook.pauze{background:#0f262d;color:var(--tekst);box-shadow:inset 0 0 0 2px var(--geel)}
+  .strook.aftel{background:var(--geel);color:#1b2a1f}
+  .strook.aftel b{color:#1b2a1f}
+  .board.stil canvas{filter:saturate(.55) brightness(.88);transition:filter .2s}
   .strook .balk{position:absolute;left:0;bottom:0;width:100%;height:4px;background:var(--geel);transform-origin:left;transform:scaleX(0);transition:transform .25s linear}
   @media (prefers-reduced-motion:reduce){#strookTekst.in,.stand b.pop{animation:none}}
   /* Game over: klein menu-rijtje + maker onderaan */
@@ -196,6 +201,7 @@
   @media (max-width:360px){#ptWoord{display:none} .stand{gap:8px} .kopstrook h1{font-size:15px}}
   .overlay.dood .menu .snel{display:none}
   .maker .volg{display:none} .overlay.dood .maker .volg{display:inline}
+  .maker .en{font-size:13px;font-weight:700}  /* voâh internationale bezoekers */
   .overlay.dood .menu h3{font-size:13px;margin:0 0 3px}
   .overlay.dood .menu ul{display:flex;justify-content:space-between;gap:2px}
   .overlay.dood .menu li,.overlay.dood .menu li.nieuw{padding:0;background:none;box-shadow:none;flex-direction:column;gap:0;font-size:11px}
@@ -236,7 +242,7 @@
       <p class="overslaan">Geen Insta invullen? Dan komt je scoâh niet op de lèst.</p>
       <p class="melding" id="melding"></p>
     </form>
-    <p class="tip" id="stuurTip"><span class="alleen-touch">Sture doe je doâh te vege.</span><span class="alleen-desk">Sture doe je met de pèltjes of WASD.</span></p>
+    <p class="tip" id="stuurTip"><span class="alleen-touch">Sture doe je doâh te vege. Effe tikke = pâhze.</span><span class="alleen-desk">Sture doe je met de pèltjes of WASD.</span></p>
     <section class="lijst ovlijst" id="ovLijst" hidden>
       <h2>Haagse Toppâhs</h2>
       <p class="plek" id="plek"></p>
@@ -245,7 +251,7 @@
     <button class="btn stil" id="lijstBtn" type="button" hidden>Haagse Toppâhs bekèke</button>
     <button class="btn deel" id="deelBtn" type="button" hidden>Deel je scoâh in je story</button>
     <button class="btn" id="startBtn">Beginne, joh!</button>
-    <p class="maker" id="makerStart">Gemaakt doâh <a href="https://www.instagram.com/the_hague_beachlife/" target="_blank" rel="noopener">@the_hague_beachlife</a><span class="volg"><br>Volg me voâh mooie Haagse plaatjes!</span></p>
+    <p class="maker" id="makerStart">Gemaakt doâh <a href="https://www.instagram.com/the_hague_beachlife/" target="_blank" rel="noopener">@the_hague_beachlife</a><span class="volg"><br>Volg me voâh mooie Haagse plaatjes!<br><a class="en" lang="en" href="https://www.instagram.com/the_hague_beachlife/" target="_blank" rel="noopener">Follow for Hague photos</a></span></p>
   </div>
 </div>
 
@@ -361,7 +367,7 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
   const N = 20, C = document.getElementById('c');
   let ctx = C.getContext('2d'), S = C.width / N;
   const $ = id => document.getElementById(id);
-  const ov = $('overlay');
+  const ov = $('overlay'), board = $('board');
 
   const ETEN = {
     haring:   {pts:1, naam:'Harinkie', zeg:['Lekkâh harinkie!','Harinkie met uitjes, âhwe!','Van de kar op de Boulevard!']},
@@ -388,6 +394,10 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
   const DECOR_TIJD = 'auto';
   // Hoe lang een melding in de strook blèft staan (ms), en hoe lang belangrijke meldingen minstens blijven
   const MELD_MS = 2000, MELD_MIN = {1:0, 2:900, 3:1500};
+  // Pâhze: na het hervatten eerst aftellen (3-2-1), zodat je niet meteen doodgaat. AFTEL_MS = tijd per cèfer (0 = meteen door)
+  const AFTEL_MS = 500;
+  // Tik = pâhze (telefoon): zo kort en zo stil moet een tik zijn om niet als veeg te tellen
+  const TIK_MS = 300, TIK_PX = 12;
   // Tempo: ms per stapje (hoger = langzamer). Begint rustig, wordt steeds sneller.
   const TEMPO = [
     {min:0,  ms:240, naam:'Slentere ovâh de Boulevard'},
@@ -537,6 +547,7 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
 
   const DIRS = {up:{x:0,y:-1},down:{x:0,y:1},left:{x:-1,y:0},right:{x:1,y:0}};
   function stuur(d) {
+    if (state === 'pauze') return;                                   // stilstaan = niet sturen
     if (state === 'start') { begin(); }
     else if (state === 'dood') { if (!magOpnieuw()) return; begin(); }
     const last = queue.length ? queue[queue.length-1] : dir;
@@ -627,6 +638,17 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
   const LB = !!(SUPABASE_URL && SUPABASE_KEY);
   const form = $('scoreForm'), inp = $('insta'), meld = $('melding');
   let ingezonden = false, mijnNaam = '';
+  // Potje-kaartje (sinds 02-10-2026): bij de start vraagt het spel een eenmalig kaartje aan; de server noteert de starttijd.
+  // Opslaan kan alleen mét dat kaartje. Lukt het aanvragen niet, dan nog 1 keer proberen na 3 s.
+  let potje = null, potjeNr = 0;
+  async function vraagKaartje(nr, poging = 1) {
+    try {
+      const r = await fetch(`${SUPABASE_URL}/rest/v1/rpc/start_potje`, {method:'POST', headers:{apikey:SUPABASE_KEY,'Content-Type':'application/json'}, body:'{}'});
+      if (!r.ok) throw new Error(r.status);
+      const id = await r.json();
+      if (nr === potjeNr) potje = id;
+    } catch (e) { if (poging < 2) setTimeout(() => { if (nr === potjeNr) vraagKaartje(nr, 2); }, 3000); }
+  }
   try { mijnNaam = localStorage.getItem('snek-insta') || ''; } catch(e) {}
   const schoon = v => v.trim().replace(/^@+/, '').toLowerCase();
   const geldig = v => /^[a-z0-9._]{1,30}$/.test(v);
@@ -792,16 +814,17 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
     const naam = schoon(inp.value);
     if (!geldig(naam)) { meld.textContent = 'Vul je Insta-naam in: letters, cèfers, punt of _ (max 30).'; return; }
     if (ingezonden) return;
+    if (!potje) { meld.textContent = 'Opslaan lukte effe niet, âhwe. Volgende potje betâh!'; return; }
     $('opslaanBtn').disabled = true; meld.textContent = 'Effe opslaan…';
     try {
       // Via de 'poortwachter' in Supabase: 1 regel per speler, alleen je beste score telt
-      const r = await fetch(`${SUPABASE_URL}/rest/v1/rpc/bewaar_score`, {method:'POST', headers:{apikey:SUPABASE_KEY,'Content-Type':'application/json'}, body:JSON.stringify({p_insta:naam, p_score:score})});
+      const r = await fetch(`${SUPABASE_URL}/rest/v1/rpc/bewaar_score_potje`, {method:'POST', headers:{apikey:SUPABASE_KEY,'Content-Type':'application/json'}, body:JSON.stringify({p_potje:potje, p_insta:naam, p_score:score})});
       if (!r.ok) {
         const t = await r.text();
         if (t.includes('effe wachten') || t.includes('te druk')) { meld.textContent = 'Effe wachte, âhwe! Probeâh het zo nog een keâh.'; $('opslaanBtn').disabled = false; return; }
         throw new Error(r.status);
       }
-      ingezonden = true; mijnNaam = naam; try { localStorage.setItem('snek-insta', naam); } catch(e) {}
+      ingezonden = true; potje = null; mijnNaam = naam; try { localStorage.setItem('snek-insta', naam); } catch(e) {}
       meld.textContent = '';
       form.hidden = true;
       await toonMijnPlek();
@@ -817,14 +840,16 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
   function tel(pad, titel) { try { if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({path: pad, title: titel, event: true}); } catch (e) {} }
   function begin() {
     tel('potje-gestart', 'Potje gestart');
+    potje = null; potjeNr++; if (LB) vraagKaartje(potjeNr);
     deelBtn.hidden = true; $('menuKaart').hidden = true; ov.classList.remove('dood'); $('makerStart').hidden = true;
     form.hidden = true; $('ovLijst').hidden = true; $('ovTekst').hidden = false; lijstBtn.hidden = true; $('ovTitel').hidden = false;
     scrollTo(0, 0); document.documentElement.classList.add('speelt');
     Geluid.init(); laatsteTempo = '';
     zetDecorTijd(); maatDecor(); maatCanvas();
+    clearTimeout(aftelT); board.classList.remove('stil');
     reset(); state = 'spel'; ov.hidden = true; lastStep = performance.now();
     bestBijStart = best; recordGemeld = false; leegStrook(); strookBalk.style.transform = 'scaleX(0)';
-    strook(matchMedia('(pointer:coarse)').matches ? 'Veeg om te sture, overal op \'t scherm' : 'Pèltjes of WASD · spatie = pâhze', {icoon:'slang'});
+    strook(matchMedia('(pointer:coarse)').matches ? 'Veeg om te sture · tik = pâhze' : 'Pèltjes of WASD · spatie = pâhze', {icoon:'slang'});
   }
   // Decor: dag, avond of nacht (volgt de klok van de speler, per potje opnieuw bekeken)
   function zetDecorTijd() {
@@ -832,10 +857,35 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
     if (tijd === 'auto') { const u = new Date().getHours(); tijd = u >= 7 && u < 18 ? 'dag' : u >= 18 && u < 22 ? 'avond' : 'nacht'; }
     $('speelkaart').dataset.tijd = tijd;
   }
-  function pauze() {
-    if (state === 'spel') { state = 'pauze'; deelBtn.hidden = true; ov.classList.remove('dood'); $('menuKaart').hidden = true; $('makerStart').hidden = true; $('ovTitel').textContent = 'Effe pâhze'; $('ovTekst').textContent = 'Bakkie koffie halen? Druk op spatie om verdâh te gaan.'; $('bigScore').hidden = true; $('startKop').hidden = true; $('slangetje').hidden = true; ov.classList.remove('start'); form.hidden = true; $('ovLijst').hidden = true; $('startBtn').textContent = 'Verdâh!'; ov.hidden = false; }
-    else if (state === 'pauze') { state = 'spel'; ov.hidden = true; lastStep = performance.now(); }
+  // ---------- Pâhze ----------
+  // Spatie/P (computer), een tik (telefoon) of de app wegklikken. Alles staat stil; de melding staat in de strook,
+  // niets over het veld. Verdâh gaan = eerst aftellen 3-2-1 (je kunt dan al vegen/mikken), daarna pas lopen.
+  let aftelT = null, aftelN = 0;
+  const tikTekst = () => matchMedia('(pointer:coarse)').matches ? 'tik om verdâh te gaan' : 'spatie om verdâh te gaan';
+  function zetPauze() {
+    if (state !== 'spel' && state !== 'aftel') return;
+    clearTimeout(aftelT); state = 'pauze';
+    leegStrook(); strookWas = ''; zetStrook(tikTekst(), 'pauze', 'pauze', 'Pâhze');
+    board.classList.add('stil');
   }
+  function verder() {
+    if (state !== 'pauze') return;
+    board.classList.remove('stil');
+    if (!AFTEL_MS) return loopWeer();
+    state = 'aftel'; aftelN = 3; aftelStap();
+  }
+  function aftelStap() {
+    if (state !== 'aftel') return;
+    if (aftelN === 0) return loopWeer();
+    strookWas = ''; zetStrook(aftelN === 1 ? 'Gaan, âhwe!' : 'Klaâh voâh?', 'slang', 'aftel', String(aftelN)); Geluid.klik();
+    aftelN--; aftelT = setTimeout(aftelStap, AFTEL_MS);
+  }
+  function loopWeer() { state = 'spel'; lastStep = performance.now(); strookWas = ''; rust(); }
+  function pauze() { state === 'pauze' ? verder() : zetPauze(); }
+  // App weggeklikt, ander tabblad of ander venster: meteen pâhze
+  document.addEventListener('visibilitychange', () => { if (document.hidden) zetPauze(); });
+  addEventListener('pagehide', zetPauze);
+  addEventListener('blur', zetPauze);
 
   // ---------- Tekenen ----------
   function rrect(x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r);}
@@ -1011,6 +1061,9 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
       ctx.fillStyle='#1b2a1f'; ctx.beginPath(); ctx.moveTo(8,42); ctx.lineTo(6,16); ctx.lineTo(18,28); ctx.lineTo(28,10); ctx.lineTo(38,28); ctx.lineTo(50,16); ctx.lineTo(48,42); ctx.closePath(); ctx.fill();
       ctx.fillStyle='#2f8f46'; for (const x of [18,28,38]) { ctx.beginPath(); ctx.arc(x,36,3.2,0,7); ctx.fill(); }
     },
+    pauze() {   // twee streepjes
+      ctx.fillStyle='#f5c518'; rrect(14,12,10,32,3); ctx.fill(); rrect(32,12,10,32,3); ctx.fill();
+    },
     slang() {
       ctx.fillStyle='#f5c518'; rrect(2,20,18,18,6); ctx.fill();
       ctx.fillStyle='#2f8f46'; rrect(18,14,32,30,11); ctx.fill();
@@ -1088,21 +1141,39 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
   addEventListener('keydown', e => {
     if (e.target && e.target.tagName === 'INPUT') return;
     if (e.key === 'm' || e.key === 'M') { Geluid.init(); Geluid.zet(!Geluid.aan); toonGeluidKnop(); return; }
-    if (KEYS[e.key]) { e.preventDefault(); if (state!=='pauze') stuur(KEYS[e.key]); }
-    else if (e.key===' ' || e.key==='p' || e.key==='P') { e.preventDefault(); if (state==='spel'||state==='pauze') pauze(); else if (state==='start' || magOpnieuw()) begin(); }
+    if (KEYS[e.key]) { e.preventDefault(); stuur(KEYS[e.key]); }
+    else if (e.key===' ' || e.key==='p' || e.key==='P') { e.preventDefault(); if (state==='spel'||state==='pauze'||state==='aftel') pauze(); else if (state==='start' || magOpnieuw()) begin(); }
   });
   $('startBtn').addEventListener('click', e => { e.stopPropagation(); state==='pauze' ? pauze() : begin(); });
   ov.addEventListener('click', () => { if (state==='pauze') pauze(); else if ((state==='start' && $('ovLijst').hidden) || magOpnieuw()) begin(); });
-  let t0=null; const board=$('board');
-  // Vegen werkt overal op het scherm, niet alleen op het speelveld
-  document.addEventListener('touchstart', e => { t0 = e.touches[0]; }, {passive:true});
+  // Vegen werkt overal op het scherm, niet alleen op het speelveld.
+  // Een korte, stille tik (geen veeg) = pâhze aan/uit. Een tweede vinger tijdens een veeg telt niet als tik.
+  let t0 = null, tik = null;
+  document.addEventListener('touchstart', e => {
+    const t = e.changedTouches[0];
+    if (e.touches.length > 1) { if (tik) tik.weg = true; return; }   // tweede vinger: geen tik, eerste veeg loopt door
+    t0 = {id: t.identifier, clientX: t.clientX, clientY: t.clientY};
+    tik = (state === 'spel' || state === 'pauze' || state === 'aftel') ? {id: t.identifier, x: t.clientX, y: t.clientY, t: performance.now(), weg: false} : null;
+  }, {passive:true});
   document.addEventListener('touchmove', e => {
-    if (!t0 || state!=='spel') return; e.preventDefault();
-    const t=e.touches[0], dx=t.clientX-t0.clientX, dy=t.clientY-t0.clientY;
+    const t = [...e.touches].find(x => t0 && x.identifier === t0.id);
+    if (!t) return;
+    if (tik && Math.hypot(t.clientX - tik.x, t.clientY - tik.y) > TIK_PX) tik.weg = true;
+    if (state !== 'spel' && state !== 'aftel') return; e.preventDefault();
+    const dx=t.clientX-t0.clientX, dy=t.clientY-t0.clientY;
     if (Math.max(Math.abs(dx),Math.abs(dy)) < 24) return;
     stuur(Math.abs(dx)>Math.abs(dy) ? (dx>0?'right':'left') : (dy>0?'down':'up'));
-    t0 = t;
+    t0 = {id: t.identifier, clientX: t.clientX, clientY: t.clientY};
+    if (tik) tik.weg = true;
   }, {passive:false});
+  document.addEventListener('touchend', e => {
+    const t = [...e.changedTouches].find(x => tik && x.identifier === tik.id);
+    if (!t) return;
+    const ok = !tik.weg && e.touches.length === 0 && performance.now() - tik.t < TIK_MS && Math.hypot(t.clientX - tik.x, t.clientY - tik.y) <= TIK_PX;
+    tik = null;
+    if (ok && (state === 'spel' || state === 'pauze' || state === 'aftel')) { if (e.cancelable) e.preventDefault(); pauze(); }
+  }, {passive:false});
+  document.addEventListener('touchcancel', () => { tik = null; t0 = null; });
 
   zetDecorTijd(); maatDecor(); maatCanvas();
   reset(); rust();
