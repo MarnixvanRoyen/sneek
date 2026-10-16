@@ -244,7 +244,7 @@
     </form>
     <p class="tip" id="stuurTip"><span class="alleen-touch">Sture doe je doâh te vege. Effe tikke = pâhze.</span><span class="alleen-desk">Sture doe je met de pèltjes of WASD.</span></p>
     <section class="lijst ovlijst" id="ovLijst" hidden>
-      <h2>Haagse Toppâhs</h2>
+      <h2>Haagse Toppâhs <small>seizoen 2</small></h2>
       <p class="plek" id="plek"></p>
       <ol id="ovOl"></ol>
     </section>
@@ -347,6 +347,8 @@ const Geluid = (() => {
     // Haags Hopje: knabbel-knabbel en dan een kick omhoog
     hopje() { for (let i = 0; i < 3; i++) ruisje(0.035, { type: 'bandpass', f0: 2600, f1: 1900, q: 3, vol: 0.28, delay: i * 0.07, attack: 0.002 }); toon(500, 1500, 0.28, { type: 'square', vol: 0.06, delay: 0.22 }); },
     gebak() { [784, 988, 1175, 1568].forEach((f, i) => toon(f, f, 0.14, { type: 'triangle', vol: 0.18, delay: i * 0.07 })); },
+    // Geel-groene bal: fluitje omhoog en dan een paar knalletjes vuurwerk
+    vuurwerk() { toon(420, 1900, 0.38, { type: 'sine', vol: 0.06 }); ruisje(0.32, { type: 'highpass', f0: 1500, f1: 6000, vol: 0.05 }); [0.4, 0.52, 0.6, 0.74].forEach((d, i) => ruisje(0.2 + i * 0.03, { f0: 3500, f1: 400, vol: 0.34 - i * 0.05, delay: d, attack: 0.003 })); },
     regah() { klepper(16, 0.4); },
     jat() { klepper(10, 0.45); toon(500, 180, 0.35, { type: 'triangle', vol: 0.12, delay: 0.55 }); },
     plons() { ruisje(0.9, { f0: 2600, f1: 250, vol: 0.5 }); toon(130, 40, 0.35, { vol: 0.45 }); ruisje(1.2, { type: 'highpass', f0: 3000, f1: 5000, vol: 0.08, delay: 0.1, attack: 0.05 }); },
@@ -378,11 +380,20 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
     gebak:    {pts:5, naam:'Maison Kelder hazelnoot gebakkie', zeg:['Hazelnoot gebakkie, chic hoâh!','Van Maison Kelder, âhwe!','Hé, meneâh de deftige!']},
     // Nieuw sinds 1 okt 2026
     hopje:    {pts:3, naam:'Haags Hopje', nieuw:true, sub:'Koffiekick: dubbel!', zeg:['Haags Hopje, lekkâh!','Koffie in een snoepie, âhwe!','Snoepie van baron Hop!']},
-    bier:     {pts:5, naam:'Kompaan biertje', nieuw:true, sub:'Effe rustig an', zeg:['Proost, âhwe!','Kompaan, van hieâh uit Den Haag!',"Biertje op 't terras, lekkâh!"]}
+    bier:     {pts:5, naam:'Kompaan biertje', nieuw:true, sub:'Effe rustig an', zeg:['Proost, âhwe!','Kompaan, van hieâh uit Den Haag!',"Biertje op 't terras, lekkâh!"]},
+    // Nieuw sinds 16 okt 2026 (chat 54): losse redding, staat niet in KANSEN
+    bal:      {pts:2, naam:'Geel-groene bal', nieuw:true, sub:'Rustigâh én kortâh!', zeg:['Kopbal, âhwe!','Goal! Effe rustig an!','Vuurwerk op Scheveninge!']}
   };
   // ====== Instellingen hapjes (makkelijk aan te passen) ======
   // Kans per hapje in procent (samen 100). Het gebakkie is een losse bonus en staat hier niet in.
   const KANSEN = {haring:36, kroket:19, patat:12, ei:11, hopje:8, beschuit:8, bier:6};
+  // Geel-groene bal (sinds 16 okt 2026, chat 54): redt je als het te gèk wordt. Eén tempo-stap terug + BAL_KORTER blokjes eraf, met vuurwerk.
+  //   BAL_KANS = kans per stapje dat hij verschijnt (pas vanaf BAL_VANAF hapjes), BAL_LEEFT = hoeveel stapjes hij blèft ligge
+  const BAL_AAN = true, BAL_KANS = .006, BAL_VANAF = 8, BAL_LEEFT = 60, BAL_KORTER = 3;
+  // Groei: om de hoeveel hapjes de sneek een blokje langâh wordt (1 = elk hapje, 2 = om het andere)
+  const GROEI_ELKE = 2;
+  // Seizoen van de scorelèst (kolom seizoen in Supabase). Seizoen 1 = tot 16 okt 2026, bewaard in tabel scores_seizoen1
+  const SEIZOEN = 2;
   // Effecten van de nieuwe hapjes. Zet EFFECTEN_AAN op false: dan geven ze alleen punten.
   //   ms = hoe lang (speeltijd, pâhze telt niet mee), tempo = stapjes langzamer (>1) of snellâh (<1), x = punten keer
   const EFFECTEN_AAN = true;
@@ -399,15 +410,16 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
   // Tik = pâhze (telefoon): zo kort en zo stil moet een tik zijn om niet als veeg te tellen
   const TIK_MS = 300, TIK_PX = 12;
   // Tempo: ms per stapje (hoger = langzamer). Begint rustig, wordt steeds sneller.
+  //   min = aantal opgegeten hapjes (niet de punte!), sinds chat 54. Daarvoor was het op punte en ging het te hard.
   const TEMPO = [
     {min:0,  ms:240, naam:'Slentere ovâh de Boulevard'},
-    {min:5,  ms:210, naam:'Wandele ovâh de Boulevard'},
-    {min:12, ms:180, naam:'Op de fiets naâh Scheveninge'},
-    {min:22, ms:155, naam:'Met tram 1 naâh de Kurhaus'},
-    {min:35, ms:130, naam:'Brommertje ovâh de Laan van Meerdervoort'},
-    {min:50, ms:110, naam:'Rèsse ovâh de Utrechtsebaan'},
-    {min:70, ms:92,  naam:'Hoogspanning, jochie!'},
-    {min:95, ms:78,  naam:'Nâh wordt het gèk, âhwe!'}
+    {min:4,  ms:220, naam:'Wandele ovâh de Boulevard'},
+    {min:9,  ms:200, naam:'Op de fiets naâh Scheveninge'},
+    {min:15, ms:180, naam:'Met tram 1 naâh de Kurhaus'},
+    {min:22, ms:162, naam:'Brommertje ovâh de Laan van Meerdervoort'},
+    {min:30, ms:146, naam:'Rèsse ovâh de Utrechtsebaan'},
+    {min:40, ms:132, naam:'Hoogspanning, jochie!'},
+    {min:52, ms:120, naam:'Nâh wordt het gèk, âhwe!'}
   ];
   const DOOD = {
     muur:[
@@ -458,6 +470,7 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
   const pick = a => a[Math.floor(Math.random()*a.length)];
 
   let effect = null, bestBijStart = 0, recordGemeld = false, tempoNaam = TEMPO[0].naam, vorigeScore = 0;
+  let bal = null, hapjes = 0, tempoTel = 0, vonken = [];   // tempoTel = hapjes, min wat de bal teruggeeft
   let laatsteTempo = '', laatsteDood = '', doodT = 0, snake, dir, queue, food, bonus, regah, score, best = 0, timer = null, state = 'start', lastStep = 0, stepMs = 150, tick = 0;
   try { best = +localStorage.getItem('snek-best') || 0; } catch(e) {}
   $('best').textContent = best;
@@ -468,7 +481,7 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
     for (let poging = 0; ; poging++) {
       const m = poging < 200 ? randMarge() : 0;
       const p = {x: m + Math.floor(Math.random()*(N-2*m)), y: m + Math.floor(Math.random()*(N-2*m))};
-      if (!snake.some(s => s.x===p.x && s.y===p.y) && !(food && food.x===p.x && food.y===p.y) && !(bonus && bonus.x===p.x && bonus.y===p.y)) return p;
+      if (!snake.some(s => s.x===p.x && s.y===p.y) && !(food && food.x===p.x && food.y===p.y) && !(bonus && bonus.x===p.x && bonus.y===p.y) && !(bal && bal.x===p.x && bal.y===p.y)) return p;
     }
   }
   function nieuwEten() {
@@ -481,6 +494,7 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
   function reset() {
     snake = [{x:9,y:10},{x:8,y:10},{x:7,y:10}];
     dir = {x:1,y:0}; queue = []; score = 0; bonus = null; regah = null; food = null; tick = 0; effect = null; vorigeScore = 0;
+    bal = null; hapjes = 0; tempoTel = 0; vonken = [];
     nieuwEten(); updateHud();
   }
   function updateHud() {
@@ -488,7 +502,7 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
     sc.textContent = score; $('ptWoord').textContent = score === 1 ? 'punt' : 'punte';
     if (score > vorigeScore) { sc.classList.remove('pop'); void sc.offsetWidth; sc.classList.add('pop'); }   // klein sprongetje bij punten
     vorigeScore = score;
-    let t = TEMPO[0]; for (const x of TEMPO) if (score >= x.min) t = x;
+    let t = TEMPO[0]; for (const x of TEMPO) if (tempoTel >= x.min) t = x;
     if (state === 'spel' && laatsteTempo && t.naam !== laatsteTempo) { Geluid.tram(); strook(t.naam, {prio:2, icoon:'tram', stijl:'tempo', pre:'Snellâh!'}); }
     laatsteTempo = t.naam; tempoNaam = t.naam;
     stepMs = Math.max(55, Math.round(t.ms * (effect ? EFFECT[effect.soort].tempo : 1)));
@@ -563,7 +577,8 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
     const h = {x: snake[0].x + dir.x, y: snake[0].y + dir.y};
     if (h.x<0||h.y<0||h.x>=N||h.y>=N) return sterf('muur');
     const eet = food && h.x===food.x && h.y===food.y;
-    const body = eet ? snake : snake.slice(0,-1);
+    const groeit = eet && hapjes % GROEI_ELKE === 0;               // niet elk hapje maakt je langâh
+    const body = groeit ? snake : snake.slice(0,-1);
     if (body.some(s => s.x===h.x && s.y===h.y)) return sterf('staart');
     snake.unshift(h);
     // Lopend effect (hopje/biertje) aftellen in speeltijd
@@ -571,7 +586,7 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
     const keer = effect ? EFFECT[effect.soort].x : 1;            // koffiekick = dubbele punte
     if (eet) {
       const soort = food.soort, pts = ETEN[soort].pts * keer;
-      score += pts;
+      score += pts; hapjes++; tempoTel++;
       if (EFFECT[soort] && EFFECTEN_AAN) {
         effect = {soort, rest: EFFECT[soort].ms};
         Geluid[soort](); strook(EFFECT[soort].start, {prio:2, icoon:soort, stijl:'effect', pre:'+' + pts});
@@ -581,11 +596,13 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
       }
       if (regah && regah.doel === 'food') regah.doel = null;
       nieuwEten();
+      if (!groeit) snake.pop();
     } else if (bonus && h.x===bonus.x && h.y===bonus.y) {
       const pts = ETEN.gebak.pts * keer;
       score += pts; strook(pick(ETEN.gebak.zeg), {icoon:'gebak', pre:'+' + pts}); Geluid.gebak(); bonus = null;
-      snake.push({...snake[snake.length-1]}, {...snake[snake.length-1]});
-      snake.pop();
+      hapjes++; tempoTel++;                                        // gebakkie: 1 blokje langâh (was 2)
+    } else if (bal && h.x===bal.x && h.y===bal.y) {
+      snake.pop(); pakBal();
     } else snake.pop();
     // Nieuw rekkâhd tijdens het spelen (alleen als je al een rekkâhd had)
     if (!recordGemeld && bestBijStart > 0 && score > bestBijStart) { recordGemeld = true; strook('Nieuw rekkâhd, âhwe!', {prio:3, icoon:'kroon', stijl:'record'}); }
@@ -593,6 +610,10 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
     // Hazelnoot gebakkie van Maison Kelder verschijnt af en toe
     if (!bonus && Math.random() < .012 && score > 2) { bonus = {...vrij(), leeft: 45}; strook('Hazelnoot gebakkie! Snel weze!', {prio:2, icoon:'gebak', stijl:'bonus'}); }
     if (bonus && --bonus.leeft <= 0) bonus = null;
+
+    // Geel-groene bal: verschijnt af en toe als het al wat sneller gaat
+    if (BAL_AAN && !bal && hapjes >= BAL_VANAF && Math.random() < BAL_KANS) { bal = {...vrij(), leeft: BAL_LEEFT}; strook("Geel-groene bal! Pak 'm voâh rust!", {prio:2, icoon:'bal', stijl:'bonus'}); }
+    if (bal && --bal.leeft <= 0) bal = null;
 
     // De Haagse Regah (ooievaar) komt je eten jatte!
     if (!regah && Math.random() < .008 && score > 4) {
@@ -614,6 +635,36 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
     strookBalk.style.transform = `scaleX(${effect ? Math.max(0, effect.rest / EFFECT[effect.soort].ms) : 0})`;
   }
 
+  // Geel-groene bal gepakt: één tempo-stap terug, een paar blokjes van je staart eraf, met vuurwerk
+  function pakBal() {
+    const nu = performance.now(), pts = ETEN.bal.pts * (effect ? EFFECT[effect.soort].x : 1);
+    score += pts; vuurwerk(bal.x, bal.y, nu, 28); bal = null;
+    let i = TEMPO.length - 1; while (i > 0 && tempoTel < TEMPO[i].min) i--;
+    if (i > 0) { tempoTel = TEMPO[i-1].min; laatsteTempo = TEMPO[i-1].naam; }   // laatsteTempo: dan geen melding 'Snellâh!'
+    const weg = Math.max(0, Math.min(BAL_KORTER, snake.length - 3));            // nooit kortâh dan 3
+    for (let k = 0; k < weg; k++) { const s = snake.pop(); vuurwerk(s.x, s.y, nu + 140 * (k + 1), 16); }
+    Geluid.vuurwerk();
+    if (i > 0) strook(TEMPO[i-1].naam, {prio:2, icoon:'bal', stijl:'bonus', pre:'Rustigâh!'});
+    else strook(pick(ETEN.bal.zeg), {prio:2, icoon:'bal', stijl:'bonus', pre:'+' + pts});
+  }
+  // Vuurwerk: vonkjes in Haagse kleuren. Getekend op de klok (los van de stapjes), dus het loopt soepel door.
+  const VONK_KLEUR = ['#f5c518','#2f8f46','#d9432f','#ff7a3d','#16323b'];   // fel genoeg op het zand
+  function vuurwerk(gx, gy, t0, n) {
+    for (let i = 0; i < n; i++) {
+      const a = Math.random() * Math.PI * 2, v = .003 + Math.random() * .006;     // vakjes per ms
+      vonken.push({x: gx + .5, y: gy + .5, vx: Math.cos(a) * v, vy: Math.sin(a) * v - .002, t0, dur: 650 + Math.random() * 500, k: pick(VONK_KLEUR)});
+    }
+  }
+  function tekenVonken(t) {
+    if (!vonken.length) return;
+    vonken = vonken.filter(v => t - v.t0 < v.dur);
+    for (const v of vonken) {
+      const age = t - v.t0; if (age < 0) continue;
+      const p = age / v.dur, x = (v.x + v.vx * age) * S, y = (v.y + v.vy * age + .000004 * age * age) * S;
+      ctx.globalAlpha = 1 - p; ctx.fillStyle = v.k; ctx.beginPath(); ctx.arc(x, y, S * (.2 - p * .12), 0, 7); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  }
   function sterf(hoe) {
     effect = null; leegStrook(); strookBalk.style.transform = 'scaleX(0)';
     ov.classList.add('dood'); $('menuKaart').hidden = false;
@@ -655,7 +706,7 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
 
   // Haalt alle scores op en houdt per Insta-naam alleen de beste over (hoog naar laag)
   async function haalLijst() {
-    const r = await fetch(`${SUPABASE_URL}/rest/v1/scores?select=insta,score&order=score.desc,created_at.asc&limit=1000`, {headers:{apikey:SUPABASE_KEY}});
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/scores?select=insta,score&seizoen=eq.${SEIZOEN}&order=score.desc,created_at.asc&limit=1000`, {headers:{apikey:SUPABASE_KEY}});
     if (!r.ok) throw new Error(r.status);
     const rijen = await r.json(), gezien = new Set(), lijst = [];
     for (const x of rijen) { if (gezien.has(x.insta)) continue; gezien.add(x.insta); lijst.push(x); }
@@ -1044,7 +1095,23 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
     // Haags petje (geel-groen)
     ctx.fillStyle='#f5c518'; ctx.beginPath(); ctx.arc(cx-dir.x*S*.12,cy-dir.y*S*.12,S*.2,0,7); ctx.fill();
   }
-  const TEKEN = {haring:tekenHaring, kroket:tekenKroket, patat:tekenPatat, ei:tekenEi, beschuit:tekenBeschuit, gebak:tekenGebak, hopje:tekenHopje, bier:tekenBier};
+  function tekenBal(cx,cy,t) {   // geel-groene voetbal in de Haagse kleuren (eigen tekening, geen clublogo)
+    const hop = Math.abs(Math.sin((t||0)/240))*S*.1, r = S*.34;
+    ctx.save(); ctx.translate(cx,cy);
+    ctx.fillStyle='rgba(0,0,0,.18)'; ctx.beginPath(); ctx.ellipse(0,S*.38,S*.27-hop*.6,S*.07,0,0,7); ctx.fill();    // schaduw
+    ctx.translate(0,-hop);
+    ctx.save(); ctx.rotate((t||0)/900); ctx.beginPath(); ctx.arc(0,0,r,0,7); ctx.clip();                          // rollende bal
+    ctx.fillStyle='#f5c518'; ctx.fillRect(-r,-r,2*r,2*r);                                                         // gele helft
+    ctx.fillStyle='#2f8f46'; ctx.fillRect(0,-r,r,2*r);                                                            // groene helft
+    const vlak = (x,y,s,rot) => { ctx.beginPath(); for (let i=0;i<5;i++) { const a=rot+i*Math.PI*2/5; ctx.lineTo(x+Math.cos(a)*s,y+Math.sin(a)*s); } ctx.closePath(); ctx.fill(); };
+    ctx.fillStyle='#16323b'; vlak(0,0,r*.33,-Math.PI/2);                                                          // vlakjes van de bal
+    for (let i=0;i<5;i++) { const a=-Math.PI/2+i*Math.PI*2/5; vlak(Math.cos(a)*r*.98,Math.sin(a)*r*.98,r*.3,a+Math.PI); }
+    ctx.restore();
+    ctx.strokeStyle='#0f262d'; ctx.lineWidth=S*.035; ctx.beginPath(); ctx.arc(0,0,r,0,7); ctx.stroke();
+    ctx.fillStyle='rgba(255,255,255,.55)'; ctx.beginPath(); ctx.ellipse(-r*.38,-r*.42,r*.22,r*.12,-.6,0,7); ctx.fill(); // glim
+    ctx.restore();
+  }
+  const TEKEN = {bal:tekenBal, haring:tekenHaring, kroket:tekenKroket, patat:tekenPatat, ei:tekenEi, beschuit:tekenBeschuit, gebak:tekenGebak, hopje:tekenHopje, bier:tekenBier};
   // Tekent iets met een ander canvas en een andere vakjesmaat (voor het menu en de icoontjes in de strook)
   function metCtx(g, s, fn) { const oud = [ctx, S]; ctx = g; S = s; g.save(); try { fn(); } finally { g.restore(); ctx = oud[0]; S = oud[1]; } }
   // Icoontjes voor de meldingstrook (56x56, getoond op 28x28)
@@ -1102,15 +1169,15 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
   // Menukaartje op het startscherm: zelfde plaatjes als in het spel, klein getekend
   (function maakMenu() {
     const ul = $('menuLijst');
-    for (const soort of ['bier','hopje','haring','kroket','patat','ei','beschuit','gebak']) {
+    for (const soort of ['bal','bier','hopje','haring','kroket','patat','ei','beschuit','gebak']) {
       const e = ETEN[soort], li = document.createElement('li'), cv = document.createElement('canvas');
       cv.width = cv.height = 100;
       metCtx(cv.getContext('2d'), soort === 'gebak' ? 80 : 94, () => TEKEN[soort](50, 50, 0));
       const naam = document.createElement('span'); naam.className = 'naam'; naam.textContent = e.naam;
       const pt = document.createElement('b'); pt.textContent = '+' + e.pts;
-      if (soort === 'gebak') { const sn = document.createElement('span'); sn.className = 'snel'; sn.textContent = ', snel!'; pt.append(sn); }
+      if (soort === 'gebak' || soort === 'bal') { const sn = document.createElement('span'); sn.className = 'snel'; sn.textContent = ', snel!'; pt.append(sn); }
       if (e.nieuw) {
-        li.className = 'nieuw';
+        li.className = soort === 'bal' ? 'nieuw breed' : 'nieuw';
         const sub = document.createElement('span'); sub.className = 'sub'; sub.textContent = EFFECTEN_AAN && e.sub ? e.sub : '';
         const tk = document.createElement('span'); tk.className = 'tekst'; tk.append(naam, pt, sub); li.append(cv, tk);
       } else li.append(cv, naam, pt);
@@ -1126,7 +1193,11 @@ const SUPABASE_KEY = 'sb_publishable_5jfRpWvEBOT3jN06Ajv9Ew_SvCJjU5o';
       }
       TEKEN[food.soort](cx,cy,t); }
     if (bonus && (bonus.leeft > 12 || Math.floor(t/150)%2)) tekenGebak((bonus.x+.5)*S,(bonus.y+.5)*S,t);
+    if (bal && (bal.leeft > 15 || Math.floor(t/150)%2)) { const cx=(bal.x+.5)*S, cy=(bal.y+.5)*S;   // knippert als hij bijna weg is
+      ctx.fillStyle = `rgba(255,255,255,${.22 + Math.sin(t/140)*.12})`; ctx.beginPath(); ctx.arc(cx,cy,S*.66,0,7); ctx.fill();
+      tekenBal(cx,cy,t); }
     tekenSlang(t);
+    tekenVonken(t);
     if (regah) tekenRegah(regah,t);
   }
 
