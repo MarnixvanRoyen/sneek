@@ -132,6 +132,11 @@
   .geluidknop svg{width:24px;height:24px}
   .geluidknop:focus-visible{outline:3px solid var(--geel);outline-offset:2px}
   .overslaan{font-size:13px;color:var(--zacht);margin:0}
+  .privacy{font-size:13px;color:var(--zacht);text-align:center;margin:0}
+  .privacy summary{cursor:pointer;text-decoration:underline;text-underline-offset:3px;list-style:none}
+  .privacy summary::-webkit-details-marker{display:none}
+  .privacy p{margin:6px 0 0;line-height:1.4}
+  .privacy a{color:var(--geel);font-weight:900;text-decoration:none}
   .maker{margin:0;font-size:14px;color:var(--zacht);text-align:center}
   .maker a{color:var(--geel);font-weight:900;text-decoration:none}
   .maker a:hover,.maker a:focus-visible{text-decoration:underline}
@@ -241,6 +246,7 @@
       <div class="rij"><button class="btn" type="submit" id="opslaanBtn">Opslaan</button><button class="btn stil" type="button" id="overslaanBtn">Laat maâh zitte</button></div>
       <p class="overslaan">Geen Insta invullen? Dan komt je scoâh niet op de lèst.</p>
       <p class="melding" id="melding"></p>
+      <details class="privacy"><summary>Wat doe ik met je gegeves?</summary><p>Ik bewaar alleen je Insta-naam en je scoâh (die staan openbaar op de lèst) en een onherkenbâh gemaakte code van je internetadres. Die code is alleen tegen valsspele en spamme. Wil je d'r af? Stuur een DM naar <a href="https://www.instagram.com/the_hague_beachlife/" target="_blank" rel="noopener">@the_hague_beachlife</a>, dan haal ik je weg.</p></details>
     </form>
     <p class="tip" id="stuurTip"><span class="alleen-touch">Sture doe je doâh te vege. Effe tikke = pâhze.</span><span class="alleen-desk">Sture doe je met de pèltjes of WASD.</span></p>
     <section class="lijst ovlijst" id="ovLijst" hidden>
