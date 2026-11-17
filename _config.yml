@@ -1,0 +1,3 @@
+# GitHub Pages: deze bestanden nie online zetten (alleen voor Claude/beheer)
+exclude:
+  - CLAUDE.md
